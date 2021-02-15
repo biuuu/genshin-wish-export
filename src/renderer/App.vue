@@ -1,5 +1,5 @@
 <template>
-  <el-button class="focus:outline-none" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
+  <el-button class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
   <el-button @click="saveExcel" class="focus:outline-none" :disabled="!state.data" size="small" type="success" plain>导出Excel</el-button>
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
   <div v-if="detail" class="flex gap-4 flex-wrap justify-between">
@@ -23,6 +23,14 @@ const state = reactive({
   log: '',
   data: null
 })
+
+const allowClick = () => {
+  if (!state.data) return true
+  if (Date.now() - state.data.time < 1000 * 60) {
+    return false
+  }
+  return true
+}
 
 const hint = computed(() => {
   if (state.status === 'init') {
