@@ -33,7 +33,7 @@ const saveData = async (data) => {
   if (uid) {
     await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, data)
   }
-  await fs.outputJSON(`${userDataPath}/gacha-listjson`, data)
+  await fs.outputJSON(`${userDataPath}/gacha-list.json`, data)
 }
 
 const readData = async () => {
