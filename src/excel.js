@@ -1,4 +1,4 @@
-const ExcelJS = require('exceljs')
+const ExcelJS = require('./module/exceljs.min.js')
 const readData = require('./getData').readData
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')

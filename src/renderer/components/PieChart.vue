@@ -4,7 +4,7 @@
 
 <script setup>
 import { defineProps, reactive, ref, onMounted } from 'vue'
-import * as echarts from 'echarts'
+import * as echarts from '../../module/echarts.esm.min.js'
 
 const props = defineProps({
   data: Object
