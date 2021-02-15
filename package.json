@@ -1,0 +1,27 @@
+{
+  "name": "genshin-gacha-export",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "electron ./src/main.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "echarts": "^5.0.2",
+    "element-plus": "^1.0.2-beta.32",
+    "exceljs": "^4.2.0",
+    "fs-extra": "^9.1.0",
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.1.4",
+    "@vue/compiler-sfc": "^3.0.5",
+    "autoprefixer": "^10.2.4",
+    "electron": "^11.2.3",
+    "postcss": "^8.2.5",
+    "tailwindcss": "^2.0.3",
+    "vite": "^2.0.0-beta.65"
+  }
+}
