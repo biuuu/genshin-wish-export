@@ -6,6 +6,7 @@ const main =  require('./main')
 
 let GachaTypesUrl
 let GachaLogBaseUrl
+let uid = 0
 const sendMsg = (text) => {
   const win = main.getWin()
   if (win) {
@@ -29,13 +30,16 @@ const detectGameLocale = async (userPath) => {
 const saveData = async (data) => {
   const userDataPath = app.getPath('userData')
   data.result = [...data.result]
-  await fs.outputJSON(`${userDataPath}/gacha-list.json`, data)
+  if (uid) {
+    await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, data)
+  }
+  await fs.outputJSON(`${userDataPath}/gacha-listjson`, data)
 }
 
 const readData = async () => {
   const userDataPath = app.getPath('userData')
   try {
-    const obj = await fs.readJSON(`${userDataPath}/gacha-list.json`)
+    const obj = await fs.readJSON(`${userDataPath}/gacha-list${uid ? `-${uid}` : ''}.json`)
     obj.result = new Map(obj.result)
     return obj
   } catch (e) {
@@ -98,6 +102,9 @@ const getGachaLogs = async (name, key) => {
   do {
     sendMsg(`正在获取${name}第${page}页`)
     res = await getGachaLog(key, page)
+    if (!uid && res.length) {
+      uid = res[0].uid
+    }
     data.push(...res)
     page += 1
   } while (res.length > 0)

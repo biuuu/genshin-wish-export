@@ -13,11 +13,11 @@ const props = defineProps({
 const chart = ref(null)
 
 const keys = [
-  ['5星角色', 'char5'],
-  ['5星武器', 'weapon5'],
-  ['4星角色', 'char4'],
-  ['4星武器', 'weapon4'],
-  ['3星武器', 'weapon3']
+  ['5星角色', 'count5c'],
+  ['5星武器', 'count5w'],
+  ['4星角色', 'count4c'],
+  ['4星武器', 'count4w'],
+  ['3星武器', 'count3w']
 ]
 
 const colors = [
@@ -28,21 +28,27 @@ const colors = [
   '#73c0de'
 ]
 
-const parseData = (data) => {
+const parseData = (data, name) => {
   const result = []
   const color = []
+  const selected = {
+    '3星武器': false
+  }
   keys.forEach((key, index) => {
-    if (!data[key[1]].size) return
+    if (!data[key[1]]) return
     result.push({
-      value: data[key[1]].size,
+      value: data[key[1]],
       name: key[0]
     })
     color.push(colors[index])
   })
-  return [result, color]
+  if (name === '新手祈愿') {
+    selected['3星武器'] = true
+  }
+  return [result, color, selected]
 }
 
-const result = parseData(props.data[1])
+const result = parseData(props.data[1], props.data[0])
 
 onMounted(() => {
   const myChart = echarts.init(chart.value)
@@ -57,7 +63,8 @@ onMounted(() => {
     },
     legend: {
       top: '2%',
-      left: 'center'
+      left: 'center',
+      selected: result[2],
     },
     selectedMode: 'single',
     color: result[1],

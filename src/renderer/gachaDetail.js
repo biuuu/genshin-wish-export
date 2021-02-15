@@ -11,6 +11,7 @@ const gachaDetail = (data) => {
   for (let [key, value] of data) {
     let detail = {
       count3: 0, count4: 0, count5: 0,
+      count3w: 0, count4w: 0, count5w: 0, count4c: 0, count5c: 0,
       weapon3: new Map(), weapon4: new Map(), weapon5: new Map(),
       char4: new Map(), char5: new Map(),
       date: [],
@@ -30,14 +31,17 @@ const gachaDetail = (data) => {
         detail.count3++
         detail.countMio++
         if (type === '武器') {
+          detail.count3w++
           itemCount(detail.weapon3, name)
         }
       } else if (rank === 4) {
         detail.count4++
         detail.countMio++
         if (type === '武器') {
+          detail.count4w++
           itemCount(detail.weapon4, name)
         } else if (type === '角色') {
+          detail.count4c++
           itemCount(detail.char4, name)
         }
       } else if (rank === 5) {
@@ -46,8 +50,10 @@ const gachaDetail = (data) => {
         detail.count5++
         detail.countMio = 0
         if (type === '武器') {
+          detail.count5w++
           itemCount(detail.weapon5, name)
         } else if (type === '角色') {
+          detail.count5c++
           itemCount(detail.char5, name)
         }
       }
