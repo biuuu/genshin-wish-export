@@ -55,7 +55,7 @@ onMounted(() => {
   const option = {
     tooltip: {
       trigger: 'item',
-      formatter: '{a0}<br>{b0}: {c0} ({d0}%)',
+      formatter: '{a0}<br>{b0}: {c0}',
       padding: 4,
       textStyle: {
         fontSize: 12
