@@ -42,7 +42,7 @@ const parseData = (data, name) => {
     })
     color.push(colors[index])
   })
-  if (name === '新手祈愿') {
+  if (name === '新手祈愿' || result.findIndex(item => item.name.includes('5')) === -1) {
     selected['3星武器'] = true
   }
   return [result, color, selected]
