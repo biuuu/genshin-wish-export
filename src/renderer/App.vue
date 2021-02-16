@@ -8,7 +8,7 @@
       <pie-chart :data="item" :typeMap="typeMap"></pie-chart>
       <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
-    <i class="flex-grow flex-shrink-0 mb-4 w-64 xl:hidden" v-for="i in 2" :key="i"></i>
+    <i class="flex-grow flex-shrink-0 mb-4 w-64 cat:hidden" v-for="i in 2" :key="i"></i>
   </div>
 </template>
 

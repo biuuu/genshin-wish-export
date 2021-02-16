@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { defineProps, reactive, computed, ref, onMounted } from 'vue'
+import { defineProps, reactive, computed, ref, onMounted, onUpdated } from 'vue'
 import * as echarts from '../../module/echarts.esm.min.js'
 import throttle from 'lodash-es/throttle'
 
@@ -52,13 +52,13 @@ const parseData = (detail, type) => {
   return [result, color, selected]
 }
 
-const result = parseData(props.data[1], props.data[0])
-
 let pieChart = null
 const updateChart = throttle(() => {
   if (!pieChart) {
     pieChart = echarts.init(chart.value)
   }
+
+  const result = parseData(props.data[1], props.data[0])
 
   const option = {
     tooltip: {
@@ -94,6 +94,10 @@ const updateChart = throttle(() => {
   pieChart.setOption(option)
   pieChart.resize()
 }, 1000)
+
+onUpdated(() => {
+  updateChart()
+})
 
 onMounted(() => {
   updateChart()

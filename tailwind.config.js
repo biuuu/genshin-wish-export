@@ -5,6 +5,9 @@ module.exports = {
     extend: {
       minWidth: {
         '10': '60px'
+      },
+      screens: {
+        'cat': '1120px'
       }
     },
   },

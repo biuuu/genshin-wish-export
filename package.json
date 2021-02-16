@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
