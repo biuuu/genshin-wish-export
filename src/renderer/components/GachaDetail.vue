@@ -11,11 +11,11 @@
     <span v-if="type !== '100'">已累计<span class="mx-1 text-green-600">{{detail.countMio}}</span>抽未出5星</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span :title="`角色：${detail.char5.size}\n武器：${detail.weapon5.size}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
+    <span :title="`角色：${detail.count5c}\n武器：${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
       <span class="min-w-10 inline-block">5星：{{detail.count5}}</span>
       [{{percent(detail.count5, detail.total)}}]
     </span>
-    <br><span :title="`角色：${detail.char4.size}\n武器：${detail.weapon4.size}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
+    <br><span :title="`角色：${detail.count4c}\n武器：${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
       <span class="min-w-10 inline-block">4星：{{detail.count4}}</span>
       [{{percent(detail.count4, detail.total)}}]
     </span>
