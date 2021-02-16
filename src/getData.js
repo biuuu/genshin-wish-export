@@ -16,6 +16,12 @@ const sendMsg = (text) => {
   }
 }
 
+const sleep = (sec = 1) => {
+  return new Promise(rev => {
+    setTimeout(rev, sec * 1000)
+  })
+}
+
 const detectGameLocale = async (userPath) => {
   let name = '原神'
   try {
@@ -72,26 +78,30 @@ const readData = async () => {
 }
 
 const mergeData = (local, origin) => {
-  if (local) {
+  if (local && local.result) {
+    const localData = local.result
+    const localUid = local.uid
+    const originData = origin.result
+    const originUid = origin.uid
     const localSet = new Set()
-    for (let [key, value] of local) {
+    for (let [key, value] of localData) {
       for (let item of value) {
-        localSet.add(`${key}-${item.join('-')}`)
+        localSet.add(`${key}-${item[0]}-${localUid || '0' }`)
       }
     }
-    for (let [key, value] of origin) {
+    for (let [key, value] of originData) {
       for (let item of value) {
-        if (!localSet.has(`${key}-${item.join('-')}`)) {
-          if (!local.has(key)) {
-            local.set(key, [])
+        if (!localSet.has(`${key}-${item[0]}-${localUid ? originUid : '0' }`)) {
+          if (!localData.has(key)) {
+            localData.set(key, [])
           }
-          local.get(key).push(item)
+          localData.get(key).push(item)
         }
       }
     }
-    return local
+    return localData
   }
-  return origin
+  return origin.result
 }
 
 const readLog = async () => {
@@ -112,11 +122,23 @@ const readLog = async () => {
   }
 }
 
-const getGachaLog = async (key, page) => {
-  const res = await axios.get(
-    GachaLogBaseUrl + `&gacha_type=${key}` + `&page=${page}` + `&size=${20}`
-  )
-  return res.data.data.list
+const getGachaLog = async (key, page, name, retryCount = 5) => {
+  try {
+    const res = await axios.get(
+      GachaLogBaseUrl + `&gacha_type=${key}` + `&page=${page}` + `&size=${20}`
+    )
+    return res.data.data.list
+  } catch (e) {
+    if (retryCount) {
+      sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      await sleep(5)
+      retryCount--
+      return await getGachaLog(key, page, name, retryCount)
+    } else {
+      sendMsg(`获取${name}第${page}页失败，已超出重试次数`)
+      throw e
+    }
+  }
 }
 
 const getGachaLogs = async (name, key) => {
@@ -124,8 +146,12 @@ const getGachaLogs = async (name, key) => {
   let data = []
   let res = []
   do {
+    if (page % 10 === 0) {
+      sendMsg(`正在获取${name}第${page}页，每10页休息3秒……`)
+      await sleep(3)
+    }
     sendMsg(`正在获取${name}第${page}页`)
-    res = await getGachaLog(key, page)
+    res = await getGachaLog(key, page, name)
     if (!uid && res.length) {
       uid = res[0].uid
     }
@@ -163,9 +189,9 @@ const getData = async () => {
     typeMap.set(type.key, type.name)
     result.set(type.key, logs)
   }
-  const data = { result, time: Date.now(), typeMap }
+  const data = { result, time: Date.now(), typeMap, uid }
   const localData = await readData()
-  const mergedResult = mergeData(localData ? localData.result : false, result)
+  const mergedResult = mergeData(localData, data)
   data.result = mergedResult
   saveData(data)
   return data
@@ -176,7 +202,7 @@ ipcMain.handle('FETCH_DATA', async () => {
     const data = await getData()
     return data
   } catch (e) {
-
+    console.error(e)
   }
   return false
 })
