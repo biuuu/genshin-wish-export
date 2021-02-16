@@ -67,10 +67,16 @@ const colors = [
 const colorList = computed(() => {
   let colorsTemp = [...colors]
   const result = []
+  const map = new Map()
   props.data[1].ssrPos.forEach(item => {
+    if (map.has(item[0])) {
+      return result.push(map.get(item[0]))
+    }
     const num = Math.abs(hashCode(`${Math.floor(Date.now() / (1000 * 60 * 10))}-${item[0]}`))
     if (!colorsTemp.length) colorsTemp = [...colors]
-    result.push(colorsTemp.splice(num % colorsTemp.length, 1)[0])
+    const color = colorsTemp.splice(num % colorsTemp.length, 1)[0]
+    map.set(item[0], color)
+    result.push(color)
   })
   return result
 })
