@@ -38,12 +38,21 @@ const detectGameLocale = async (userPath) => {
 const saveData = async (data) => {
   const obj = Object.assign({}, data)
   const userDataPath = app.getPath('userData')
+  const appPath = app.getAppPath()
   obj.result = [...obj.result]
   obj.typeMap = [...obj.typeMap]
-  if (uid) {
-    await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, obj)
+  try {
+    if (uid) {
+      await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, obj)
+      await fs.outputJSON(`${appPath}/userData/gacha-list-${uid}.json`, obj)
+    }
+    await fs.outputJSON(`${userDataPath}/gacha-list.json`, obj)
+    await fs.outputJSON(`${appPath}/userData/gacha-list.json`, obj)
+  } catch (e) {
+    sendMsg('保存本地数据失败')
+    console.error(e)
+    await sleep(3)
   }
-  await fs.outputJSON(`${userDataPath}/gacha-list.json`, obj)
 }
 
 const itemTypeFixMap = new Map([
@@ -62,8 +71,15 @@ const defaultTypeMap = new Map([
 
 const readData = async () => {
   const userDataPath = app.getPath('userData')
+  const appPath = app.getAppPath()
   try {
-    const obj = await fs.readJSON(`${userDataPath}/gacha-list${uid ? `-${uid}` : ''}.json`)
+    let obj = null
+    try {
+      obj = await fs.readJSON(`${appPath}/userData/gacha-list${uid ? `-${uid}` : ''}.json`)
+    } catch (e) {}
+    if (!obj) {
+      obj = await fs.readJSON(`${userDataPath}/gacha-list${uid ? `-${uid}` : ''}.json`)
+    }
     obj.result.forEach(item => {
       if (itemTypeFixMap.has(item[0])) {
         item[0] = itemTypeFixMap.get(item[0])
@@ -193,7 +209,7 @@ const getData = async () => {
   const localData = await readData()
   const mergedResult = mergeData(localData, data)
   data.result = mergedResult
-  saveData(data)
+  await saveData(data)
   return data
 }
 
