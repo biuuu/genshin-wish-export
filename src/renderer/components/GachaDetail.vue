@@ -5,7 +5,7 @@
     <span class="mx-2" :title="new Date(detail.date[1]).toLocaleString()">{{new Date(detail.date[1]).toLocaleDateString()}}</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span class="mr-1">一共 
+    <span class="mr-1">一共
       <span class="text-blue-600">{{detail.total}}</span> 抽
     </span>
     <span v-if="type !== '100'">已累计<span class="mx-1 text-green-600">{{detail.countMio}}</span>抽未出5星</span>
@@ -24,10 +24,12 @@
       [{{percent(detail.count3, detail.total)}}]
     </span>
   </p>
-  
+
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">
     5星历史记录：
-    <span :title="item[2]" class="cursor-help mr-1 text-yellow-500" :style="`color:${randomColor()}`" v-for="(item) of detail.ssrPos" :key="item">
+    <span :title="item[2]" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
+      v-for="(item, index) of detail.ssrPos" :key="item"
+    >
       {{item[0]}}[{{item[1]}}]
     </span>
   </p>
@@ -58,18 +60,23 @@ const percent = (num, total) => {
 }
 
 const colors = [
-  '#5470c6',
-  '#91cc75',
-  '#fac858',
-  '#ee6666',
-  '#73c0de',
-  '#3ba272',
-  '#fc8452',
-  '#9a60b4',
-  '#ea7ccc'
+  '#5470c6', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#2ab7ca',
+  '#005b96', '#ff8b94', '#72a007','#b60d1b', '#16570d'
 ]
 
-const randomColor = () => {
-  return colors[Math.floor(Math.random() * colors.length)]
+const colorList = computed(() => {
+  let colorsTemp = [...colors]
+  const result = []
+  props.data[1].ssrPos.forEach(item => {
+    const num = Math.abs(hashCode(`${Math.floor(Date.now() / (1000 * 60 * 10))}-${item[0]}`))
+    if (!colorsTemp.length) colorsTemp = [...colors]
+    result.push(colorsTemp.splice(num % colorsTemp.length, 1)[0])
+  })
+  return result
+})
+
+function hashCode(str) {
+  return Array.from(str)
+    .reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0)
 }
 </script>
