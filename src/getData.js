@@ -4,6 +4,8 @@ const { app, ipcMain } = require('electron')
 const axios = require('axios')
 const main =  require('./main')
 
+const order = ['301', '302', '200', '100']
+
 let GachaTypesUrl
 let GachaLogBaseUrl
 let uid = 0
@@ -28,18 +30,40 @@ const detectGameLocale = async (userPath) => {
 }
 
 const saveData = async (data) => {
+  const obj = Object.assign({}, data)
   const userDataPath = app.getPath('userData')
-  data.result = [...data.result]
+  obj.result = [...obj.result]
+  obj.typeMap = [...obj.typeMap]
   if (uid) {
-    await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, data)
+    await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, obj)
   }
-  await fs.outputJSON(`${userDataPath}/gacha-list.json`, data)
+  await fs.outputJSON(`${userDataPath}/gacha-list.json`, obj)
 }
+
+const itemTypeFixMap = new Map([
+  ['角色活动祈愿', '301'],
+  ['武器活动祈愿', '302'],
+  ['常驻祈愿', '200'],
+  ['新手祈愿', '100']
+])
+
+const defaultTypeMap = new Map([
+  ['301', '角色活动祈愿'],
+  ['302', '武器活动祈愿'],
+  ['200', '常驻祈愿'],
+  ['100', '新手祈愿']
+])
 
 const readData = async () => {
   const userDataPath = app.getPath('userData')
   try {
     const obj = await fs.readJSON(`${userDataPath}/gacha-list${uid ? `-${uid}` : ''}.json`)
+    obj.result.forEach(item => {
+      if (itemTypeFixMap.has(item[0])) {
+        item[0] = itemTypeFixMap.get(item[0])
+      }
+    })
+    obj.typeMap = obj.typeMap ? new Map(obj.typeMap) : defaultTypeMap
     obj.result = new Map(obj.result)
     return obj
   } catch (e) {
@@ -111,9 +135,9 @@ const getGachaLogs = async (name, key) => {
   return data
 }
 
-const order = ['角色活动祈愿', '武器活动祈愿', '常驻祈愿', '新手祈愿']
 const getData = async () => {
   const result = new Map()
+  const typeMap = new Map()
   const queryString = await readLog()
   if (!queryString) {
     return false
@@ -123,8 +147,8 @@ const getData = async () => {
   sendMsg('正在获取抽卡活动类型')
   const gachaTypes = (await axios.get(GachaTypesUrl)).data.data.gacha_type_list
   const orderedGachaTypes = []
-  order.forEach(name => {
-    const index = gachaTypes.findIndex(item => item.name === name)
+  order.forEach(key => {
+    const index = gachaTypes.findIndex(item => item.key === key)
     if (index !== -1)  {
       orderedGachaTypes.push(gachaTypes.splice(index, 1)[0])
     }
@@ -136,9 +160,10 @@ const getData = async () => {
       return [item.time, item.name, item.item_type, parseInt(item.rank_type)]
     })
     logs.reverse()
-    result.set(type.name, logs)
+    typeMap.set(type.key, type.name)
+    result.set(type.key, logs)
   }
-  const data = { result, time: Date.now() }
+  const data = { result, time: Date.now(), typeMap }
   const localData = await readData()
   const mergedResult = mergeData(localData ? localData.result : false, result)
   data.result = mergedResult

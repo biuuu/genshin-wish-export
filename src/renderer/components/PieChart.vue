@@ -3,11 +3,12 @@
 </template>
 
 <script setup>
-import { defineProps, reactive, ref, onMounted } from 'vue'
+import { defineProps, reactive, computed, ref, onMounted } from 'vue'
 import * as echarts from '../../module/echarts.esm.min.js'
 
 const props = defineProps({
-  data: Object
+  data: Object,
+  typeMap: Map
 })
 
 const chart = ref(null)
@@ -28,21 +29,21 @@ const colors = [
   '#73c0de'
 ]
 
-const parseData = (data, name) => {
+const parseData = (detail, type) => {
   const result = []
   const color = []
   const selected = {
     '3星武器': false
   }
   keys.forEach((key, index) => {
-    if (!data[key[1]]) return
+    if (!detail[key[1]]) return
     result.push({
-      value: data[key[1]],
+      value: detail[key[1]],
       name: key[0]
     })
     color.push(colors[index])
   })
-  if (name === '新手祈愿' || result.findIndex(item => item.name.includes('5')) === -1) {
+  if (type === '100' || result.findIndex(item => item.name.includes('5')) === -1) {
     selected['3星武器'] = true
   }
   return [result, color, selected]
@@ -70,7 +71,7 @@ onMounted(() => {
     color: result[1],
     series: [
       {
-        name: props.data[0],
+        name: props.typeMap.get(props.data[0]),
         type: 'pie',
         top: '20%',
         radius: ['0%', '68%'],

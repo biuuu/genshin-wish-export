@@ -4,9 +4,9 @@
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
   <div v-if="detail" class="flex gap-4 flex-wrap justify-between">
     <div class="flex-none mb-4 w-64" v-for="(item, i) of detail" :key="i">
-      <p class="text-center text-gray-600 my-2">{{item[0]}}</p>
-      <pie-chart :data="item"></pie-chart>
-      <gacha-detail :data="item[1]" :name="item[0]"></gacha-detail>
+      <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
+      <pie-chart :data="item" :typeMap="typeMap"></pie-chart>
+      <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
   </div>
 </template>
@@ -50,6 +50,8 @@ const detail = computed(() => {
     return gachaDetail(state.data.result)
   }
 })
+
+const typeMap = computed(() => state.data.typeMap)
 
 const fetchData = async () => {
   state.status = 'loading'
