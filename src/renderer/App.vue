@@ -2,12 +2,13 @@
   <el-button class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
   <el-button @click="saveExcel" class="focus:outline-none" :disabled="!state.data" size="small" type="success" plain>导出Excel</el-button>
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
-  <div v-if="detail" class="flex gap-4 flex-wrap justify-between">
-    <div class="item flex-grow flex-shrink-0 mb-4 w-64" v-for="(item, i) of detail" :key="i">
+  <div v-if="detail" class="flex gap-4 flex-wrap justify-between cont">
+    <div class="flex-grow flex-shrink-0 mb-4 w-64" v-for="(item, i) of detail" :key="i">
       <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
       <pie-chart :data="item" :typeMap="typeMap"></pie-chart>
       <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
+    <i class="flex-grow flex-shrink-0 mb-4 w-64 xl:hidden" v-for="i in 2" :key="i"></i>
   </div>
 </template>
 

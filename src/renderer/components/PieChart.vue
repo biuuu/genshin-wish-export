@@ -59,7 +59,7 @@ const updateChart = throttle(() => {
   if (!pieChart) {
     pieChart = echarts.init(chart.value)
   }
-  console.log(123)
+
   const option = {
     tooltip: {
       trigger: 'item',
