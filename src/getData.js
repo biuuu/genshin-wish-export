@@ -163,8 +163,8 @@ const getGachaLogs = async (name, key) => {
   let res = []
   do {
     if (page % 10 === 0) {
-      sendMsg(`正在获取${name}第${page}页，每10页休息3秒……`)
-      await sleep(3)
+      sendMsg(`正在获取${name}第${page}页，每10页休息1秒……`)
+      await sleep(1)
     }
     sendMsg(`正在获取${name}第${page}页`)
     res = await getGachaLog(key, page, name)
