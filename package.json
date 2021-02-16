@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.0.5",
+  "version": "0.0.6u",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "element-plus": "^1.0.2-beta.32",
     "fs-extra": "^9.1.0",
+    "lodash-es": "^4.17.20",
     "vue": "^3.0.5"
   },
   "devDependencies": {
@@ -37,7 +38,7 @@
         "ignore": [
           "src/(renderer)",
           "(\\.vscode)",
-          "node_modules/(\\.vite|@.+|element-plus|vue)"
+          "node_modules/(\\.vite|@.+|element-plus|vue|lodash)"
         ],
         "icon": "src/assets/fish.ico",
         "name": "原神抽卡数据导出"

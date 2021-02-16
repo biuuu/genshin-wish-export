@@ -1,10 +1,13 @@
 <template>
-  <div ref="chart" class="mx-auto h-56 w-64 mb-2"></div>
+  <div class="chart mb-2 relative h-48 lg:h-56 xl:h-64 2xl:h-72">
+    <div ref="chart" class="absolute inset-0"></div>
+  </div>
 </template>
 
 <script setup>
 import { defineProps, reactive, computed, ref, onMounted } from 'vue'
 import * as echarts from '../../module/echarts.esm.min.js'
+import throttle from 'lodash-es/throttle'
 
 const props = defineProps({
   data: Object,
@@ -51,8 +54,12 @@ const parseData = (detail, type) => {
 
 const result = parseData(props.data[1], props.data[0])
 
-onMounted(() => {
-  const myChart = echarts.init(chart.value)
+let pieChart = null
+const updateChart = throttle(() => {
+  if (!pieChart) {
+    pieChart = echarts.init(chart.value)
+  }
+  console.log(123)
   const option = {
     tooltip: {
       trigger: 'item',
@@ -73,8 +80,8 @@ onMounted(() => {
       {
         name: props.typeMap.get(props.data[0]),
         type: 'pie',
-        top: '20%',
-        radius: ['0%', '68%'],
+        top: 50,
+        radius: ['0%', '90%'],
         avoidLabelOverlap: false,
         labelLine: {
           length: 0
@@ -84,8 +91,13 @@ onMounted(() => {
     ]
   }
 
-  myChart.setOption(option)
+  pieChart.setOption(option)
+  pieChart.resize()
+}, 1000)
+
+onMounted(() => {
+  updateChart()
 })
 
-const state = reactive({ count: 0 })
+window.addEventListener('resize', updateChart)
 </script>
