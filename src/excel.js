@@ -32,7 +32,8 @@ const start = async () => {
   // https://github.com/sunfkny/genshin-gacha-export-js/blob/main/index.js
   const workbook = new ExcelJS.Workbook()
   for (let [key, value] of data.result) {
-    const sheet = workbook.addWorksheet(key, {views: [{state: 'frozen', ySplit: 1}]})
+    const name = data.typeMap.get(key)
+    const sheet = workbook.addWorksheet(name, {views: [{state: 'frozen', ySplit: 1}]})
     sheet.columns = [
       { header: "时间", key: "time", width: 24 },
       { header: "名称", key: "name", width: 14 },
@@ -73,7 +74,7 @@ const start = async () => {
         color: { argb: "ff757575" },
         bold : true
       }
-      
+
     })
     // set xlsx cell style
     logs.forEach((v, i) => {
