@@ -218,6 +218,10 @@ ipcMain.handle('FETCH_DATA', async () => {
     const data = await getData()
     return data
   } catch (e) {
+    const win = main.getWin()
+    if (win) {
+      win.webContents.send('ERROR', e)
+    }
     console.error(e)
   }
   return false
