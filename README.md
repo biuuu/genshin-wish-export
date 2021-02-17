@@ -10,6 +10,7 @@ Electron + Vite + Vue3 + Tailwindcss
 - [ ] 版本更新提示
 - [ ] 道具的详细数量展示
 - [ ] 导出、导入本地数据
+- [ ] 记录使用的语言版本，更新数据时固定使用同一种语言
 
 ## Devlopment
 
