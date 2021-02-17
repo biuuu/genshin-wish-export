@@ -2,6 +2,15 @@
 
 Electron + Vite + Vue3 + Tailwindcss
 
+## TODO
+
+- [ ] 可以选择国服或海外服
+- [ ] 多用户切换
+- [ ] 兼容其它语言的道具类型 -“武器”、“角色”
+- [ ] 版本更新提示
+- [ ] 道具的详细数量展示
+- [ ] 导出、导入本地数据
+
 ## Devlopment
 
 ```
@@ -18,7 +27,6 @@ yarn start
 yarn build
 yarn make
 ```
-
 
 ## License
 
