@@ -16,13 +16,11 @@
     "element-plus": "^1.0.2-beta.32",
     "fs-extra": "^9.1.0",
     "lodash-es": "^4.17.20",
+    "proxy-chain": "^0.4.7",
     "vue": "^3.0.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
