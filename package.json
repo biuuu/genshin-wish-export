@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.0.7",
+  "version": "0.0.8-beta",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -34,7 +34,8 @@
     "forge": {
       "packagerConfig": {
         "ignore": [
-          "src/(renderer)",
+          "src/(renderer|userData)",
+          "userData",
           "(\\.vscode)",
           "node_modules/(\\.vite|@.+|element-plus|vue|lodash)"
         ],
