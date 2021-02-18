@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.0.7",
+  "version": "0.0.8-beta",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -12,14 +12,13 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "electron-squirrel-startup": "^1.0.0",
-    "element-plus": "^1.0.2-beta.32",
-    "fs-extra": "^9.1.0",
-    "lodash-es": "^4.17.20",
-    "proxy-chain": "^0.4.7",
-    "vue": "^3.0.5"
+    "fs-extra": "^9.1.0"
   },
   "devDependencies": {
+    "vue": "^3.0.5",
+    "lodash-es": "^4.17.20",
+    "element-plus": "^1.0.2-beta.32",
+    "electron-squirrel-startup": "^1.0.0",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@vitejs/plugin-vue": "^1.1.4",
@@ -35,8 +34,9 @@
       "packagerConfig": {
         "ignore": [
           "src/(renderer)",
+          "userData",
           "(\\.vscode)",
-          "node_modules/(\\.vite|@.+|element-plus|vue|lodash)"
+          "node_modules/(@.+|\\..+)"
         ],
         "name": "Genshin Gacha Export"
       },
