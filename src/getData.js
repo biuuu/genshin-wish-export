@@ -203,7 +203,12 @@ const getData = async () => {
   GachaTypesUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
   GachaLogBaseUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
   sendMsg('正在获取抽卡活动类型')
-  const gachaTypes = (await request(GachaTypesUrl)).data.gacha_type_list
+  const res = await request(GachaTypesUrl)
+  if (res.retcode !== 0) {
+    sendMsg(res.message)
+    return false
+  }
+  const gachaTypes = res.data.gacha_type_list
   const orderedGachaTypes = []
   order.forEach(key => {
     const index = gachaTypes.findIndex(item => item.key === key)
