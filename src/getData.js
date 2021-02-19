@@ -1,10 +1,8 @@
 const fs = require('fs-extra')
 const path = require('path')
-const https = require('https')
 const { app, ipcMain } = require('electron')
-const axios = require('axios')
+const fetch = require('electron-fetch').default
 const main =  require('./main')
-const rootCas = require('ssl-root-cas').create()
 
 const order = ['301', '302', '200', '100']
 
@@ -18,12 +16,10 @@ const sendMsg = (text) => {
   }
 }
 
-rootCas.push(fs.readFileSync(path.resolve(__dirname, 'cas/intermediate.pem'), 'utf8'))
-const httpsAgent = new https.Agent({ca: rootCas});
 const request = async (url) => {
-  return (await axios.get(url, { httpsAgent })).data
+  const res = await fetch(url)
+  return await res.json()
 }
-
 const sleep = (sec = 1) => {
   return new Promise(rev => {
     setTimeout(rev, sec * 1000)
