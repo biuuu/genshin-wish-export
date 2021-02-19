@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const { app, ipcMain } = require('electron')
-const axios = require('axios')
+const fetch = require('electron-fetch').default
 const main =  require('./main')
 
 const order = ['301', '302', '200', '100']
@@ -16,6 +16,10 @@ const sendMsg = (text) => {
   }
 }
 
+const request = async (url) => {
+  const res = await fetch(url)
+  return await res.json()
+}
 const sleep = (sec = 1) => {
   return new Promise(rev => {
     setTimeout(rev, sec * 1000)
@@ -140,10 +144,10 @@ const readLog = async () => {
 
 const getGachaLog = async (key, page, name, retryCount = 5) => {
   try {
-    const res = await axios.get(
+    const res = await request(
       GachaLogBaseUrl + `&gacha_type=${key}` + `&page=${page}` + `&size=${20}`
     )
-    return res.data.data.list
+    return res.data.list
   } catch (e) {
     if (retryCount) {
       sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
@@ -187,7 +191,7 @@ const getData = async () => {
   GachaTypesUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
   GachaLogBaseUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
   sendMsg('正在获取抽卡活动类型')
-  const gachaTypes = (await axios.get(GachaTypesUrl)).data.data.gacha_type_list
+  const gachaTypes = (await request(GachaTypesUrl)).data.gacha_type_list
   const orderedGachaTypes = []
   order.forEach(key => {
     const index = gachaTypes.findIndex(item => item.key === key)
