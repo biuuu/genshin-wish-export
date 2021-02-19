@@ -28,16 +28,16 @@ const sleep = (sec = 1) => {
 }
 
 const detectGameLocale = async (userPath) => {
-  let name = '原神'
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
-    name = 'Genshin Impact'
-  } catch (e) {}
+  const result = []
   try {
     await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
-    name = '原神'
+    result.push('原神')
   } catch (e) {}
-  return name
+  try {
+    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
+    result.push('Genshin Impact')
+  } catch (e) {}
+  return result
 }
 
 const saveData = async (data) => {
@@ -128,15 +128,26 @@ const mergeData = (local, origin) => {
 const readLog = async () => {
   try {
     const userPath = app.getPath('home')
-    const gameName = await detectGameLocale(userPath)
-    const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${gameName}/output_log.txt`, 'utf8')
-    const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
-    if (arr && arr.length) {
-      return arr[arr.length - 1].match(/\?([^?]+?)(#.+)?$/)[1]
-    } else {
-      sendMsg('未找到URL')
+    const gameNames = await detectGameLocale(userPath)
+    if (!gameNames.length) {
+      sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
       return false
     }
+    const promises = gameNames.map(async name => {
+      const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
+      const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
+      if (arr && arr.length) {
+        return arr[arr.length - 1].match(/\?([^?]+?)(#.+)?$/)[1]
+      }
+    })
+    const result = await Promise.all(promises)
+    for (let queryString of result) {
+      if (queryString) {
+        return queryString
+      }
+    }
+    sendMsg('未找到URL')
+    return false
   } catch (e) {
     sendMsg('读取日志失败')
     return false
