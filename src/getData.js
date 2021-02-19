@@ -5,6 +5,7 @@ const fetch = require('electron-fetch').default
 const main =  require('./main')
 
 const order = ['301', '302', '200', '100']
+const isDev = !app.isPackaged
 
 let GachaTypesUrl
 let GachaLogBaseUrl
@@ -42,7 +43,7 @@ const detectGameLocale = async (userPath) => {
 const saveData = async (data) => {
   const obj = Object.assign({}, data)
   const userDataPath = app.getPath('userData')
-  const appPath = app.getAppPath()
+  const appPath = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
   obj.result = [...obj.result]
   obj.typeMap = [...obj.typeMap]
   try {
