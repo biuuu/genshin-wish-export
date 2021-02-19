@@ -21,6 +21,11 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@coolaj86/urequest@^1.3.6":
+  version "1.3.7"
+  resolved "https://registry.npm.taobao.org/@coolaj86/urequest/download/@coolaj86/urequest-1.3.7.tgz#66a1d66378dd6534e9c8e68948bf09acf32bab77"
+  integrity sha1-ZqHWY3jdZTTpyOaJSL8JrPMrq3c=
+
 "@electron-forge/async-ora@6.0.0-beta.54":
   version "6.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@electron-forge/async-ora/-/async-ora-6.0.0-beta.54.tgz#2bb9bec05486106b5fd6c45b9f392f1b4b5841a3"
@@ -3442,6 +3447,13 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
+
+ssl-root-cas@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.npm.taobao.org/ssl-root-cas/download/ssl-root-cas-1.3.1.tgz#6b0566f7de4f0e6be99fbd93dbfbe5c7ab33b949"
+  integrity sha1-awVm995PDmvpn72T2/vlx6szuUk=
+  dependencies:
+    "@coolaj86/urequest" "^1.3.6"
 
 string-hash@^1.1.1:
   version "1.1.3"

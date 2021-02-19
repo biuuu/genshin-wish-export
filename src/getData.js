@@ -1,8 +1,10 @@
 const fs = require('fs-extra')
 const path = require('path')
+const https = require('https')
 const { app, ipcMain } = require('electron')
 const axios = require('axios')
 const main =  require('./main')
+const rootCas = require('ssl-root-cas').create()
 
 const order = ['301', '302', '200', '100']
 
@@ -14,6 +16,12 @@ const sendMsg = (text) => {
   if (win) {
     win.webContents.send('LOAD_DATA_STATUS', text)
   }
+}
+
+rootCas.addFile(path.resolve(__dirname, 'cas/intermediate.pem'))
+const httpsAgent = new https.Agent({ca: rootCas});
+const request = async (url) => {
+  return (await axios.get(url, { httpsAgent })).data
 }
 
 const sleep = (sec = 1) => {
@@ -140,10 +148,10 @@ const readLog = async () => {
 
 const getGachaLog = async (key, page, name, retryCount = 5) => {
   try {
-    const res = await axios.get(
+    const res = await request(
       GachaLogBaseUrl + `&gacha_type=${key}` + `&page=${page}` + `&size=${20}`
     )
-    return res.data.data.list
+    return res.data.list
   } catch (e) {
     if (retryCount) {
       sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
@@ -187,7 +195,7 @@ const getData = async () => {
   GachaTypesUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
   GachaLogBaseUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
   sendMsg('正在获取抽卡活动类型')
-  const gachaTypes = (await axios.get(GachaTypesUrl)).data.data.gacha_type_list
+  const gachaTypes = (await request(GachaTypesUrl)).data.gacha_type_list
   const orderedGachaTypes = []
   order.forEach(key => {
     const index = gachaTypes.findIndex(item => item.key === key)
