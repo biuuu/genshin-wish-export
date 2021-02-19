@@ -18,7 +18,7 @@ const sendMsg = (text) => {
   }
 }
 
-rootCas.addFile(path.resolve(__dirname, 'cas/intermediate.pem'))
+rootCas.push(fs.readFileSync(path.resolve(__dirname, 'cas/intermediate.pem'), 'utf8'))
 const httpsAgent = new https.Agent({ca: rootCas});
 const request = async (url) => {
   return (await axios.get(url, { httpsAgent })).data
