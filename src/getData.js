@@ -1,5 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
+const { URL } = require('url')
 const { app, ipcMain } = require('electron')
 const fetch = require('electron-fetch').default
 const main =  require('./main')
@@ -10,6 +11,8 @@ const isDev = !app.isPackaged
 let GachaTypesUrl
 let GachaLogBaseUrl
 let uid = 0
+let lang = ''
+let localData = null
 const sendMsg = (text) => {
   const win = main.getWin()
   if (win) {
@@ -92,6 +95,7 @@ const readData = async () => {
     })
     obj.typeMap = obj.typeMap ? new Map(obj.typeMap) : defaultTypeMap
     obj.result = new Map(obj.result)
+    localData = obj
     return obj
   } catch (e) {
     return false
@@ -100,27 +104,27 @@ const readData = async () => {
 
 const mergeData = (local, origin) => {
   if (local && local.result) {
-    const localData = local.result
+    const localResult = local.result
     const localUid = local.uid
-    const originData = origin.result
+    const originResult = origin.result
     const originUid = origin.uid
     const localSet = new Set()
-    for (let [key, value] of localData) {
+    for (let [key, value] of localResult) {
       for (let item of value) {
         localSet.add(`${key}-${item[0]}-${localUid || '0' }`)
       }
     }
-    for (let [key, value] of originData) {
+    for (let [key, value] of originResult) {
       for (let item of value) {
         if (!localSet.has(`${key}-${item[0]}-${localUid ? originUid : '0' }`)) {
-          if (!localData.has(key)) {
-            localData.set(key, [])
+          if (!localResult.has(key)) {
+            localResult.set(key, [])
           }
-          localData.get(key).push(item)
+          localResult.get(key).push(item)
         }
       }
     }
-    return localData
+    return localResult
   }
   return origin.result
 }
@@ -137,13 +141,13 @@ const readLog = async () => {
       const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
       const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
       if (arr && arr.length) {
-        return arr[arr.length - 1].match(/\?([^?]+?)(#.+)?$/)[1]
+        return arr[arr.length - 1].replace('OnGetWebViewPageFinish:', '')
       }
     })
     const result = await Promise.all(promises)
-    for (let queryString of result) {
-      if (queryString) {
-        return queryString
+    for (let url of result) {
+      if (url) {
+        return url
       }
     }
     sendMsg('未找到URL')
@@ -196,10 +200,18 @@ const getGachaLogs = async (name, key) => {
 const getData = async () => {
   const result = new Map()
   const typeMap = new Map()
-  const queryString = await readLog()
-  if (!queryString) {
+  const url = await readLog()
+  if (!url) return false
+  const { searchParams } = new URL(url)
+  if (!searchParams.get('authkey')) {
+    sendMsg('没能从URL中获取到authkey')
     return false
   }
+  if (localData && localData.lang) {
+    searchParams.set('lang', locaoData.lang)
+  }
+  lang = searchParams.get('lang')
+  const queryString = searchParams.toString()
   GachaTypesUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
   GachaLogBaseUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
   sendMsg('正在获取抽卡活动类型')
@@ -226,8 +238,8 @@ const getData = async () => {
     typeMap.set(type.key, type.name)
     result.set(type.key, logs)
   }
-  const data = { result, time: Date.now(), typeMap, uid }
-  const localData = await readData()
+  const data = { result, time: Date.now(), typeMap, uid, lang }
+  await readData()
   const mergedResult = mergeData(localData, data)
   data.result = mergedResult
   await saveData(data)
