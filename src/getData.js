@@ -2,65 +2,22 @@ const fs = require('fs-extra')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const fetch = require('electron-fetch').default
-const main =  require('./main')
+const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON } = require('./utils')
 
 const order = ['301', '302', '200', '100']
-const isDev = !app.isPackaged
 
 let GachaTypesUrl
 let GachaLogBaseUrl
 let uid = 0
 let lang = ''
 let localData = null
-const sendMsg = (text) => {
-  const win = main.getWin()
-  if (win) {
-    win.webContents.send('LOAD_DATA_STATUS', text)
-  }
-}
-
-const request = async (url) => {
-  const res = await fetch(url)
-  return await res.json()
-}
-const sleep = (sec = 1) => {
-  return new Promise(rev => {
-    setTimeout(rev, sec * 1000)
-  })
-}
-
-const detectGameLocale = async (userPath) => {
-  const result = []
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
-    result.push('原神')
-  } catch (e) {}
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
-    result.push('Genshin Impact')
-  } catch (e) {}
-  return result
-}
 
 const saveData = async (data) => {
   const obj = Object.assign({}, data)
-  const userDataPath = app.getPath('userData')
-  const appPath = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
   obj.result = [...obj.result]
   obj.typeMap = [...obj.typeMap]
-  try {
-    if (uid) {
-      await fs.outputJSON(`${userDataPath}/gacha-list-${uid}.json`, obj)
-      await fs.outputJSON(`${appPath}/userData/gacha-list-${uid}.json`, obj)
-    }
-    await fs.outputJSON(`${userDataPath}/gacha-list.json`, obj)
-    await fs.outputJSON(`${appPath}/userData/gacha-list.json`, obj)
-  } catch (e) {
-    sendMsg('保存本地数据失败')
-    console.error(e)
-    await sleep(3)
-  }
+  await saveJSON(`gacha-list-${uid}.json`, obj)
+  await saveJSON('gacha-list.json', obj)
 }
 
 const itemTypeFixMap = new Map([
@@ -78,16 +35,9 @@ const defaultTypeMap = new Map([
 ])
 
 const readData = async () => {
-  const userDataPath = app.getPath('userData')
-  const appPath = app.getAppPath()
   try {
-    let obj = null
-    try {
-      obj = await fs.readJSON(`${appPath}/userData/gacha-list${uid ? `-${uid}` : ''}.json`)
-    } catch (e) {}
-    if (!obj) {
-      obj = await fs.readJSON(`${userDataPath}/gacha-list${uid ? `-${uid}` : ''}.json`)
-    }
+    const obj = await readJSON(`gacha-list${uid ? `-${uid}` : ''}.json`)
+    if (!obj) return false
     obj.result.forEach(item => {
       if (itemTypeFixMap.has(item[0])) {
         item[0] = itemTypeFixMap.get(item[0])
@@ -208,7 +158,7 @@ const getData = async () => {
     return false
   }
   if (localData && localData.lang) {
-    searchParams.set('lang', locaoData.lang)
+    searchParams.set('lang', localData.lang)
   }
   lang = searchParams.get('lang')
   const queryString = searchParams.toString()
@@ -251,10 +201,7 @@ ipcMain.handle('FETCH_DATA', async () => {
     const data = await getData()
     return data
   } catch (e) {
-    const win = main.getWin()
-    if (win) {
-      win.webContents.send('ERROR', e)
-    }
+    sendMsg(e, 'ERROR')
     console.error(e)
   }
   return false
