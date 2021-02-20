@@ -47,7 +47,7 @@ const detectGameLocale = async (userPath) => {
 }
 
 const userDataPath = app.getPath('userData')
-const appPath = isDev ? path.resolve(__dirname, '..', 'userData') : path.resolve(app.getAppPath(), '..', '..')
+const appPath = isDev ? path.resolve(__dirname, '..', 'userData') : path.resolve(app.getAppPath(), '..', '..', 'userData')
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
