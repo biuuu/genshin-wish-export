@@ -52,29 +52,46 @@ const readData = async () => {
   }
 }
 
+const sortData = (data) => {
+  return data.map(item => {
+    const [time, name, type, rank] = item
+    return {
+      time, name, type, rank,
+      timestamp: new Date(time)
+    }
+  }).sort((a, b) => a.timestamp - b.timestamp)
+  .map(item => {
+    const { time, name, type, rank } = item
+    return [time, name, type, rank]
+  })
+}
+
+const mergeList = (a, b) => {
+  if (!a || !a.length) return b || []
+  if (!b || !b.length) return a
+  const minA = new Date(a[0][0]).getTime()
+  let pos = b.length
+  for (let i = 0; i < b.length; i++) {
+    const time = new Date(b[i][0]).getTime()
+    if (time >= minA) {
+      pos = i
+      break
+    }
+  }
+  return b.slice(0, pos).concat(a)
+}
+
 const mergeData = (local, origin) => {
   if (local && local.result) {
     const localResult = local.result
     const localUid = local.uid
-    const originResult = origin.result
     const originUid = origin.uid
-    const localSet = new Set()
-    for (let [key, value] of localResult) {
-      for (let item of value) {
-        localSet.add(`${key}-${item[0]}-${localUid || '0' }`)
-      }
+    if (localUid !== originUid) return origin.result
+    const originResult = new Map()
+    for (let [key, value] of origin.result) {
+      const newVal = mergeList(value, localResult.get(key))
+      originResult.set(key, newVal)
     }
-    for (let [key, value] of originResult) {
-      for (let item of value) {
-        if (!localSet.has(`${key}-${item[0]}-${localUid ? originUid : '0' }`)) {
-          if (!localResult.has(key)) {
-            localResult.set(key, [])
-          }
-          localResult.get(key).push(item)
-        }
-      }
-    }
-    return localResult
   }
   return origin.result
 }
