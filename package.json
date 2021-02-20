@@ -38,7 +38,8 @@
           "(\\.vscode)",
           "node_modules/(@.+|\\..+)"
         ],
-        "name": "Genshin Gacha Export"
+        "name": "Genshin Gacha Export",
+        "asar": true
       },
       "makers": [
         {
