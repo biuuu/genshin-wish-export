@@ -1,3 +1,5 @@
+import { isWeapon, isCharacter } from './utils'
+
 const itemCount = (map, name) => {
   if (!map.has(name)) {
     map.set(name, 1)
@@ -30,17 +32,17 @@ const gachaDetail = (data) => {
       if (rank === 3) {
         detail.count3++
         detail.countMio++
-        if (type === '武器') {
+        if (isWeapon(type)) {
           detail.count3w++
           itemCount(detail.weapon3, name)
         }
       } else if (rank === 4) {
         detail.count4++
         detail.countMio++
-        if (type === '武器') {
+        if (isWeapon(type)) {
           detail.count4w++
           itemCount(detail.weapon4, name)
-        } else if (type === '角色') {
+        } else if (isCharacter(type)) {
           detail.count4c++
           itemCount(detail.char4, name)
         }
@@ -49,10 +51,10 @@ const gachaDetail = (data) => {
         lastSSR = index + 1
         detail.count5++
         detail.countMio = 0
-        if (type === '武器') {
+        if (isWeapon(type)) {
           detail.count5w++
           itemCount(detail.weapon5, name)
-        } else if (type === '角色') {
+        } else if (isCharacter(type)) {
           detail.count5c++
           itemCount(detail.char5, name)
         }

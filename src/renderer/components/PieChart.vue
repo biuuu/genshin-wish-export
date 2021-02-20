@@ -63,7 +63,7 @@ const updateChart = throttle(() => {
   const option = {
     tooltip: {
       trigger: 'item',
-      formatter: '{a0}<br>{b0}: {c0}',
+      formatter: '{b0}: {c0}',
       padding: 4,
       textStyle: {
         fontSize: 12
