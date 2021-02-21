@@ -52,20 +52,6 @@ const readData = async () => {
   }
 }
 
-const sortData = (data) => {
-  return data.map(item => {
-    const [time, name, type, rank] = item
-    return {
-      time, name, type, rank,
-      timestamp: new Date(time)
-    }
-  }).sort((a, b) => a.timestamp - b.timestamp)
-  .map(item => {
-    const { time, name, type, rank } = item
-    return [time, name, type, rank]
-  })
-}
-
 const mergeList = (a, b) => {
   if (!a || !a.length) return b || []
   if (!b || !b.length) return a

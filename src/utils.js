@@ -33,6 +33,20 @@ const sleep = (sec = 1) => {
   })
 }
 
+const sortData = (data) => {
+  return data.map(item => {
+    const [time, name, type, rank] = item
+    return {
+      time, name, type, rank,
+      timestamp: new Date(time)
+    }
+  }).sort((a, b) => a.timestamp - b.timestamp)
+  .map(item => {
+    const { time, name, type, rank } = item
+    return [time, name, type, rank]
+  })
+}
+
 const detectGameLocale = async (userPath) => {
   const result = []
   try {
@@ -46,12 +60,8 @@ const detectGameLocale = async (userPath) => {
   return result
 }
 
-const userDataPath = app.getPath('userData')
 const appPath = isDev ? path.resolve(__dirname, '..', 'userData') : path.resolve(app.getAppPath(), '..', '..', 'userData')
 const saveJSON = async (name, data) => {
-  try {
-    await fs.outputJSON(path.join(userDataPath, name), data)
-  } catch (e) {}
   try {
     await fs.outputJSON(path.join(appPath, name), data)
   } catch (e) {
@@ -65,10 +75,6 @@ const readJSON = async (name) => {
   let data = null
   try {
     data = await fs.readJSON(path.join(appPath, name))
-  } catch (e) {}
-  if (data) return data
-  try {
-    data = await fs.readJSON(path.join(userDataPath, name))
   } catch (e) {}
   return data
 }
