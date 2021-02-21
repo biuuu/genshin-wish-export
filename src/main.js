@@ -4,23 +4,38 @@ require('./getData')
 require('./excel')
 
 const isDev = !app.isPackaged
+let win = null
 
 function createWindow () {
-  const win = initWindow()
+  win = initWindow()
   win.setMenuBarVisibility(false)
   isDev ? win.loadURL(`http://localhost:3000`) : win.loadFile('./dist/index.html')
 }
 
-app.whenReady().then(createWindow)
+const isFirstInstance = app.requestSingleInstanceLock()
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+if (!isFirstInstance) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
+    }
+  })
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+  app.whenReady().then(createWindow)
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    }
+  })
+}
+
