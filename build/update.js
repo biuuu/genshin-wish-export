@@ -19,6 +19,7 @@ const createZip = (filePath, name) => {
 }
 
 const start = async () => {
+  copyAppZip()
   const asarPath = './out/Genshin Gacha Export-win32-x64/resources/app.asar'
   const buffer = await fs.readFile(asarPath)
   const sha256 = hash(buffer)
@@ -35,6 +36,14 @@ const start = async () => {
     asarName: 'app.asar',
     hash: sha256
   })
+}
+
+const copyAppZip = () => {
+  try {
+    const dir = path.resolve('./out/make/zip/win32/x64/')
+    const filePath = path.resolve(dir, `Genshin Gacha Export-win32-x64-${version}.zip`)
+    fs.copySync(filePath, path.join(dir, 'app.zip'))
+  } catch (e) {}
 }
 
 start()
