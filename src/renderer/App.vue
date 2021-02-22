@@ -18,6 +18,7 @@ import { reactive, computed } from 'vue'
 import PieChart from './components/PieChart.vue'
 import GachaDetail from './components/GachaDetail.vue'
 import gachaDetail from './gachaDetail'
+import { version } from '../../package.json'
 
 const state = reactive({
   status: 'init',
@@ -86,4 +87,6 @@ ipcRenderer.on('LOAD_DATA_STATUS', (event, message) => {
 ipcRenderer.on('ERROR', (event, err) => {
   console.error(err)
 })
+
+document.title = `原神抽卡记录导出工具 - v${version}`
 </script>
