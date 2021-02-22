@@ -8,8 +8,7 @@
     "serve": "vite preview",
     "start": "electron-forge start",
     "package": "electron-forge package --platform=win32 --arch=x64",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "make": "electron-forge make --platform=win32 --arch=x64",
     "build-update": "node ./build/update.js"
   },
   "dependencies": {
