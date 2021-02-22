@@ -26,32 +26,32 @@ const updateInfo = {
 
 const update = async () => {
   // if (isDev) return
-  process.noAsar = true
-  const url = 'https://genshin-gacha-export.danmu9.com/update'
-  const res = await fetch(`${url}/manifest.json`)
-  const data = await res.json()
-  if (!data.active) return
-  if (semver.gt(data.version, version) && semver.gte(version, data.from)) {
-    await fs.emptyDir(updatePath)
-    const filePath = path.join(updatePath, data.name)
-    await download(`${url}/${data.name}`, filePath)
-    const buffer = await fs.readFile(filePath)
-    const sha256 = hash(buffer)
-    if (sha256 !== data.hash) return
-    await extract(filePath, { dir: updatePath })
-    updateInfo.exist = true
-    updateInfo.dirname = updatePath
-    updateInfo.filename = data.asarName
+  try {
+    const url = 'https://genshin-gacha-export.danmu9.com/update'
+    const res = await fetch(`${url}/manifest.json`)
+    const data = await res.json()
+    if (!data.active) return
+    if (semver.gt(data.version, version) && semver.gte(version, data.from)) {
+      process.noAsar = true
+      await fs.emptyDir(updatePath)
+      const filePath = path.join(updatePath, data.name)
+      await download(`${url}/${data.name}`, filePath)
+      const buffer = await fs.readFile(filePath)
+      const sha256 = hash(buffer)
+      if (sha256 !== data.hash) return
+      await extract(filePath, { dir: updatePath })
+      updateInfo.exist = true
+      updateInfo.dirname = updatePath
+      updateInfo.filename = data.asarName
+    }
+  } catch (e) {
+    sendMsg(e, 'ERROR')
   }
 }
 
 const getUpdateInfo = () => updateInfo
-try {
-  update()
-} catch (e) {
-  sendMsg(e, 'ERROR')
-}
 
+setTimeout(update, 3000)
 
 exports.getUpdateInfo = getUpdateInfo
 

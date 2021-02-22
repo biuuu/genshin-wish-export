@@ -36,7 +36,7 @@ const start = async () => {
     active: true,
     version,
     from: '0.0.1',
-    name: hashName,
+    name: `${hashName}.zip`,
     asarName: 'app.asar',
     hash: sha256
   })
