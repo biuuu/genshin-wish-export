@@ -17,6 +17,8 @@ const initWindow = () => {
   return win
 }
 
+const getWin = () => win
+
 const sendMsg = (text, type = 'LOAD_DATA_STATUS') => {
   if (win) {
     win.webContents.send(type, text)
@@ -89,6 +91,6 @@ const hash = (data, type = 'sha256') => {
 
 module.exports = {
   sleep, request, detectGameLocale, hash,
-  sendMsg, readJSON, saveJSON, initWindow,
+  sendMsg, readJSON, saveJSON, initWindow, getWin,
   appRoot
 }

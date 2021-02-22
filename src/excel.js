@@ -3,10 +3,10 @@ const readData = require('./getData').readData
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
-const main =  require('./main')
+const { getWin } =  require('./utils')
 
 const sendMsg = (text) => {
-  const win = main.getWin()
+  const win = getWin()
   if (win) {
     win.webContents.send('LOAD_DATA_STATUS', text)
   }
