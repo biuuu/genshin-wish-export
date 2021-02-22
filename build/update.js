@@ -14,7 +14,7 @@ const createZip = (filePath, name) => {
   const zip = new AdmZip()
   zip.addLocalFile(filePath)
   zip.toBuffer()
-  const updatePath = path.resolve('./update/', name)
+  const updatePath = path.resolve('./update/update/', name)
   zip.writeZip(updatePath)
 }
 
@@ -27,6 +27,7 @@ const start = async () => {
   const outputPath = path.resolve('./update/update/')
   await fs.ensureDir(outputPath)
   await fs.emptyDir(outputPath)
+  await fs.outputFile('./update/CNAME', 'genshin-gacha-export.danmu9.com')
   createZip(asarPath, name)
   await fs.outputJSON(path.join(outputPath, 'manifest.json'), {
     active: true,
