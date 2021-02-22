@@ -27,7 +27,7 @@ const updateInfo = {
 const update = async () => {
   if (isDev) return
   process.noAsar = true
-  const url = isDev ? 'http://127.0.0.1:5000/update-dev/' : 'https://genshin-gacha-export.danmu9.com/update/'
+  const url = isDev ? 'http://127.0.0.1:5000/update-dev' : 'https://genshin-gacha-export.danmu9.com/update'
   const res = await fetch(`${url}/manifest.json`)
   const data = await res.json()
   if (!data.active) return

@@ -24,7 +24,7 @@ const start = async () => {
   const buffer = await fs.readFile(asarPath)
   const sha256 = hash(buffer)
   const name = sha256.slice(0, 5) + '.zip'
-  const outputPath = path.resolve('./update/')
+  const outputPath = path.resolve('./update/update/')
   await fs.ensureDir(outputPath)
   await fs.emptyDir(outputPath)
   createZip(asarPath, name)
