@@ -28,7 +28,7 @@ const update = async () => {
   // if (isDev) return
   try {
     const url = 'https://genshin-gacha-export.danmu9.com/update'
-    const res = await fetch(`${url}/manifest.json`)
+    const res = await fetch(`${url}/manifest.json?t=${Math.floor(Date.now() / (1000 * 60 * 10))}`)
     const data = await res.json()
     if (!data.active) return
     if (semver.gt(data.version, version) && semver.gte(version, data.from)) {
