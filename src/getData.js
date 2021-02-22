@@ -170,7 +170,11 @@ const getData = async () => {
   sendMsg('正在获取抽卡活动类型')
   const res = await request(GachaTypesUrl)
   if (res.retcode !== 0) {
-    sendMsg(res.message)
+    if (res.message === 'authkey timeout') {
+      sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
+    } else {
+      sendMsg(res.message)
+    }
     return false
   }
   const gachaTypes = res.data.gacha_type_list
