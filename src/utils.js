@@ -2,6 +2,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const fetch = require('electron-fetch').default
 const { BrowserWindow, app } = require('electron')
+const crypto = require('crypto')
 
 const isDev = !app.isPackaged
 let win = null
@@ -60,10 +61,11 @@ const detectGameLocale = async (userPath) => {
   return result
 }
 
-const appPath = isDev ? path.resolve(__dirname, '..', 'userData') : path.resolve(app.getAppPath(), '..', '..', 'userData')
+const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
+const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
 const saveJSON = async (name, data) => {
   try {
-    await fs.outputJSON(path.join(appPath, name), data)
+    await fs.outputJSON(path.join(userDataPath, name), data)
   } catch (e) {
     sendMsg('保存本地数据失败')
     sendMsg(e, 'ERROR')
@@ -74,9 +76,19 @@ const saveJSON = async (name, data) => {
 const readJSON = async (name) => {
   let data = null
   try {
-    data = await fs.readJSON(path.join(appPath, name))
+    data = await fs.readJSON(path.join(userDataPath, name))
   } catch (e) {}
   return data
 }
 
-module.exports = { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, initWindow }
+const hash = (data, type = 'sha256') => {
+  const hmac = crypto.createHmac(type, 'hk4e')
+  hmac.update(data)
+  return hmac.digest('hex')
+}
+
+module.exports = {
+  sleep, request, detectGameLocale, hash,
+  sendMsg, readJSON, saveJSON, initWindow,
+  appRoot
+}

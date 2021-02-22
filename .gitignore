@@ -6,3 +6,5 @@ dist-ssr
 .vscode
 out/
 userData
+update-dev
+yarn-error.log

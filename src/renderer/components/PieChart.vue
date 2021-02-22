@@ -6,8 +6,19 @@
 
 <script setup>
 import { defineProps, reactive, computed, ref, onMounted, onUpdated } from 'vue'
-import * as echarts from '../../module/echarts.esm.min.js'
+import * as echarts from 'echarts/core'
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent
+} from 'echarts/components'
+import { PieChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
 import throttle from 'lodash-es/throttle'
+
+echarts.use(
+    [TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer]
+)
 
 const props = defineProps({
   data: Object,

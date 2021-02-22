@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -8,11 +8,16 @@
     "serve": "vite preview",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "dependencies": {
     "electron-fetch": "^1.7.3",
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^9.1.0",
+    "get-stream": "^6.0.0",
+    "original-fs": "^1.1.0",
+    "semver": "^7.3.4",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -20,6 +25,7 @@
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
     "autoprefixer": "^10.2.4",
+    "echarts": "^5.0.2",
     "electron": "^11.2.3",
     "electron-squirrel-startup": "^1.0.0",
     "element-plus": "^1.0.2-beta.32",
@@ -34,7 +40,7 @@
       "packagerConfig": {
         "ignore": [
           "src/(renderer)",
-          "userData",
+          "(userData|update-dev|yarn-error.log|yarn.lock)",
           "(\\.vscode)",
           "node_modules/(@.+|\\..+)"
         ],
@@ -48,17 +54,7 @@
             "win32"
           ]
         }
-      ],
-      "publishers": {
-        "name": "@electron-forge/publisher-github",
-        "config": {
-          "repository": {
-            "owner": "biuuu",
-            "name": "genshin-gacha-export"
-          },
-          "prerelease": true
-        }
-      }
+      ]
     }
   }
 }
