@@ -17,6 +17,7 @@ jobs:
     - name: Build Update
       run: |
         yarn --frozen-lockfile
+        yarn build
         yarn package
         yarn build-update
     - name: Deploy

@@ -41,8 +41,7 @@
       "packagerConfig": {
         "ignore": [
           "src/(renderer)",
-          "(userData|update-dev|yarn-error.log|yarn.lock)",
-          "(\\.vscode)",
+          "(userData|update-dev|yarn-error.log|yarn.lock|\\.github|\\.vscode)",
           "node_modules/(@.+|\\..+)"
         ],
         "name": "Genshin Gacha Export",
