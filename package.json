@@ -7,7 +7,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "start": "electron-forge start",
-    "package": "electron-forge package",
+    "package": "electron-forge package --platform=win32 --arch=x64",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "build-update": "node ./build/update.js"
