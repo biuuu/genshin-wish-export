@@ -1,0 +1,30 @@
+name: Build Update
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Build Update
+      run: |
+        yarn --frozen-lockfile
+        yarn package
+        yarn build-update
+    - name: Deploy
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        commit_message: Update asar
+        build_dir: update
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
