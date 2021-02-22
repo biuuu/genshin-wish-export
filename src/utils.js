@@ -106,7 +106,7 @@ const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
   } catch (e) {
-    sendMsg('保存本地数据失败')
+    sendMsg('Failed to save on local device.')
     sendMsg(e, 'ERROR')
     await sleep(3)
   }

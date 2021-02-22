@@ -93,7 +93,7 @@ const readLog = async () => {
     const userPath = app.getPath('home')
     const gameNames = await detectGameLocale(userPath)
     if (!gameNames.length) {
-      sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
+      sendMsg("Can't find the wish history, please make sure you've opened wish history interface.")
       return false
     }
     const promises = gameNames.map(async name => {
@@ -109,10 +109,10 @@ const readLog = async () => {
         return url
       }
     }
-    sendMsg('未找到URL')
+    sendMsg('URL not found.')
     return false
   } catch (e) {
-    sendMsg('读取日志失败')
+    sendMsg('Unable to read the wish history.')
     return false
   }
 }
@@ -123,12 +123,12 @@ const getGachaLog = async ({ key, page, name, retryCount, url }) => {
     return res.data.list
   } catch (e) {
     if (retryCount) {
-      sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      sendMsg(`Fetch failed in ${name} for page ${page}，retrying in 5 seconds (${6 - retryCount} attempts……)`)
       await sleep(5)
       retryCount--
       return await getGachaLog(key, page, name, retryCount, url)
     } else {
-      sendMsg(`获取${name}第${page}页失败，已超出重试次数`)
+      sendMsg(`Fetch failed in ${name} for page ${page}，you have reached the maximum retry attempt.`)
       throw e
     }
   }
@@ -142,10 +142,10 @@ const getGachaLogs = async ({ name, key }, queryString) => {
   const url = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
-      sendMsg(`正在获取${name}第${page}页，每10页休息1秒……`)
+      sendMsg(`Fetching from ${name} - Page ${page}，rest for 1 second for every 10 pages……`)
       await sleep(1)
     }
-    sendMsg(`正在获取${name}第${page}页`)
+    sendMsg(`Fetching from ${name} - Page ${page}`)
     res = await getGachaLog({ key, page, name, url, retryCount: 5 })
     if (!uid && res.length) {
       uid = res[0].uid
@@ -169,11 +169,12 @@ const tryGetUid = async (queryString) => {
 
 const getGachaType = async (queryString) => {
   const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
-  sendMsg('正在获取抽卡活动类型')
+  sendMsg('Fetching wish types...')
   const res = await request(gachaTypeUrl)
+
   if (res.retcode !== 0) {
     if (res.message === 'authkey timeout') {
-      sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
+      sendMsg('Login information expired, please re-open the wish history interface and try again.')
     } else {
       sendMsg(res.message)
     }
@@ -188,14 +189,14 @@ const getGachaType = async (queryString) => {
     }
   })
   orderedGachaTypes.push(...gachaTypes)
-  sendMsg('获取抽卡活动类型成功')
+  sendMsg('Successfully fetched wish types.')
   return orderedGachaTypes
 }
 
 const getQuerystring = (url) => {
   const { searchParams } = new URL(url)
   if (!searchParams.get('authkey')) {
-    sendMsg('URL中缺少authkey')
+    sendMsg('AUTHKEY not found in URL')
     return false
   }
   searchParams.delete('page')
@@ -232,7 +233,7 @@ const proxyServer = (port) => {
 const useProxy = async () => {
   const ip = localIp()
   const port = config.proxyPort
-  sendMsg(`正在使用代理模式[${ip}:${port}]获取URL，请打开游戏抽卡记录，或刷新抽卡记录`)
+  sendMsg(`Using proxy mode. [${ip}:${port}] Fetching URL，please open your wish history or reload your wish history.`)
   await enableProxy('127.0.0.1', port)
   const url = await proxyServer(port)
   await disableProxy()

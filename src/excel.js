@@ -28,12 +28,12 @@ const start = async () => {
     const name = data.typeMap.get(key)
     const sheet = workbook.addWorksheet(name, {views: [{state: 'frozen', ySplit: 1}]})
     sheet.columns = [
-      { header: "时间", key: "time", width: 24 },
-      { header: "名称", key: "name", width: 14 },
-      { header: "类别", key: "type", width: 8 },
-      { header: "星级", key: "rank", width: 8 },
-      { header: "总次数", key: "idx", width: 8 },
-      { header: "保底内", key: "pdx", width: 8 },
+      { header: "Timestamp", key: "time", width: 24 },
+      { header: "Reward Name", key: "name", width: 30 },
+      { header: "Reward Type", key: "type", width: 15 },
+      { header: "Rarity (Star)", key: "rank", width: 15 },
+      { header: "Wish Count", key: "idx", width: 15 },
+      { header: "Pity Count", key: "pdx", width: 15 },
     ]
     // get gacha logs
     const logs = value
@@ -63,7 +63,7 @@ const start = async () => {
         fgColor:{argb:'ffdbd7d3'},
       }
       sheet.getCell(`${v}1`).font ={
-        name: '微软雅黑',
+        name: 'Arial',
         color: { argb: "ff757575" },
         bold : true
       }
@@ -90,17 +90,18 @@ const start = async () => {
           5: "ffbd6932",
         }
         sheet.getCell(`${c}${i + 2}`).font = {
-          name: '微软雅黑',
+          name: 'Arial',
           color: { argb: rankColor[v[3]] },
           bold : v[3]!="3"
         }
       })
     })
   }
-
+  // sendMsg("Done fetching wish history.")
+  // sendMsg("Exporting...")
   const buffer = await workbook.xlsx.writeBuffer()
   const filePath = dialog.showSaveDialogSync({
-    defaultPath: path.join(app.getPath('downloads'), `原神抽卡记录_${getTimeString()}`),
+    defaultPath: path.join(app.getPath('downloads'), `Genshin_Wish_History_${getTimeString()}`),
     filters: [
       { name: 'Excel文件', extensions: ['xlsx'] }
     ]
@@ -108,6 +109,7 @@ const start = async () => {
   if (filePath) {
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, buffer)
+    // sendMsg("Exported successfully.")
   }
 }
 

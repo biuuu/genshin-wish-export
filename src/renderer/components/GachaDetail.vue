@@ -5,35 +5,35 @@
     <span class="mx-2" :title="new Date(detail.date[1]).toLocaleString()">{{new Date(detail.date[1]).toLocaleDateString()}}</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span class="mr-1">一共
-      <span class="text-blue-600">{{detail.total}}</span> 抽
+    <span class="mr-1">Total wishes:
+      <span class="text-blue-600">{{detail.total}}</span>
     </span>
-    <span v-if="type !== '100'">已累计<span class="mx-1 text-green-600">{{detail.countMio}}</span>抽未出5星</span>
+    <span v-if="type !== '100'">Pity Counter: <span class="mx-1 text-green-600">{{detail.countMio}}</span></span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span :title="`角色：${detail.count5c}\n武器：${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
-      <span class="min-w-10 inline-block">5星：{{detail.count5}}</span>
+    <span :title="`Character：${detail.count5c}\nWeapon：${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
+      <span class="min-w-10 inline-block">5 Star：{{detail.count5}}</span>
       [{{percent(detail.count5, detail.total)}}]
     </span>
-    <br><span :title="`角色：${detail.count4c}\n武器：${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
-      <span class="min-w-10 inline-block">4星：{{detail.count4}}</span>
+    <br><span :title="`Character：${detail.count4c}\nWeapon：${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
+      <span class="min-w-10 inline-block">4 Star：{{detail.count4}}</span>
       [{{percent(detail.count4, detail.total)}}]
     </span>
     <br><span class="text-blue-500 whitespace-pre">
-      <span class="min-w-10 inline-block">3星：{{detail.count3}}</span>
+      <span class="min-w-10 inline-block">3 Star：{{detail.count3}}</span>
       [{{percent(detail.count3, detail.total)}}]
     </span>
   </p>
 
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">
-    5星历史记录：
+    5 Star Pull History：
     <span :title="item[2]" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
       v-for="(item, index) of detail.ssrPos" :key="item"
     >
       {{item[0]}}[{{item[1]}}]
     </span>
   </p>
-  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">5星平均出货次数为：<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
+  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">Average wishes to get a 5 star：<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
 </template>
 
 <script setup>

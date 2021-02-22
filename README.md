@@ -1,27 +1,27 @@
-# 原神抽卡记录导出工具
+# Genshin Wish Exporter
 
 Electron + Vite + Vue3 + Tailwindcss
 
-## TODO
+## Note
 
-- [ ] 可以选择国服或海外服
-- [ ] 多用户切换
-- [x] 兼容其它语言的道具类型 -“武器”、“角色”
-- [ ] 版本更新提示
-- [ ] 道具的详细数量展示
-- [ ] 导出、导入本地数据
-- [x] 记录使用的语言版本，更新数据时固定使用同一种语言
+This is not made by me, original author: [biuuu](https://github.com/biuuu)
+
+I only translated the text strings and made some visual adjustments on the exported excel (the default cell width is too small as Chinese characters are much shorter).
+
+Do not use this tool if you are worried of getting banned even though this tool will not in any way modify the game files. It will only read necessary information available in the game files (and subsequently make wish history via API).
+
+Have a nice day.
 
 ## Devlopment
 
 ```
-# 安装模块
+# Installing packages
 yarn install
 
-# 启动Vite开发模式
+# Vite Dev Mode
 yarn dev
 
-# 打开Electron
+# Electron mode
 yarn start
 
 # Build
