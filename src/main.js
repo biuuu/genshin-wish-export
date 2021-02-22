@@ -43,32 +43,7 @@ if (!isFirstInstance) {
   })
 
   app.on('will-quit', () => {
-    if (isDev) return
-    const info = getUpdateInfo()
-    if (!info.exist) return
-    const moveFileJSPath = path.resolve(info.dirname, 'move-file.js')
-    fs.outputFileSync(moveFileJSPath, `
-    const ofs = require('original-fs')
-    const fs = require('fs-extra')
-    const path = require('path')
-    process.noAsar = true
-    const { dirname, filename, appRoot } = process.env
-    const start = () => {
-      const resPath = path.resolve(appRoot, 'resources')
-      ofs.copyFile(path.resolve(dirname, filename), path.resolve(resPath, filename), (err) => {
-        if (err) {
-          fs.outputFileSync(path.resolve(dirname, 'error.txt'), err)
-          throw err
-        }
-      })
-    }
-    setTimeout(start, 5000)`)
-    fork(moveFileJSPath, {
-      detached: true,
-      env: Object.assign(info, {
-        appRoot
-      })
-    })
+
   })
 }
 

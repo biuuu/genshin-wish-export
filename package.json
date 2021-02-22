@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -44,8 +44,7 @@
           "(userData|update-dev|yarn-error.log|yarn.lock|\\.github|\\.vscode)",
           "node_modules/(@.+|\\..+)"
         ],
-        "name": "Genshin Gacha Export",
-        "asar": true
+        "name": "Genshin Gacha Export"
       },
       "makers": [
         {

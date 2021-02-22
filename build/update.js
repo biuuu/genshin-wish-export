@@ -12,21 +12,21 @@ const hash = (data, type = 'sha256') => {
 
 const createZip = (filePath, dest) => {
   const zip = new AdmZip()
-  zip.addLocalFile(filePath)
+  zip.addLocalFolder(filePath)
   zip.toBuffer()
   zip.writeZip(dest)
 }
 
 const start = async () => {
   copyAppZip()
-  const asarPath = './out/Genshin Gacha Export-win32-x64/resources/app.asar'
+  const appPath = './out/Genshin Gacha Export-win32-x64/resources/app/'
   const name = 'app.zip'
   const outputPath = path.resolve('./update/update/')
   const zipPath = path.resolve(outputPath, name)
   await fs.ensureDir(outputPath)
   await fs.emptyDir(outputPath)
   await fs.outputFile('./update/CNAME', 'genshin-gacha-export.danmu9.com')
-  createZip(asarPath, zipPath)
+  createZip(appPath, zipPath)
   const buffer = await fs.readFile(zipPath)
   const sha256 = hash(buffer)
   const hashName = sha256.slice(7, 12)
@@ -35,9 +35,8 @@ const start = async () => {
   await fs.outputJSON(path.join(outputPath, 'manifest.json'), {
     active: true,
     version,
-    from: '0.0.1',
+    from: '0.1.5',
     name: `${hashName}.zip`,
-    asarName: 'app.asar',
     hash: sha256
   })
 }
