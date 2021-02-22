@@ -29,7 +29,7 @@ const start = async () => {
     const sheet = workbook.addWorksheet(name, {views: [{state: 'frozen', ySplit: 1}]})
     sheet.columns = [
       { header: "Timestamp", key: "time", width: 24 },
-      { header: "Reward Name", key: "name", width: 30 },
+      { header: "Reward Name", key: "name", width: 35 },
       { header: "Reward Type", key: "type", width: 15 },
       { header: "Rarity (Star)", key: "rank", width: 15 },
       { header: "Wish Count", key: "idx", width: 15 },

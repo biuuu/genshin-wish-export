@@ -49,4 +49,4 @@ const copyAppZip = () => {
   } catch (e) {}
 }
 
-start()
+// start()

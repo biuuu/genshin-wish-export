@@ -41,6 +41,7 @@ if (!isFirstInstance) {
       createWindow()
     }
   })
+<<<<<<< HEAD
 
   let a=1
   app.on('will-quit', (e) => {
@@ -60,6 +61,8 @@ if (!isFirstInstance) {
       disableProxy()
     }
   })
+=======
+>>>>>>> 64747c0 (Removed background auto update)
 }
 
 const getWin = () => win
