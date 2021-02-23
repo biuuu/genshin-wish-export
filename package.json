@@ -15,7 +15,6 @@
     "electron-fetch": "^1.7.3",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
-    "original-fs": "^1.1.0",
     "semver": "^7.3.4",
     "yauzl": "^2.10.0"
   },

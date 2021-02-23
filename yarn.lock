@@ -2630,11 +2630,6 @@ ora@^5.0.0, ora@^5.1.0:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
-original-fs@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npm.taobao.org/original-fs/download/original-fs-1.1.0.tgz#f856f031b9e24c082ed35b497c9fd4b29f2c031f"
-  integrity sha1-+FbwMbniTAgu01tJfJ/Usp8sAx8=
-
 os-homedir@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
