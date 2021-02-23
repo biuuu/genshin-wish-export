@@ -51,16 +51,20 @@ const sortData = (data) => {
 }
 
 const detectGameLocale = async (userPath) => {
-  const result = []
+  const list = []
+  const lang = app.getLocale()
   try {
     await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
-    result.push('原神')
+    list.push('原神')
   } catch (e) {}
   try {
     await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
-    result.push('Genshin Impact')
+    list.push('Genshin Impact')
   } catch (e) {}
-  return result
+  if (lang !== 'zh-CN') {
+    list.reverse()
+  }
+  return list
 }
 
 const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
