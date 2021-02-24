@@ -15,7 +15,10 @@
     "electron-fetch": "^1.7.3",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
+    "node-mitmproxy": "^3.1.1",
     "semver": "^7.3.4",
+    "winreg": "^1.2.4",
+    "winreg-ts": "^1.0.4",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {

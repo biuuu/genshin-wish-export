@@ -4,11 +4,14 @@ const config = {
   urls: [],
   logDir: 'auto',
   locales: 'auto',
-  current: 0
+  current: 0,
+  proxyPort: 8325,
+  mode: 'log'
 }
 
 const getLocalConfig = async () => {
   const localConfig = await readJSON('config.json')
+  if (!localConfig) return
   localConfig.urls.forEach(item => {
     item[1] = decipherAes(item[1])
   })

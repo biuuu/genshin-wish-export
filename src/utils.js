@@ -113,8 +113,15 @@ const decipherAes = (encrypted) => {
   return decrypted
 }
 
+const  ifs = require('os').networkInterfaces()
+const localIp = () => {
+  return Object.keys(ifs)
+  .map(x => ifs[x].filter(x => x.family === 'Ipv4' && !x.internal)[0])
+  .filter(x => x)[0].address
+}
+
 module.exports = {
   sleep, request, detectGameLocale, hash, cipherAes, decipherAes,
-  sendMsg, readJSON, saveJSON, initWindow, getWin,
+  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp,
   appRoot, userDataPath
 }

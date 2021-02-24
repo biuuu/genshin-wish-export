@@ -3,8 +3,9 @@ const util = require('util')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath } = require('./utils')
+const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, localIp } = require('./utils')
 const config = require('./config')
+const { enableProxy, disableProxy } = require('./module/system-proxy')
 
 const order = ['301', '302', '200', '100']
 
@@ -59,7 +60,7 @@ let localData = null
 //   if (!b || !b.length) return a
 //   const minA = new Date(a[0][0]).getTime()
 //   let pos = b.length
-//   for (let i = 0; i < b.length; i++) {
+//   for (let i = 0 i < b.length i++) {
 //     const time = new Date(b[i][0]).getTime()
 //     if (time >= minA) {
 //       pos = i
@@ -84,34 +85,34 @@ let localData = null
 //   return origin.result
 // }
 
-// const readLog = async () => {
-//   try {
-//     const userPath = app.getPath('home')
-//     const gameNames = await detectGameLocale(userPath)
-//     if (!gameNames.length) {
-//       sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
-//       return false
-//     }
-//     const promises = gameNames.map(async name => {
-//       const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
-//       const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
-//       if (arr && arr.length) {
-//         return arr[arr.length - 1].replace('OnGetWebViewPageFinish:', '')
-//       }
-//     })
-//     const result = await Promise.all(promises)
-//     for (let url of result) {
-//       if (url) {
-//         return url
-//       }
-//     }
-//     sendMsg('未找到URL')
-//     return false
-//   } catch (e) {
-//     sendMsg('读取日志失败')
-//     return false
-//   }
-// }
+const readLog = async () => {
+  try {
+    const userPath = app.getPath('home')
+    const gameNames = await detectGameLocale(userPath)
+    if (!gameNames.length) {
+      sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
+      return false
+    }
+    const promises = gameNames.map(async name => {
+      const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
+      const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
+      if (arr && arr.length) {
+        return arr[arr.length - 1].replace('OnGetWebViewPageFinish:', '')
+      }
+    })
+    const result = await Promise.all(promises)
+    for (let url of result) {
+      if (url) {
+        return url
+      }
+    }
+    sendMsg('未找到URL')
+    return false
+  } catch (e) {
+    sendMsg('读取日志失败')
+    return false
+  }
+}
 
 // const getGachaLog = async (key, page, name, retryCount = 5) => {
 //   try {
@@ -152,38 +153,38 @@ let localData = null
 //   return data
 // }
 
-// const getGachaType = async (queryString) => {
-//   const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
-//   sendMsg('正在获取抽卡活动类型')
-//   const res = await request(gachaTypeUrl)
-//   if (res.retcode !== 0) {
-//     if (res.message === 'authkey timeout') {
-//       sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
-//     } else {
-//       sendMsg(res.message)
-//     }
-//     return false
-//   }
-//   const gachaTypes = res.data.gacha_type_list
-//   const orderedGachaTypes = []
-//   order.forEach(key => {
-//     const index = gachaTypes.findIndex(item => item.key === key)
-//     if (index !== -1)  {
-//       orderedGachaTypes.push(gachaTypes.splice(index, 1)[0])
-//     }
-//   })
-//   orderedGachaTypes.push(...gachaTypes)
-//   sendMsg('获取抽卡活动类型成功')
-//   return orderedGachaTypes
-// }
+const getGachaType = async (queryString) => {
+  const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
+  sendMsg('正在获取抽卡活动类型')
+  const res = await request(gachaTypeUrl)
+  if (res.retcode !== 0) {
+    if (res.message === 'authkey timeout') {
+      sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
+    } else {
+      sendMsg(res.message)
+    }
+    return false
+  }
+  const gachaTypes = res.data.gacha_type_list
+  const orderedGachaTypes = []
+  order.forEach(key => {
+    const index = gachaTypes.findIndex(item => item.key === key)
+    if (index !== -1)  {
+      orderedGachaTypes.push(gachaTypes.splice(index, 1)[0])
+    }
+  })
+  orderedGachaTypes.push(...gachaTypes)
+  sendMsg('获取抽卡活动类型成功')
+  return orderedGachaTypes
+}
 
-// const getQuerystring = (url) => {
-//   const { searchParams } = new URL(url)
-//   if (!searchParams.get('authkey')) {
-//     return false
-//   }
-//   return searchParams
-// }
+const getQuerystring = (url) => {
+  const { searchParams } = new URL(url)
+  if (!searchParams.get('authkey')) {
+    return false
+  }
+  return searchParams
+}
 
 // const getUrlFromConfig = () => {
 //   if (config.urls.size) {
@@ -199,17 +200,6 @@ let localData = null
 //   return getQuerystring(url)
 // }
 
-// const tryGetGachaType = async () => {
-//   const configUrl = getUrlFromConfig()
-//   if (configUrl) {
-//     const result = await getGachaType(configUrl.queryString)
-//     if (result) {
-//       return Object.assign(configUrl, {
-//         gachaType: result
-//       })
-//     }
-//   }
-// }
 
 // const getData = async () => {
 //   const result = new Map()
@@ -235,6 +225,67 @@ let localData = null
 // }
 
 const dataMap = new Map()
+
+const proxyServer = (port) => {
+  mitmproxy.createProxy({
+    sslConnectInterceptor: (req, cltSocket, head) => true,
+    requestInterceptor: (rOptions, req, res, ssl, next) => {
+        console.log(`正在访问：${rOptions.host}${rOptions.url}`)
+        next()
+    },
+    responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
+        next()
+    }
+  }),
+  port
+}
+const useProxy = async () => {
+  const ip = localIp()
+  const port = config.proxyPort
+  
+  await enableProxy(ip, port)
+}
+
+const getUrlFromConfig = () => {
+  if (config.urls.size) {
+    if (localData && localData.uid && config.urls.has(uid)) {
+      const url = config.urls.get(uid)
+      return url
+    }
+  }
+}
+
+const tryRequest = async (url) => {
+  const queryString = getQuerystring(url)
+  if (!queryString) return false
+  const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
+  const res = await request(gachaTypeUrl)
+  if (res.retcode !== 0) {
+    return false
+  }
+  return true
+}
+
+const getUrl = async () => {
+  let url = getUrlFromConfig()
+  if (!url) {
+    url = await readLog()
+  } else {
+    const result = await tryRequest()
+    if (!result) {
+      return url
+    }
+  }
+  if (!url) {
+    url = await useProxy()
+  } else {
+    const gachaType = await tryGetGachaType()
+    if (!gachaType) {
+      url = await useProxy()
+    }
+  }
+  return url
+}
 
 const fetchData = async () => {
   // getLocalConfigUrl
@@ -263,7 +314,7 @@ const readData = async () => {
   }
 }
 
-readData()
+// readData()
 
 // ipcMain.handle('FETCH_DATA', async () => {
 //   try {
