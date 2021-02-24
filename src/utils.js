@@ -26,7 +26,9 @@ const sendMsg = (text, type = 'LOAD_DATA_STATUS') => {
 }
 
 const request = async (url) => {
-  const res = await fetch(url)
+  const res = await fetch(url, {
+    timeout: 15 * 1000
+  })
   return await res.json()
 }
 

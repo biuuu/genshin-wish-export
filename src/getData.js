@@ -119,7 +119,11 @@ const getGachaLog = async (key, page, name, retryCount = 5) => {
     return res.data.list
   } catch (e) {
     if (retryCount) {
-      sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      if (e.type === 'request-timeout') {
+        sendMsg(`获取${name}第${page}页超时，5秒后进行第${6 - retryCount}次重试……`)
+      } else {
+        sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      }
       await sleep(5)
       retryCount--
       return await getGachaLog(key, page, name, retryCount)
