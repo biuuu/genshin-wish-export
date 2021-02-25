@@ -6,6 +6,11 @@ const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
 require('./excel')
 const { getUpdateInfo } = require('./update/index')
+const unhandled = require('electron-unhandled')
+
+unhandled({
+  showDialog: false
+})
 
 const isDev = !app.isPackaged
 let win = null
@@ -43,6 +48,12 @@ if (!isFirstInstance) {
   })
 
   app.on('will-quit', () => {
+    if (proxyStatus.started) {
+      disableProxy()
+    }
+  })
+
+  app.on('quit', () => {
     if (proxyStatus.started) {
       disableProxy()
     }

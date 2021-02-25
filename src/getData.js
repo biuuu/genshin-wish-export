@@ -3,10 +3,10 @@ const util = require('util')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, localIp } = require('./utils')
+const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp } = require('./utils')
 const config = require('./config')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
-const mitmproxy = require('node-mitmproxy')
+const mitmproxy = require('./module/node-mitmproxy')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
@@ -223,6 +223,7 @@ const proxyServer = (port) => {
       responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
         next()
       },
+      getPath: () => path.join(userPath, 'node-mitmproxy'),
       port
     })
   })
@@ -247,15 +248,24 @@ const getUrlFromConfig = () => {
   }
 }
 
-const tryRequest = async (url) => {
+const tryRequest = async (url, retry = false) => {
   const queryString = getQuerystring(url)
   if (!queryString) return false
   const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
-  const res = await request(gachaTypeUrl)
-  if (res.retcode !== 0) {
-    return false
+  try {
+    const res = await request(gachaTypeUrl)
+    if (res.retcode !== 0) {
+      return false
+    }
+    return true
+  } catch (e) {
+    if (e.code === 'ERR_PROXY_CONNECTION_FAILED' && !retry) {
+      await disableProxy()
+      return await tryRequest(url, true)
+    }
+    sendMsg(e.message.replace(url, '***'), 'ERROR')
+    throw e
   }
-  return true
 }
 
 const getUrl = async () => {

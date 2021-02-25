@@ -1,35 +1,29 @@
 {
   "name": "genshin-gacha-export-electron",
   "version": "0.1.8",
-  "main": "./dist/main.min.js",
+  "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
     "start": "electron-forge start",
-    "build-main": "rollup --config ./build/rollup.config.js",
     "package": "electron-forge package --platform=win32 --arch=x64",
     "make": "electron-forge make --platform=win32 --arch=x64",
     "build-update": "node ./build/update.js"
   },
   "dependencies": {
     "electron-fetch": "^1.7.3",
+    "electron-unhandled": "^3.0.2",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
-    "node-mitmproxy": "^3.1.1",
     "semver": "^7.3.4",
     "winreg": "^1.2.4",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.1",
-    "@babel/preset-env": "^7.13.5",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^11.2.0",
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
     "adm-zip": "^0.5.3",

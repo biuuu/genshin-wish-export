@@ -2,7 +2,7 @@
   <el-button :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
   <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
-  <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+  <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
     <div class="mb-4" v-for="(item, i) of detail" :key="i">
       <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
       <pie-chart :data="item" :typeMap="typeMap"></pie-chart>

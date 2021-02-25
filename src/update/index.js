@@ -1,5 +1,5 @@
 const { app } = require('electron')
-const fetch = require('electron-fetch/lib/index')
+const fetch = require('electron-fetch').default
 const semver = require('semver')
 const util = require('util')
 const path = require('path')
