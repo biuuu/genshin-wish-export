@@ -13,7 +13,11 @@ const getLocalConfig = async () => {
   const localConfig = await readJSON('config.json')
   if (!localConfig) return
   localConfig.urls.forEach(item => {
-    item[1] = decipherAes(item[1])
+    try {
+      item[1] = decipherAes(item[1])
+    } catch (e) {
+      item[1] = ''
+    }
   })
   Object.assign(config, localConfig)
 }
@@ -30,7 +34,11 @@ const saveConfig = async () => {
   if (urlsMap) {
     const urls = [...urlsMap]
     urls.forEach(item => {
-      item[1] = cipherAes(item[1])
+      try {
+        item[1] = cipherAes(item[1])
+      } catch (e) {
+        item[1] = ''
+      }
     })
     configTemp = Object.assign({}, config, { urls })
   }

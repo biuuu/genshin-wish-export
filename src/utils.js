@@ -72,6 +72,7 @@ const detectGameLocale = async (userPath) => {
 
 const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
 const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
+const userPath = app.getPath('userData')
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
@@ -96,7 +97,7 @@ const hash = (data, type = 'sha256') => {
   return hmac.digest('hex')
 }
 
-const scryptKey = crypto.scryptSync(userDataPath, 'hk4e', 24)
+const scryptKey = crypto.scryptSync(userPath, 'hk4e', 24)
 const cipherAes = (data) => {
   const algorithm = 'aes-192-cbc'
   const iv = Buffer.alloc(16, 0)
@@ -131,6 +132,6 @@ const localIp = () => {
 
 module.exports = {
   sleep, request, detectGameLocale, hash, cipherAes, decipherAes,
-  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp,
+  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath,
   appRoot, userDataPath
 }

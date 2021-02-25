@@ -16,8 +16,8 @@ const saveData = async (data, url) => {
   obj.result = [...obj.result]
   obj.typeMap = [...obj.typeMap]
   config.urls.set(data.uid, url)
-  config.save()
-  await saveJSON(`gacha-list-${uid}.json`, obj)
+  await config.save()
+  await saveJSON(`gacha-list-${data.uid}.json`, obj)
 }
 
 const defaultTypeMap = new Map([
@@ -48,6 +48,14 @@ const readData = async () => {
       }
     }
   }
+  if (!config.current && dataMap.size) {
+    config.current = dataMap.keys().next().value
+  }
+}
+
+const changeCurrent = async (uid) => {
+  config.current = uid
+  await config.save()
 }
 
 const mergeList = (a, b) => {
@@ -190,6 +198,9 @@ const getQuerystring = (url) => {
     sendMsg('URL中缺少authkey')
     return false
   }
+  searchParams.delete('page')
+  searchParams.delete('size')
+  searchParams.delete('gacha_type')
   return searchParams
 }
 
@@ -203,7 +214,11 @@ const proxyServer = (port) => {
       },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
         next()
-        rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
+        if (rOptions.hostname.includes('hk4e-api.mihoyo.com')) {
+          if (/authkey=[^&]+/.test(rOptions.path)) {
+            rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
+          }
+        }
       },
       responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
         next()
@@ -216,7 +231,7 @@ const proxyServer = (port) => {
 const useProxy = async () => {
   const ip = localIp()
   const port = config.proxyPort
-  sendMsg(`正在使用代理模式(${ip}:${port})获取URL，请打开游戏抽卡记录并点击抽卡记录下一页`)
+  sendMsg(`正在使用代理模式[${ip}:${port}]获取URL，请打开游戏抽卡记录，或刷新抽卡记录`)
   await enableProxy('127.0.0.1', port)
   const url = await proxyServer(port)
   await disableProxy()
@@ -225,8 +240,8 @@ const useProxy = async () => {
 
 const getUrlFromConfig = () => {
   if (config.urls.size) {
-    if (localData && localData.uid && config.urls.has(uid)) {
-      const url = config.urls.get(uid)
+    if (config.current && config.urls.has(config.current)) {
+      const url = config.urls.get(config.current)
       return url
     }
   }
@@ -248,7 +263,7 @@ const getUrl = async () => {
   if (!url) {
     url = await readLog()
   } else {
-    const result = await tryRequest()
+    const result = await tryRequest(url)
     if (!result) {
       url = await readLog()
     }
@@ -256,7 +271,7 @@ const getUrl = async () => {
   if (!url) {
     url = await useProxy()
   } else {
-    const result = await tryRequest()
+    const result = await tryRequest(url)
     if (!result) {
       url = await useProxy()
     }
@@ -265,6 +280,7 @@ const getUrl = async () => {
 }
 
 const fetchData = async () => {
+  await readData()
   const url = await getUrl()
   if (!url) return false
   const searchParams = await getQuerystring(url)
@@ -293,18 +309,21 @@ const fetchData = async () => {
     originUid = uid
   }
   const data = { result, time: Date.now(), typeMap, uid: originUid, lang }
-  await readData()
   const localData = dataMap.get(originUid)
   const mergedResult = mergeData(localData, data)
   data.result = mergedResult
+  dataMap.set(originUid, data)
+  await changeCurrent(originUid)
   await saveData(data, url)
-  return data
 }
 
 ipcMain.handle('FETCH_DATA', async () => {
   try {
-    const data = await fetchData()
-    return data
+    await fetchData()
+    return {
+      dataMap,
+      current: config.current
+    }
   } catch (e) {
     sendMsg(e, 'ERROR')
     console.error(e)
@@ -320,5 +339,10 @@ ipcMain.handle('READ_DATA', async () => {
   }
 })
 
-exports.readData = readData
+exports.getData = () => {
+  return {
+    dataMap,
+    current: config.current
+  }
+}
 
