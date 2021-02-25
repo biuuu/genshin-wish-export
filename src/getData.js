@@ -6,6 +6,7 @@ const { app, ipcMain } = require('electron')
 const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, localIp } = require('./utils')
 const config = require('./config')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
+const mitmproxy = require('node-mitmproxy')
 
 const order = ['301', '302', '200', '100']
 
@@ -227,22 +228,29 @@ const getQuerystring = (url) => {
 const dataMap = new Map()
 
 const proxyServer = (port) => {
-  mitmproxy.createProxy({
-    sslConnectInterceptor: (req, cltSocket, head) => true,
-    requestInterceptor: (rOptions, req, res, ssl, next) => {
+  try {
+    mitmproxy.createProxy({
+      sslConnectInterceptor: (req, cltSocket, head) => true,
+      requestInterceptor: (rOptions, req, res, ssl, next) => {
         console.log(`正在访问：${rOptions.host}${rOptions.url}`)
         next()
-    },
-    responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
-        next()
-    }
-  }),
-  port
+      },
+      responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
+        ynext()
+      },
+      port
+    })
+  } catch (e) {
+    debugger
+  }
 }
+
+proxyServer(3000)
+
 const useProxy = async () => {
   const ip = localIp()
   const port = config.proxyPort
-  
+
   await enableProxy(ip, port)
 }
 
