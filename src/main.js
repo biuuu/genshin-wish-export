@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const { app, BrowserWindow } = require('electron')
 const { initWindow, appRoot } = require('./utils')
-const { fork } = require('child_process')
+const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
 require('./excel')
 const { getUpdateInfo } = require('./update/index')
@@ -43,7 +43,9 @@ if (!isFirstInstance) {
   })
 
   app.on('will-quit', () => {
-
+    if (proxyStatus.started) {
+      disableProxy()
+    }
   })
 }
 

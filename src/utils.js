@@ -113,11 +113,18 @@ const decipherAes = (encrypted) => {
   return decrypted
 }
 
-const  ifs = require('os').networkInterfaces()
+const  interfaces = require('os').networkInterfaces()
 const localIp = () => {
-  return Object.keys(ifs)
-  .map(x => ifs[x].filter(x => x.family === 'Ipv4' && !x.internal)[0])
-  .filter(x => x)[0].address
+  for (var devName in interfaces) {
+    var iface = interfaces[devName]
+
+    for (var i = 0; i < iface.length; i++) {
+      var alias = iface[i]
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+        return alias.address
+    }
+  }
+  return '127.0.0.1'
 }
 
 module.exports = {

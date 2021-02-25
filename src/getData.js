@@ -228,30 +228,37 @@ const getQuerystring = (url) => {
 const dataMap = new Map()
 
 const proxyServer = (port) => {
-  try {
+  return new Promise((rev) => {
     mitmproxy.createProxy({
-      sslConnectInterceptor: (req, cltSocket, head) => true,
+      sslConnectInterceptor: (req, cltSocket, head) => {
+        if (req.url.includes('hk4e-api.mihoyo.com')) {
+          return true
+        }
+      },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
-        console.log(`正在访问：${rOptions.host}${rOptions.url}`)
         next()
+        rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
       },
       responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
-        ynext()
+        next()
       },
       port
     })
-  } catch (e) {
-    debugger
-  }
+  })
 }
 
-proxyServer(3000)
+
 
 const useProxy = async () => {
   const ip = localIp()
   const port = config.proxyPort
 
-  await enableProxy(ip, port)
+  sendMsg('正在使用代理模式(${ip}:${port})获取URL，请打开游戏抽卡记录并点击抽卡记录下一页')
+
+  await enableProxy('127.0.0.1', port)
+  const url = await proxyServer(port)
+  await disableProxy()
+  return url
 }
 
 const getUrlFromConfig = () => {
@@ -295,9 +302,10 @@ const getUrl = async () => {
   return url
 }
 
+
 const fetchData = async () => {
-  // getLocalConfigUrl
-  // getvlidateurl
+  const url = await getUrl()
+
 }
 
 let localDataReaded = false
@@ -305,6 +313,7 @@ const readdir = util.promisify(fs.readdir)
 const readData = async () => {
   if (localDataReaded) return
   localDataReaded = true
+  await fs.ensureDir(userDataPath)
   const files = await readdir(userDataPath)
   for (let name of files) {
     if (/^gacha-list-\d+\.json$/.test(name)) {

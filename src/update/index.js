@@ -16,11 +16,11 @@ async function download(url, filePath) {
 }
 
 const isDev = !app.isPackaged
-const appPath = app.getAppPath()
+const appPath = isDev ? path.resolve(__dirname, '../../', 'update-dev/app'): app.getAppPath()
 const updatePath = isDev ? path.resolve(__dirname, '../../', 'update-dev/download') : path.resolve(appPath, '..', '..', 'update')
 
 const update = async () => {
-  // if (isDev) return
+  if (isDev) return
   try {
     const url = 'https://genshin-gacha-export.danmu9.com/update'
     const res = await fetch(`${url}/manifest.json?t=${Math.floor(Date.now() / (1000 * 60 * 10))}`)
