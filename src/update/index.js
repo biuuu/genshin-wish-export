@@ -15,6 +15,10 @@ async function download(url, filePath) {
   await streamPipeline(response.body, fs.createWriteStream(filePath))
 }
 
+const updateInfo = {
+  status: 'init'
+}
+
 const isDev = !app.isPackaged
 const appPath = isDev ? path.resolve(__dirname, '../../', 'update-dev/app'): app.getAppPath()
 const updatePath = isDev ? path.resolve(__dirname, '../../', 'update-dev/download') : path.resolve(appPath, '..', '..', 'update')
@@ -29,16 +33,20 @@ const update = async () => {
     if (semver.gt(data.version, version) && semver.gte(version, data.from)) {
       await fs.emptyDir(updatePath)
       const filePath = path.join(updatePath, data.name)
+      updateInfo.status = 'downloading'
       await download(`${url}/${data.name}`, filePath)
       const buffer = await fs.readFile(filePath)
       const sha256 = hash(buffer)
       if (sha256 !== data.hash) return
       const appPathTemp = path.join(updatePath, 'app')
       await extract(filePath, { dir: appPathTemp })
+      updateInfo.status = 'moving'
       await fs.emptyDir(appPath)
       await fs.copy(appPathTemp, appPath)
+      updateInfo.status = 'finished'
     }
   } catch (e) {
+    updateInfo.status = 'failed'
     sendMsg(e, 'ERROR')
   }
 }
