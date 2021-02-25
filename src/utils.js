@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
-const fetch = require('electron-fetch').default
+const fetch = require('electron-fetch/lib/index')
 const { BrowserWindow, app } = require('electron')
 const crypto = require('crypto')
 const util = require('util')

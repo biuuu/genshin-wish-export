@@ -1,12 +1,13 @@
 {
   "name": "genshin-gacha-export-electron",
   "version": "0.1.8",
-  "main": "./src/main.js",
+  "main": "./dist/main.min.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
     "start": "electron-forge start",
+    "build-main": "rollup --config ./build/rollup.config.js",
     "package": "electron-forge package --platform=win32 --arch=x64",
     "make": "electron-forge make --platform=win32 --arch=x64",
     "build-update": "node ./build/update.js"
@@ -18,12 +19,17 @@
     "node-mitmproxy": "^3.1.1",
     "semver": "^7.3.4",
     "winreg": "^1.2.4",
-    "winreg-ts": "^1.0.4",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.1",
+    "@babel/preset-env": "^7.13.5",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
     "adm-zip": "^0.5.3",
@@ -34,6 +40,8 @@
     "element-plus": "^1.0.2-beta.32",
     "lodash-es": "^4.17.20",
     "postcss": "^8.2.5",
+    "rollup": "^2.39.1",
+    "rollup-plugin-terser": "^7.0.2",
     "tailwindcss": "^2.0.3",
     "vite": "^2.0.1",
     "vue": "^3.0.5"
