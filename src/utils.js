@@ -3,6 +3,7 @@ const path = require('path')
 const fetch = require('electron-fetch').default
 const { BrowserWindow, app } = require('electron')
 const crypto = require('crypto')
+const util = require('util')
 
 const isDev = !app.isPackaged
 let win = null
@@ -71,6 +72,7 @@ const detectGameLocale = async (userPath) => {
 
 const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
 const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
+const userPath = app.getPath('userData')
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
@@ -95,8 +97,41 @@ const hash = (data, type = 'sha256') => {
   return hmac.digest('hex')
 }
 
+const scryptKey = crypto.scryptSync(userPath, 'hk4e', 24)
+const cipherAes = (data) => {
+  const algorithm = 'aes-192-cbc'
+  const iv = Buffer.alloc(16, 0)
+  const cipher = crypto.createCipheriv(algorithm, scryptKey, iv)
+  let encrypted = cipher.update(data, 'utf8', 'hex')
+  encrypted += cipher.final('hex')
+  return encrypted
+}
+
+const decipherAes = (encrypted) => {
+  const algorithm = 'aes-192-cbc'
+  const iv = Buffer.alloc(16, 0)
+  const decipher = crypto.createDecipheriv(algorithm, scryptKey, iv)
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+  decrypted += decipher.final('utf8')
+  return decrypted
+}
+
+const  interfaces = require('os').networkInterfaces()
+const localIp = () => {
+  for (var devName in interfaces) {
+    var iface = interfaces[devName]
+
+    for (var i = 0; i < iface.length; i++) {
+      var alias = iface[i]
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+        return alias.address
+    }
+  }
+  return '127.0.0.1'
+}
+
 module.exports = {
-  sleep, request, detectGameLocale, hash,
-  sendMsg, readJSON, saveJSON, initWindow, getWin,
-  appRoot
+  sleep, request, detectGameLocale, hash, cipherAes, decipherAes,
+  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath,
+  appRoot, userDataPath
 }

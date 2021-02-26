@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "main": "./src/main.js",
   "scripts": {
     "dev": "vite",
@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "electron-fetch": "^1.7.3",
+    "electron-unhandled": "^3.0.2",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
     "semver": "^7.3.4",
+    "winreg": "^1.2.4",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {

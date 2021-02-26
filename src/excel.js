@@ -1,5 +1,5 @@
 const ExcelJS = require('./module/exceljs.min.js')
-const readData = require('./getData').readData
+const getData = require('./getData').getData
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
@@ -28,7 +28,8 @@ function getTimeString() {
 }
 
 const start = async () => {
-  const data = await readData()
+  const { dataMap, current } = await getData()
+  const data = dataMap.get(current)
   // https://github.com/sunfkny/genshin-gacha-export-js/blob/main/index.js
   const workbook = new ExcelJS.Workbook()
   for (let [key, value] of data.result) {

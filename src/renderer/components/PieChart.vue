@@ -17,7 +17,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import throttle from 'lodash-es/throttle'
 
 echarts.use(
-    [TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer]
+  [TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer]
 )
 
 const props = defineProps({
@@ -114,7 +114,6 @@ onUpdated(() => {
 
 onMounted(() => {
   updateChart()
+  window.addEventListener('resize', updateChart)
 })
-
-window.addEventListener('resize', updateChart)
 </script>
