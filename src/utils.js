@@ -3,9 +3,14 @@ const path = require('path')
 const fetch = require('electron-fetch').default
 const { BrowserWindow, app } = require('electron')
 const crypto = require('crypto')
-const util = require('util')
+const unhandled = require('electron-unhandled')
 
 const isDev = !app.isPackaged
+
+const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
+const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
+const userPath = app.getPath('userData')
+
 let win = null
 const initWindow = () => {
   win = new BrowserWindow({
@@ -20,11 +25,34 @@ const initWindow = () => {
 
 const getWin = () => win
 
+const log = []
 const sendMsg = (text, type = 'LOAD_DATA_STATUS') => {
   if (win) {
     win.webContents.send(type, text)
   }
+  if (type !== 'LOAD_DATA_STATUS') {
+    log.push([Date.now(), type, text])
+    saveLog()
+  }
 }
+
+const saveLog = () => {
+  const text = log.map(item => {
+    const time = new Date(item[0]).toLocaleString()
+    const type = item[1] === 'LOAD_DATA_STATUS' ? 'INFO' : item[1]
+    const text = item[2]
+    return `[${type}][${time}]${text}`
+  }).join('\r\n')
+  fs.outputFileSync(path.join(userDataPath, 'log.txt'), text)
+}
+
+unhandled({
+  showDialog: false,
+  logger: function (err) {
+    log.push([Date.now(), 'ERROR', err.stack])
+    saveLog()
+  }
+})
 
 const request = async (url) => {
   const res = await fetch(url, {
@@ -70,9 +98,6 @@ const detectGameLocale = async (userPath) => {
   return list
 }
 
-const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
-const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
-const userPath = app.getPath('userData')
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
@@ -131,7 +156,7 @@ const localIp = () => {
 }
 
 module.exports = {
-  sleep, request, detectGameLocale, hash, cipherAes, decipherAes,
+  sleep, request, detectGameLocale, hash, cipherAes, decipherAes, saveLog,
   sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath,
   appRoot, userDataPath
 }

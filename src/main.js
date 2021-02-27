@@ -1,16 +1,11 @@
 const path = require('path')
 const fs = require('fs-extra')
 const { app, BrowserWindow } = require('electron')
-const { initWindow, appRoot } = require('./utils')
+const { initWindow, saveLog } = require('./utils')
 const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
 require('./excel')
 const { getUpdateInfo } = require('./update/index')
-const unhandled = require('electron-unhandled')
-
-unhandled({
-  showDialog: false
-})
 
 const isDev = !app.isPackaged
 let win = null
