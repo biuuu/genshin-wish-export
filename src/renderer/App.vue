@@ -1,6 +1,21 @@
 <template>
-  <el-button :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
-  <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
+  <div class="flex justify-between">
+    <div>
+      <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
+      <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
+      <el-tooltip v-if="detail" content="从其它账号导出数据" placement="bottom">
+        <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
+      </el-tooltip>
+    </div>
+    <el-select v-if="state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText" placeholder="请选择">
+      <el-option
+        v-for="item of state.dataMap"
+        :key="item[0]"
+        :label="maskUid(item[0])"
+        :value="item[0]">
+      </el-option>
+    </el-select>
+  </div>
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
   <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
     <div class="mb-4" v-for="(item, i) of detail" :key="i">
@@ -29,6 +44,14 @@ const state = reactive({
 
 const gachaData = computed(() => {
   return state.dataMap.get(state.current)
+})
+
+const uidSelectText = computed(() => {
+  if (state.current === 0) {
+    return '新用户'
+  } else {
+    return state.current
+  }
 })
 
 const allowClick = () => {
@@ -91,6 +114,21 @@ const readData = async () => {
 
 const saveExcel = async () => {
   await ipcRenderer.invoke('SAVE_EXCEL')
+}
+
+const changeCurrent = async (uid) => {
+  state.current = uid
+  await ipcRenderer.invoke('CHANGE_UID', uid)
+}
+
+const newUser = async () => {
+  state.status = 'init'
+  state.current = 0
+  await changeCurrent(0)
+}
+
+const maskUid = (uid) => {
+  return `${uid}`.replace(/(.+)(.{3})$/, '******$2')
 }
 
 onMounted(() => {

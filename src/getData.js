@@ -7,6 +7,7 @@ const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataP
 const config = require('./config')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
+const { data } = require('autoprefixer')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
@@ -48,8 +49,8 @@ const readData = async () => {
       }
     }
   }
-  if (!config.current && dataMap.size) {
-    config.current = dataMap.keys().next().value
+  if ((!config.current && dataMap.size) || (config.current && dataMap.size && !dataMap.has(config.current))) {
+    await changeCurrent(dataMap.keys().next().value)
   }
 }
 
@@ -347,6 +348,10 @@ ipcMain.handle('READ_DATA', async () => {
     dataMap,
     current: config.current
   }
+})
+
+ipcMain.handle('CHANGE_UID', async (event, uid) => {
+  config.current = uid
 })
 
 exports.getData = () => {
