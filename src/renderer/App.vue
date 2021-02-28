@@ -143,6 +143,5 @@ onMounted(() => {
   })
 
   document.title = `原神抽卡记录导出工具 - v${version}`
-  console.log('http://music.163.com/song?id=33913985')
 })
 </script>
