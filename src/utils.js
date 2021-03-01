@@ -46,10 +46,14 @@ const saveLog = () => {
   fs.outputFileSync(path.join(userDataPath, 'log.txt'), text)
 }
 
+const authkeyMask = (text = '') => {
+  return text.replace(/authkey=[^&]+&/g, 'authkey=***&')
+}
+
 unhandled({
   showDialog: false,
   logger: function (err) {
-    log.push([Date.now(), 'ERROR', err.stack])
+    log.push([Date.now(), 'ERROR', authkeyMask(err.stack)])
     saveLog()
   }
 })

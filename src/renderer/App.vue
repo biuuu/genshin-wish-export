@@ -3,11 +3,11 @@
     <div>
       <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
       <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
-      <el-tooltip v-if="detail" content="从其它账号导出数据" placement="bottom">
+      <el-tooltip v-if="detail && state.status !== 'loading'" content="从其它账号导出数据" placement="bottom">
         <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
       </el-tooltip>
     </div>
-    <el-select v-if="state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText" placeholder="请选择">
+    <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText" placeholder="请选择">
       <el-option
         v-for="item of state.dataMap"
         :key="item[0]"
@@ -48,7 +48,7 @@ const gachaData = computed(() => {
 
 const uidSelectText = computed(() => {
   if (state.current === 0) {
-    return '新用户'
+    return '新账号'
   } else {
     return state.current
   }
@@ -117,13 +117,16 @@ const saveExcel = async () => {
 }
 
 const changeCurrent = async (uid) => {
+  if (uid === 0) {
+    state.status = 'init'
+  } else {
+    state.status = 'loaded'
+  }
   state.current = uid
   await ipcRenderer.invoke('CHANGE_UID', uid)
 }
 
 const newUser = async () => {
-  state.status = 'init'
-  state.current = 0
   await changeCurrent(0)
 }
 

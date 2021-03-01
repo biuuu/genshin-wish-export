@@ -3,14 +3,6 @@ const getData = require('./getData').getData
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
-const { getWin } =  require('./utils')
-
-const sendMsg = (text) => {
-  const win = getWin()
-  if (win) {
-    win.webContents.send('LOAD_DATA_STATUS', text)
-  }
-}
 
 function pad(num) {
   return `${num}`.padStart(2, "0");
@@ -55,7 +47,7 @@ const start = async () => {
         pdx = 0
       }
     }
-    // sendMsg(logs)
+
     sheet.addRows(logs)
     // set xlsx hearer style
     ;(["A", "B", "C", "D","E","F"]).forEach((v) => {
@@ -106,9 +98,6 @@ const start = async () => {
     })
   }
 
-  sendMsg("获取抽卡记录结束")
-
-  sendMsg("正在导出")
   const buffer = await workbook.xlsx.writeBuffer()
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `原神抽卡记录_${getTimeString()}`),
@@ -119,7 +108,6 @@ const start = async () => {
   if (filePath) {
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, buffer)
-    sendMsg("导出成功")
   }
 }
 
