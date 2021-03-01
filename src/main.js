@@ -42,9 +42,16 @@ if (!isFirstInstance) {
     }
   })
 
-  app.on('will-quit', () => {
+  let a=1
+  app.on('will-quit', (e) => {
     if (proxyStatus.started) {
       disableProxy()
+    }
+    if (getUpdateInfo().status === 'moving') {
+      e.preventDefault()
+      setTimeout(() => {
+        app.quit()
+      }, 3000)
     }
   })
 
