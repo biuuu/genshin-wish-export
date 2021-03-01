@@ -10,10 +10,11 @@ const { getUpdateInfo } = require('./update/index')
 const isDev = !app.isPackaged
 let win = null
 
-function createWindow () {
+function createWindow() {
   win = initWindow()
   win.setMenuBarVisibility(false)
-  isDev ? win.loadURL(`http://localhost:3000`) : win.loadFile('./dist/index.html')
+  win.webContents.openDevTools({ mode: 'undocked', activate: true })
+  isDev ? win.loadURL(`http://localhost:${process.env.PORT}`) : win.loadFile('dist/electron/renderer/index.html')
 }
 
 const isFirstInstance = app.requestSingleInstanceLock()
@@ -42,7 +43,7 @@ if (!isFirstInstance) {
     }
   })
 
-  let a=1
+  let a = 1
   app.on('will-quit', (e) => {
     if (proxyStatus.started) {
       disableProxy()

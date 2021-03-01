@@ -19,7 +19,7 @@ const createZip = (filePath, dest) => {
 
 const start = async () => {
   copyAppZip()
-  const appPath = './out/Genshin Gacha Export-win32-x64/resources/app/'
+  const appPath = './build/Genshin Gacha Export-win32-x64/resources/app/'
   const name = 'app.zip'
   const outputPath = path.resolve('./update/update/')
   const zipPath = path.resolve(outputPath, name)
