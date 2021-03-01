@@ -103,7 +103,7 @@ const start = async () => {
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `Genshin_Wish_History_${getTimeString()}`),
     filters: [
-      { name: 'Excel文件', extensions: ['xlsx'] }
+      { name: 'Excel', extensions: ['xlsx'] }
     ]
   })
   if (filePath) {

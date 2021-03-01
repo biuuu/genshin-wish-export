@@ -24,7 +24,7 @@ const appPath = isDev ? path.resolve(__dirname, '../../', 'update-dev/app'): app
 const updatePath = isDev ? path.resolve(__dirname, '../../', 'update-dev/download') : path.resolve(appPath, '..', '..', 'update')
 
 const update = async () => {
-  // Disabled this for security concerns. Hope the original author can support i18n ASAP. XD
+  // Removed this for security concerns.
 }
 
 const getUpdateInfo = () => updateInfo

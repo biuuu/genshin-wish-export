@@ -49,7 +49,7 @@ const gachaData = computed(() => {
 
 const uidSelectText = computed(() => {
   if (state.current === 0) {
-    return '新账号'
+    return 'New Account'
   } else {
     return state.current
   }
