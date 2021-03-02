@@ -14,13 +14,13 @@ let win = null
 function createWindow() {
   win = initWindow()
   win.setMenuBarVisibility(false)
+  isDev ? win.loadURL(`http://localhost:${process.env.PORT}`) : win.loadFile('dist/electron/renderer/index.html')
   if (isDev) {
     win.webContents.openDevTools({ mode: 'undocked', activate: true })
     electronDevtoolsInstaller('ljjemllljcmogpfapbkkighbhhppjdbg', true)
       .then((name) => console.log(`已安装: ${name}`))
       .catch(err => console.log('无法安装 `vue-devtools`: \n 可能发生得错误：网络连接问题 \n', err))
   }
-  isDev ? win.loadURL(`http://localhost:${process.env.PORT}`) : win.loadFile('dist/electron/renderer/index.html')
 }
 
 const isFirstInstance = app.requestSingleInstanceLock()
