@@ -57,8 +57,6 @@ module.exports = (env = 'production') => {
       'https',
       'path',
       'electron',
-      'electron-updater',
-      'original-fs'
     ],
   }
 }
