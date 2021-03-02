@@ -1,5 +1,6 @@
 const { join } = require("path")
 const vuePlugin = require("@vitejs/plugin-vue")
+const { defineConfig } = require("vite")
 
 function resolve(dir) {
     return join(__dirname, '..', dir)
@@ -7,12 +8,12 @@ function resolve(dir) {
 
 const root = resolve('src/renderer')
 
-const config = {
+const config = defineConfig({
     mode: process.env.NODE_ENV,
     root,
     resolve: {
         alias: {
-            '@': root,
+            '@renderer': root,
         }
     },
     base: './',
@@ -27,6 +28,6 @@ const config = {
         vuePlugin()
     ],
     publicDir: resolve('static')
-}
+})
 
 module.exports = config
