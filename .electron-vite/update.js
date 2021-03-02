@@ -43,8 +43,8 @@ const start = async () => {
 
 const copyAppZip = () => {
   try {
-    const dir = path.resolve('./out/make/zip/win32/x64/')
-    const filePath = path.resolve(dir, `Genshin Gacha Export-win32-x64-${version}.zip`)
+    const dir = path.resolve('./build')
+    const filePath = path.resolve(dir, `Genshin Gacha Export-${version}-win.zip`)
     fs.copySync(filePath, path.join(dir, 'app.zip'))
   } catch (e) {}
 }
