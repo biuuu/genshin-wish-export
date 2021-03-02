@@ -31,7 +31,7 @@
       }
     ],
     "productName": "Genshin Gacha Export",
-    "appId": "org.sky.genshin-gacha-export-electron",
+    "appId": "org.biuuu.genshin-gacha-export",
     "directories": {
       "output": "build"
     },
@@ -58,7 +58,7 @@
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target": "nsis"
+      "target": "zip"
     },
     "linux": {
       "target": "deb",
