@@ -21,7 +21,6 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn build
-          yarn make
           yarn build-update
       - name: Create Release
         if: success()

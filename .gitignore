@@ -2,6 +2,11 @@
 node_modules/
 build/win-unpacked/
 build/win-ia32-unpacked/
+build/Genshin Gacha Export Setup 0.2.4.exe
+build/Genshin Gacha Export Setup 0.2.4.exe.blockmap
+build/builder-debug.yml
+build/latest.yml
+build/builder-effective-config.yaml
 dist/electron/main
 dist/electron/renderer
 dist/web

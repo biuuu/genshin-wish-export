@@ -13,7 +13,7 @@ let win = null
 function createWindow() {
   win = initWindow()
   win.setMenuBarVisibility(false)
-  win.webContents.openDevTools({ mode: 'undocked', activate: true })
+  // win.webContents.openDevTools({ mode: 'undocked', activate: true })
   isDev ? win.loadURL(`http://localhost:${process.env.PORT}`) : win.loadFile('dist/electron/renderer/index.html')
 }
 
