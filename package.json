@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "license": "MIT",
