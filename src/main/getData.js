@@ -126,7 +126,7 @@ const getGachaLog = async ({ key, page, name, retryCount, url }) => {
       sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
       await sleep(5)
       retryCount--
-      return await getGachaLog(key, page, name, retryCount, url)
+      return await getGachaLog({ key, page, name, retryCount, url })
     } else {
       sendMsg(`获取${name}第${page}页失败，已超出重试次数`)
       throw e
