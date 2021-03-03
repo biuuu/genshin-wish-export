@@ -21,11 +21,11 @@ const start = async () => {
   copyAppZip()
   const appPath = './build/win-unpacked/resources/app'
   const name = 'app.zip'
-  const outputPath = path.resolve('./update/update/')
+  const outputPath = path.resolve('./build/update/update/')
   const zipPath = path.resolve(outputPath, name)
   await fs.ensureDir(outputPath)
   await fs.emptyDir(outputPath)
-  await fs.outputFile('./update/CNAME', 'genshin-gacha-export.danmu9.com')
+  await fs.outputFile('./build/update/CNAME', 'genshin-gacha-export.danmu9.com')
   createZip(appPath, zipPath)
   const buffer = await fs.readFile(zipPath)
   const sha256 = hash(buffer)

@@ -20,7 +20,7 @@ jobs:
       - name: Build App
         run: |
           yarn --frozen-lockfile
-          yarn build
+          yarn build:win64
           yarn build-update
       - name: Create Release
         if: success()
@@ -41,14 +41,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./out/make/zip/win32/x64/app.zip
+          asset_path: ./build/app.zip
           asset_name: Genshin-Gacha-Export.zip
           asset_content_type: application/zip
-      - name: Deploy Asar
+      - name: Deploy update
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
-          commit_message: Update asar
-          build_dir: update
+          commit_message: Update app
+          build_dir: ./build/update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
