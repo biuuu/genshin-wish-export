@@ -3,7 +3,7 @@ const util = require('util')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp } = require('./utils')
+const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
@@ -349,8 +349,21 @@ ipcMain.handle('READ_DATA', async () => {
   }
 })
 
-ipcMain.handle('CHANGE_UID', async (event, uid) => {
+ipcMain.handle('CHANGE_UID', (event, uid) => {
   config.current = uid
+})
+
+ipcMain.handle('GET_CONFIG', () => {
+  return config.value()
+})
+
+ipcMain.handle('LANG_MAP', () => {
+  return langMap
+})
+
+ipcMain.handle('SAVE_CONFIG', (event, [key, value]) => {
+  config[key] = value
+  config.save()
 })
 
 exports.getData = () => {

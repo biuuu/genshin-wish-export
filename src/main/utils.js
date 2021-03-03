@@ -86,6 +86,50 @@ const sortData = (data) => {
   })
 }
 
+const langMap = new Map([
+  ['zh-cn', '简体中文'],
+  ['zh-tw', '繁體中文'],
+  ['de-de', 'Deutsch'],
+  ['en-us', 'English'],
+  ['es-es', 'Español'],
+  ['fr-fr', 'Français'],
+  ['id-id', 'Indonesia'],
+  ['ja-jp', '日本語'],
+  ['ko-kr', '한국어'],
+  ['pt-pt', 'Português'],
+  ['ru-ru', 'Pусский'],
+  ['th-th', 'ภาษาไทย'],
+  ['vi-vn', 'Tiếng Việt']
+])
+
+const localeMap = new Map([
+  ['zh-cn', ['zh', 'zh-CN']],
+  ['zh-tw', ['zh-TW']],
+  ['de-de', ['de-AT', 'de-CH', 'de-DE', 'de']],
+  ['en-us', ['en-AU', 'en-CA', 'en-GB', 'en-NZ', 'en-US', 'en-ZA', 'en']],
+  ['es-es', ['es', 'es-419']],
+  ['fr-fr', ['fr-CA', 'fr-CH', 'fr-FR', 'fr']],
+  ['id-id', ['id']],
+  ['ja-jp', ['ja']],
+  ['ko-kr', ['ko']],
+  ['pt-pt', ['pt-BR', 'pt-PT', 'pt']],
+  ['ru-ru', ['ru']],
+  ['th-th', ['th']],
+  ['vi-vn', ['vi']]
+])
+
+const detectLocale = () => {
+  const locale = app.getLocale()
+  let result = 'zh-cn'
+  for (let [key, list] of localeMap) {
+    if (list.includes(locale)) {
+      result = key
+      break
+    }
+  }
+  return result
+}
+
 const detectGameLocale = async (userPath) => {
   const list = []
   const lang = app.getLocale()
@@ -162,6 +206,6 @@ const localIp = () => {
 
 module.exports = {
   sleep, request, detectGameLocale, hash, cipherAes, decipherAes, saveLog,
-  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath,
+  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
   appRoot, userDataPath
 }

@@ -7,14 +7,17 @@
         <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
       </el-tooltip>
     </div>
-    <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText" placeholder="请选择">
-      <el-option
-        v-for="item of state.dataMap"
-        :key="item[0]"
-        :label="maskUid(item[0])"
-        :value="item[0]">
-      </el-option>
-    </el-select>
+    <div class="flex gap-2">
+      <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText" placeholder="请选择">
+        <el-option
+          v-for="item of state.dataMap"
+          :key="item[0]"
+          :label="maskUid(item[0])"
+          :value="item[0]">
+        </el-option>
+      </el-select>
+      <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-setting" size="small">设置</el-button>
+    </div>
   </div>
   <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
   <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
@@ -24,6 +27,7 @@
       <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
   </div>
+  <Setting :show="state.showSetting" @changeVisible="showSetting"></Setting>
 </template>
 
 <script setup>
@@ -31,6 +35,7 @@ const { ipcRenderer } = require('electron')
 import { reactive, computed, watch, onMounted } from 'vue'
 import PieChart from './components/PieChart.vue'
 import GachaDetail from './components/GachaDetail.vue'
+import Setting from './components/Setting.vue'
 import gachaDetail from './gachaDetail'
 import { version } from '../../package.json'
 
@@ -39,7 +44,8 @@ const state = reactive({
   log: '',
   data: null,
   dataMap: new Map(),
-  current: 0
+  current: 0,
+  showSetting: false
 })
 
 const gachaData = computed(() => {
@@ -132,6 +138,14 @@ const newUser = async () => {
 
 const maskUid = (uid) => {
   return `${uid}`.replace(/(.+)(.{3})$/, '******$2')
+}
+
+const showSetting = (show) => {
+  if (show) {
+    state.showSetting = true
+  } else {
+    state.showSetting = false
+  }
 }
 
 onMounted(() => {
