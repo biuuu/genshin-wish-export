@@ -1,15 +1,69 @@
 {
   "name": "genshin-gacha-export-electron",
   "version": "0.2.4",
-  "main": "./src/main.js",
+  "main": "./dist/electron/main/main.js",
+  "author": "biuuu <https://github.com/biuuu>",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "start": "electron-forge start",
-    "package": "electron-forge package --platform=win32 --arch=x64",
-    "make": "electron-forge make --platform=win32 --arch=x64",
-    "build-update": "node ./build/update.js"
+    "dev": "node .electron-vite/dev-runner.js",
+    "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder",
+    "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --ia32",
+    "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --x64",
+    "build:mac": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --mac",
+    "build:dir": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --dir",
+    "build:clean": "cross-env BUILD_TARGET=clean node .electron-vite/build.js",
+    "build:web": "cross-env BUILD_TARGET=web node .electron-vite/build.js",
+    "build-update": "node .electron-vite/update.js",
+    "dep:upgrade": "yarn upgrade-interactive --latest",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "asar": false,
+    "extraFiles": [],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1"
+      }
+    ],
+    "productName": "Genshin Gacha Export",
+    "appId": "org.biuuu.genshin-gacha-export",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/electron/**/*"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": "zip"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "build/icons"
+    }
   },
   "dependencies": {
     "electron-fetch": "^1.7.3",
@@ -21,40 +75,42 @@
     "yauzl": "^2.10.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "@vitejs/plugin-vue": "^1.1.4",
-    "@vue/compiler-sfc": "^3.0.5",
+    "@rollup/plugin-alias": "^3.1.2",
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@types/electron-devtools-installer": "^2.2.0",
+    "@types/node": "^14.14.31",
+    "@vitejs/plugin-vue": "1.1.5",
+    "@vue/compiler-sfc": "^3.0.7",
     "adm-zip": "^0.5.3",
     "autoprefixer": "^10.2.4",
+    "cfonts": "^2.9.1",
+    "chalk": "^4.1.0",
+    "cross-env": "^7.0.3",
+    "del": "^6.0.0",
     "echarts": "^5.0.2",
-    "electron": "^11.2.3",
-    "electron-squirrel-startup": "^1.0.0",
+    "electron": "^11.3.0",
+    "electron-builder": "^22.10.5",
+    "electron-devtools-installer": "^3.1.1",
     "element-plus": "^1.0.2-beta.32",
-    "lodash-es": "^4.17.20",
-    "postcss": "^8.2.5",
+    "lodash-es": "^4.17.21",
+    "minimist": "^1.2.5",
+    "multispinner": "^0.2.1",
+    "ora": "^5.3.0",
+    "portfinder": "^1.0.28",
+    "postcss": "^8.2.6",
+    "rollup-plugin-esbuild": "^2.6.1",
     "tailwindcss": "^2.0.3",
-    "vite": "^2.0.1",
-    "vue": "^3.0.5"
+    "vite": "2.0.3",
+    "vue": "^3.0.6",
+    "vue-router": "^4.0.4",
+    "vuex": "^4.0.0"
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "ignore": [
-          "src/(renderer)",
-          "(userData|update-dev|yarn-error.log|yarn.lock|\\.github|\\.vscode)",
-          "node_modules/(@.+|\\..+)"
-        ],
-        "name": "Genshin Gacha Export"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "win32"
-          ]
-        }
-      ]
-    }
-  }
+  "keywords": [
+    "vite",
+    "electron",
+    "vue3",
+    "rollup"
+  ]
 }

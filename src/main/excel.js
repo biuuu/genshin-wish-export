@@ -37,9 +37,9 @@ const start = async () => {
     ]
     // get gacha logs
     const logs = value
-    idx = 0
-    pdx = 0
-    for (log of logs){
+    let idx = 0
+    let pdx = 0
+    for (let log of logs){
       idx += 1
       pdx += 1
       log.push(idx,pdx)

@@ -7,8 +7,8 @@ const unhandled = require('electron-unhandled')
 
 const isDev = !app.isPackaged
 
-const appRoot = isDev ? path.resolve(__dirname, '..') : path.resolve(app.getAppPath(), '..', '..')
-const userDataPath = isDev ? path.resolve(appRoot, 'userData') : path.resolve(appRoot, 'userData')
+const appRoot = isDev ? path.resolve(__dirname, '..', '..') : path.resolve(app.getAppPath(), '..', '..')
+const userDataPath = path.resolve(appRoot, 'userData')
 const userPath = app.getPath('userData')
 
 let win = null

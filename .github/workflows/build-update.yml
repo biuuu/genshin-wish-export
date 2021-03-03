@@ -19,14 +19,13 @@ jobs:
     - name: Build Update
       run: |
         yarn --frozen-lockfile
-        yarn build
-        yarn package
+        yarn build:dir
         yarn build-update
     - name: Deploy
       if: success()
       uses: crazy-max/ghaction-github-pages@v2
       with:
-        commit_message: Update asar
-        build_dir: update
+        commit_message: Update app
+        build_dir: ./build/update
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

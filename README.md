@@ -18,15 +18,11 @@ Electron + Vite + Vue3 + Tailwindcss
 # 安装模块
 yarn install
 
-# 启动Vite开发模式
+# 开发
 yarn dev
 
-# 打开Electron
-yarn start
-
-# Build
+# Build 会根据当前机器平台build出适用版本。
 yarn build
-yarn make
 ```
 
 ## License

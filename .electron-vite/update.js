@@ -19,13 +19,13 @@ const createZip = (filePath, dest) => {
 
 const start = async () => {
   copyAppZip()
-  const appPath = './out/Genshin Gacha Export-win32-x64/resources/app/'
+  const appPath = './build/win-unpacked/resources/app'
   const name = 'app.zip'
-  const outputPath = path.resolve('./update/update/')
+  const outputPath = path.resolve('./build/update/update/')
   const zipPath = path.resolve(outputPath, name)
   await fs.ensureDir(outputPath)
   await fs.emptyDir(outputPath)
-  await fs.outputFile('./update/CNAME', 'genshin-gacha-export.danmu9.com')
+  await fs.outputFile('./build/update/CNAME', 'genshin-gacha-export.danmu9.com')
   createZip(appPath, zipPath)
   const buffer = await fs.readFile(zipPath)
   const sha256 = hash(buffer)
@@ -43,8 +43,8 @@ const start = async () => {
 
 const copyAppZip = () => {
   try {
-    const dir = path.resolve('./out/make/zip/win32/x64/')
-    const filePath = path.resolve(dir, `Genshin Gacha Export-win32-x64-${version}.zip`)
+    const dir = path.resolve('./build')
+    const filePath = path.resolve(dir, `Genshin Gacha Export-${version}-win.zip`)
     fs.copySync(filePath, path.join(dir, 'app.zip'))
   } catch (e) {}
 }

@@ -5,7 +5,7 @@ const util = require('util')
 const path = require('path')
 const fs = require('fs-extra')
 const extract = require('../module/extract-zip')
-const { version } = require('../../package.json')
+const { version } = require('../../../package.json')
 const { hash, sendMsg } = require('../utils')
 const streamPipeline = util.promisify(require('stream').pipeline)
 
