@@ -10,6 +10,7 @@ const mitmproxy = require('./module/node-mitmproxy')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
+let apiDomain = 'https://hk4e-api.mihoyo.com'
 
 const saveData = async (data, url) => {
   const obj = Object.assign({}, data)
@@ -139,7 +140,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
   let list = []
   let res = []
   let uid = 0
-  const url = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
+  const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
       sendMsg(`正在获取${name}第${page}页，每10页休息1秒……`)
@@ -157,7 +158,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
 }
 
 const tryGetUid = async (queryString) => {
-  const url = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?${queryString}`
+  const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
   for (let [key] of defaultTypeMap) {
     const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
     if (res.data.list && res.data.list.length) {
@@ -168,7 +169,7 @@ const tryGetUid = async (queryString) => {
 }
 
 const getGachaType = async (queryString) => {
-  const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
+  const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
   sendMsg('正在获取抽卡活动类型')
   const res = await request(gachaTypeUrl)
   if (res.retcode !== 0) {
@@ -193,7 +194,12 @@ const getGachaType = async (queryString) => {
 }
 
 const getQuerystring = (url) => {
-  const { searchParams } = new URL(url)
+  const { searchParams, host } = new URL(url)
+  if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
+    apiDomain = 'https://hk4e-api-os.mihoyo.com'
+  } else {
+    apiDomain = 'https://hk4e-api.mihoyo.com'
+  }
   if (!searchParams.get('authkey')) {
     sendMsg('URL中缺少authkey')
     return false
@@ -251,7 +257,7 @@ const getUrlFromConfig = () => {
 const tryRequest = async (url, retry = false) => {
   const queryString = getQuerystring(url)
   if (!queryString) return false
-  const gachaTypeUrl = `https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList?${queryString}`
+  const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
   try {
     const res = await request(gachaTypeUrl)
     if (res.retcode !== 0) {
