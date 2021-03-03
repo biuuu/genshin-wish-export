@@ -17,6 +17,7 @@ const initWindow = () => {
     width: 888,
     height: 550,
     webPreferences: {
+      contextIsolation:false,
       nodeIntegration: true
     }
   })
