@@ -35,8 +35,8 @@
       </el-form-item>
     </el-form>
     <h3 class="text-lg my-4">关于</h3>
-    <p class="text-gray-600 text-sm mt-1">本工具为开源软件，源码使用 MIT 协议授权</p>
-    <p class="text-gray-600 text-sm mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-gacha-export</a></p>
+    <p class="text-gray-600 text-xs mt-1">本工具为开源软件，源代码使用 MIT 协议授权</p>
+    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-gacha-export</a></p>
   </div>
 </template>
 

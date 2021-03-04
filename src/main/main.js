@@ -15,7 +15,7 @@ function createWindow() {
   win.setMenuBarVisibility(false)
   isDev ? win.loadURL(`http://localhost:9080`) : win.loadFile('dist/electron/renderer/index.html')
   if (isDev) {
-    const electronDevtoolsInstaller = require('electron-devtools-installer').default
+    // const electronDevtoolsInstaller = require('electron-devtools-installer').default
     win.webContents.openDevTools({ mode: 'undocked', activate: true })
     // electronDevtoolsInstaller('ljjemllljcmogpfapbkkighbhhppjdbg', true)
     //   .then((name) => console.log(`已安装: ${name}`))
