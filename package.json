@@ -65,15 +65,7 @@
       "icon": "build/icons"
     }
   },
-  "dependencies": {
-    "electron-fetch": "^1.7.3",
-    "electron-unhandled": "^3.0.2",
-    "fs-extra": "^9.1.0",
-    "get-stream": "^6.0.0",
-    "semver": "^7.3.4",
-    "winreg": "^1.2.4",
-    "yauzl": "^2.10.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.2",
     "@rollup/plugin-commonjs": "^17.1.0",
@@ -105,7 +97,14 @@
     "vite": "2.0.5",
     "vue": "^3.0.6",
     "vue-router": "^4.0.4",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "electron-fetch": "^1.7.3",
+    "electron-unhandled": "^3.0.2",
+    "fs-extra": "^9.1.0",
+    "get-stream": "^6.0.0",
+    "semver": "^7.3.4",
+    "winreg": "^1.2.4",
+    "yauzl": "^2.10.0"
   },
   "keywords": [
     "vite",
