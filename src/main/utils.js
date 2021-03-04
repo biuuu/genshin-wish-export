@@ -4,6 +4,8 @@ const fetch = require('electron-fetch').default
 const { BrowserWindow, app } = require('electron')
 const crypto = require('crypto')
 const unhandled = require('electron-unhandled')
+const windowStateKeeper = require('electron-window-state')
+const debounce = require('lodash/debounce')
 
 const isDev = !app.isPackaged
 
@@ -13,14 +15,23 @@ const userPath = app.getPath('userData')
 
 let win = null
 const initWindow = () => {
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 888,
+    defaultHeight: 550
+  })
   win = new BrowserWindow({
-    width: 888,
-    height: 550,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     webPreferences: {
       contextIsolation:false,
       nodeIntegration: true
     }
   })
+  const saveState = debounce(mainWindowState.saveState, 500)
+  win.on('resize', () => saveState(win))
+  win.on('move', () => saveState(win))
   return win
 }
 
