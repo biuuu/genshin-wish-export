@@ -90,7 +90,7 @@ const mergeData = (local, origin) => {
 }
 
 const detectGameLocale = async (userPath) => {
-  const list = []
+  let list = []
   const lang = app.getLocale()
   try {
     await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
@@ -104,6 +104,7 @@ const detectGameLocale = async (userPath) => {
     if (config.logType === 2) {
       list.reverse()
     }
+    list = list.slice(0, 1)
   } else if (lang !== 'zh-CN') {
     list.reverse()
   }
@@ -178,14 +179,29 @@ const getGachaLogs = async ({ name, key }, queryString) => {
   return { list, uid }
 }
 
+const checkResStatus = (res) => {
+  if (res.retcode !== 0) {
+    let message = res.message
+    if (res.message === 'authkey timeout') {
+      message = '身份认证已过期，请重新打开游戏抽卡记录'
+    }
+    sendMsg(message)
+    throw new Error(message)
+  }
+  return res
+}
+
 const tryGetUid = async (queryString) => {
   const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
-  for (let [key] of defaultTypeMap) {
-    const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
-    if (res.data.list && res.data.list.length) {
-      return res.data.list[0].uid
+  try {
+    for (let [key] of defaultTypeMap) {
+      const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
+      checkResStatus(res)
+      if (res.data.list && res.data.list.length) {
+        return res.data.list[0].uid
+      }
     }
-  }
+  } catch (e) {}
   return config.current
 }
 
@@ -193,14 +209,7 @@ const getGachaType = async (queryString) => {
   const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
   sendMsg('正在获取抽卡活动类型')
   const res = await request(gachaTypeUrl)
-  if (res.retcode !== 0) {
-    if (res.message === 'authkey timeout') {
-      sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
-    } else {
-      sendMsg(res.message)
-    }
-    return false
-  }
+  checkResStatus(res)
   const gachaTypes = res.data.gacha_type_list
   const orderedGachaTypes = []
   order.forEach(key => {

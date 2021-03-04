@@ -2,7 +2,7 @@
   <div class="bg-white py-4 px-6 w-screen h-screen fixed inset-0">
     <div class="flex content-center items-center mb-4 justify-between">
       <h3 class="text-lg">设置</h3>
-      <el-button icon="el-icon-close" @click="closeSetting" plain circle type="primary" size="small" class="focus:outline-none"></el-button>
+      <el-button icon="el-icon-close" @click="closeSetting" plain circle type="default" size="small" class="shadow-md focus:shadow-none focus:outline-none"></el-button>
     </div>
     <el-form ref="form" :model="settingForm" label-width="120px" size="mini">
       <el-form-item label="语言">
