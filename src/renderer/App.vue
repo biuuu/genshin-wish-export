@@ -27,7 +27,7 @@
       <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
   </div>
-  <Setting :show="state.showSetting" @changeVisible="showSetting"></Setting>
+  <Setting v-show="state.showSetting" @close="showSetting(false)"></Setting>
 </template>
 
 <script setup>

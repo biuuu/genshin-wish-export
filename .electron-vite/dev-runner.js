@@ -176,8 +176,10 @@ async function init() {
 
     try {
         await startRenderer()
-        await startMain()
-        await startElectron()
+        if (process.env.TARGET !== 'web') {
+            await startMain()
+            await startElectron()
+        }
     } catch (error) {
         console.error(error)
         process.exit(1)

@@ -130,23 +130,6 @@ const detectLocale = () => {
   return result
 }
 
-const detectGameLocale = async (userPath) => {
-  const list = []
-  const lang = app.getLocale()
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
-    list.push('原神')
-  } catch (e) {}
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
-    list.push('Genshin Impact')
-  } catch (e) {}
-  if (lang !== 'zh-CN') {
-    list.reverse()
-  }
-  return list
-}
-
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
@@ -205,7 +188,7 @@ const localIp = () => {
 }
 
 module.exports = {
-  sleep, request, detectGameLocale, hash, cipherAes, decipherAes, saveLog,
+  sleep, request, hash, cipherAes, decipherAes, saveLog,
   sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
   appRoot, userDataPath
 }

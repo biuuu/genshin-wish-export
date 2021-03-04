@@ -1,12 +1,13 @@
-const { readJSON, saveJSON, decipherAes, cipherAes, detectLocale } = require('./utils')
+const { readJSON, saveJSON, decipherAes, cipherAes, detectLocale, detectGameLocale } = require('./utils')
 
 const config = {
   urls: [],
-  logType: 1,
+  logType: 0,
   lang: detectLocale(),
   current: 0,
   proxyPort: 8325,
-  proxyMode: false
+  proxyMode: false,
+  autoUpdate: true
 }
 
 const getLocalConfig = async () => {

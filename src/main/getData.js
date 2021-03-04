@@ -3,7 +3,7 @@ const util = require('util')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
+const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
@@ -87,6 +87,27 @@ const mergeData = (local, origin) => {
     }
   }
   return origin.result
+}
+
+const detectGameLocale = async (userPath) => {
+  const list = []
+  const lang = app.getLocale()
+  try {
+    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
+    list.push('原神')
+  } catch (e) {}
+  try {
+    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
+    list.push('Genshin Impact')
+  } catch (e) {}
+  if (config.logType) {
+    if (config.logType === 2) {
+      list.reverse()
+    }
+  } else if (lang !== 'zh-CN') {
+    list.reverse()
+  }
+  return list
 }
 
 const readLog = async () => {
@@ -284,11 +305,11 @@ const getUrl = async () => {
       url = await readLog()
     }
   }
-  if (!url) {
+  if (!url && config.proxyMode) {
     url = await useProxy()
-  } else {
+  } else if (url) {
     const result = await tryRequest(url)
-    if (!result) {
+    if (!result && config.proxyMode) {
       url = await useProxy()
     }
   }
@@ -298,9 +319,17 @@ const getUrl = async () => {
 const fetchData = async () => {
   await readData()
   const url = await getUrl()
-  if (!url) return false
+  if (!url) {
+    const message = '未找到URL，请确认是否已打开游戏抽卡记录'
+    sendMsg(message)
+    throw new Error(message)
+  }
   const searchParams = await getQuerystring(url)
-  if (!searchParams) return false
+  if (!searchParams) {
+    const message = '获取URL参数失败'
+    sendMsg(message)
+    throw new Error(message)
+  }
   let queryString = searchParams.toString()
   const vUid = await tryGetUid(queryString)
   const localLang = dataMap.has(vUid) ? dataMap.get(vUid).lang : ''
@@ -370,6 +399,10 @@ ipcMain.handle('LANG_MAP', () => {
 ipcMain.handle('SAVE_CONFIG', (event, [key, value]) => {
   config[key] = value
   config.save()
+})
+
+ipcMain.handle('DISABLE_PROXY', async () => {
+  await disableProxy()
 })
 
 exports.getData = () => {

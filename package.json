@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "node .electron-vite/dev-runner.js",
+    "dev:web": "cross-env TARGET=web node .electron-vite/dev-runner.js",
     "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder",
     "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --ia32",
     "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --x64",
@@ -103,7 +104,7 @@
     "rollup-plugin-esbuild": "^2.6.1",
     "tailwindcss": "^2.0.3",
     "vite": "2.0.5",
-    "vue": "^3.0.6",
+    "vue": "^3.0.7",
     "vue-router": "^4.0.4",
     "vuex": "^4.0.0"
   },
