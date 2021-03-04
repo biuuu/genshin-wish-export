@@ -77,6 +77,8 @@ const hint = computed(() => {
     return `上次数据更新时间为：${new Date(data.time).toLocaleString()}`
   } else if (state.status === 'loading') {
     return state.log || 'Loading...'
+  } else if (state.status === 'updated') {
+    return state.log
   } else if (state.status === 'failed') {
     return state.log + ' - 操作失败'
   }
@@ -157,6 +159,11 @@ onMounted(() => {
 
   ipcRenderer.on('ERROR', (event, err) => {
     console.error(err)
+  })
+
+  ipcRenderer.on('UPDATE_HINT', (event, message) => {
+    state.log = message
+    state.status = 'updated'
   })
 
   document.title = `原神抽卡记录导出工具 - v${version}`
