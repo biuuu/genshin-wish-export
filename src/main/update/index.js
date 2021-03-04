@@ -44,7 +44,7 @@ const update = async () => {
       await fs.emptyDir(appPath)
       await fs.copy(appPathTemp, appPath)
       updateInfo.status = 'finished'
-      sendMsg('自动更新已完成，重启工具后生效')
+      sendMsg('自动更新已完成，重启工具后生效', 'UPDATE_HINT')
     }
   } catch (e) {
     updateInfo.status = 'failed'
