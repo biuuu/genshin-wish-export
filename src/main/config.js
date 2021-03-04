@@ -1,4 +1,4 @@
-const { readJSON, saveJSON, decipherAes, cipherAes, detectLocale, detectGameLocale } = require('./utils')
+const { readJSON, saveJSON, decipherAes, cipherAes, detectLocale } = require('./utils')
 
 const config = {
   urls: [],
