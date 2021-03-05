@@ -1,7 +1,7 @@
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between" v-if="ui">
     <div>
-      <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': '更新数据'}}</el-button>
+      <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': ui.button.update}}</el-button>
       <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
       <el-tooltip v-if="detail && state.status !== 'loading'" content="从其它账号导出数据" placement="bottom">
         <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
@@ -27,7 +27,7 @@
       <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
     </div>
   </div>
-  <Setting v-show="state.showSetting" @close="showSetting(false)"></Setting>
+  <Setting v-show="state.showSetting" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
 </template>
 
 <script setup>
@@ -45,7 +45,14 @@ const state = reactive({
   data: null,
   dataMap: new Map(),
   current: 0,
-  showSetting: false
+  showSetting: false,
+  i18n: null
+})
+
+const ui = computed(() => {
+  if (state.i18n) {
+    return state.i18n.ui
+  }
 })
 
 const gachaData = computed(() => {
@@ -120,6 +127,13 @@ const readData = async () => {
   }
 }
 
+const getI18nData = async () => {
+  const data = await ipcRenderer.invoke('I18N_DATA')
+  if (data) {
+    state.i18n = data
+  }
+}
+
 const saveExcel = async () => {
   await ipcRenderer.invoke('SAVE_EXCEL')
 }
@@ -152,6 +166,7 @@ const showSetting = (show) => {
 
 onMounted(() => {
   readData()
+  getI18nData()
 
   ipcRenderer.on('LOAD_DATA_STATUS', (event, message) => {
     state.log = message

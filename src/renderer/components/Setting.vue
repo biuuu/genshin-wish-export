@@ -6,7 +6,7 @@
     </div>
     <el-form ref="form" :model="settingForm" label-width="120px" size="mini">
       <el-form-item label="语言">
-        <el-select @change="saveSetting" v-model="settingForm.lang">
+        <el-select @change="saveLang" v-model="settingForm.lang">
           <el-option v-for="item of data.langMap" :key="item[0]" :label="item[1]" :value="item[0]"></el-option>
         </el-select>
       </el-form-item>
@@ -44,6 +44,8 @@
 const { ipcRenderer, shell } = require('electron')
 import { reactive, onMounted, defineEmit } from 'vue'
 
+const emit = defineEmit(['close', 'changeLang'])
+
 const data = reactive({
   langMap: new Map()
 })
@@ -62,7 +64,10 @@ const saveSetting = async () => {
   }
 }
 
-const emit = defineEmit(['close'])
+const saveLang = async () => {
+  await saveSetting()
+  emit('changeLang')
+}
 
 const closeSetting = () => emit('close')
 

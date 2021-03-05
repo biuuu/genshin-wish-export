@@ -5,6 +5,7 @@ const { URL } = require('url')
 const { app, ipcMain } = require('electron')
 const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
+const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
 
@@ -412,6 +413,10 @@ ipcMain.handle('SAVE_CONFIG', (event, [key, value]) => {
 
 ipcMain.handle('DISABLE_PROXY', async () => {
   await disableProxy()
+})
+
+ipcMain.handle('I18N_DATA', () => {
+  return i18n.data
 })
 
 exports.getData = () => {
