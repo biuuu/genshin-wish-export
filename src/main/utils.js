@@ -97,28 +97,54 @@ const sortData = (data) => {
   })
 }
 
-const detectGameLocale = async (userPath) => {
-  const list = []
-  const lang = app.getLocale()
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
-    list.push('原神')
-  } catch (e) {}
-  try {
-    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
-    list.push('Genshin Impact')
-  } catch (e) {}
-  if (lang !== 'zh-CN') {
-    list.reverse()
+const langMap = new Map([
+  ['zh-cn', '简体中文'],
+  ['zh-tw', '繁體中文'],
+  ['de-de', 'Deutsch'],
+  ['en-us', 'English'],
+  ['es-es', 'Español'],
+  ['fr-fr', 'Français'],
+  ['id-id', 'Indonesia'],
+  ['ja-jp', '日本語'],
+  ['ko-kr', '한국어'],
+  ['pt-pt', 'Português'],
+  ['ru-ru', 'Pусский'],
+  ['th-th', 'ภาษาไทย'],
+  ['vi-vn', 'Tiếng Việt']
+])
+
+const localeMap = new Map([
+  ['zh-cn', ['zh', 'zh-CN']],
+  ['zh-tw', ['zh-TW']],
+  ['de-de', ['de-AT', 'de-CH', 'de-DE', 'de']],
+  ['en-us', ['en-AU', 'en-CA', 'en-GB', 'en-NZ', 'en-US', 'en-ZA', 'en']],
+  ['es-es', ['es', 'es-419']],
+  ['fr-fr', ['fr-CA', 'fr-CH', 'fr-FR', 'fr']],
+  ['id-id', ['id']],
+  ['ja-jp', ['ja']],
+  ['ko-kr', ['ko']],
+  ['pt-pt', ['pt-BR', 'pt-PT', 'pt']],
+  ['ru-ru', ['ru']],
+  ['th-th', ['th']],
+  ['vi-vn', ['vi']]
+])
+
+const detectLocale = () => {
+  const locale = app.getLocale()
+  let result = 'zh-cn'
+  for (let [key, list] of localeMap) {
+    if (list.includes(locale)) {
+      result = key
+      break
+    }
   }
-  return list
+  return result
 }
 
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data)
   } catch (e) {
-    sendMsg('保存本地数据失败')
     sendMsg(e, 'ERROR')
     await sleep(3)
   }
@@ -172,7 +198,7 @@ const localIp = () => {
 }
 
 module.exports = {
-  sleep, request, detectGameLocale, hash, cipherAes, decipherAes, saveLog,
-  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath,
+  sleep, request, hash, cipherAes, decipherAes, saveLog,
+  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
   appRoot, userDataPath
 }
