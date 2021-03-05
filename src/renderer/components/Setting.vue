@@ -1,50 +1,55 @@
 <template>
   <div class="bg-white py-4 px-6 w-screen h-screen fixed inset-0">
     <div class="flex content-center items-center mb-4 justify-between">
-      <h3 class="text-lg">设置</h3>
+      <h3 class="text-lg">{{text.title}}</h3>
       <el-button icon="el-icon-close" @click="closeSetting" plain circle type="default" size="small" class="shadow-md focus:shadow-none focus:outline-none"></el-button>
     </div>
-    <el-form ref="form" :model="settingForm" label-width="120px" size="mini">
-      <el-form-item label="语言">
+    <el-form :model="settingForm" label-width="120px" size="mini">
+      <el-form-item :label="text.language">
         <el-select @change="saveLang" v-model="settingForm.lang">
           <el-option v-for="item of data.langMap" :key="item[0]" :label="item[1]" :value="item[0]"></el-option>
         </el-select>
+        <p class="text-gray-400 text-xs mt-1.5">{{text.languageHint}}</p>
       </el-form-item>
-      <el-form-item label="日志类型">
+      <el-form-item :label="text.logType">
         <el-radio-group @change="saveSetting" v-model.number="settingForm.logType">
-          <el-radio-button :label="0">自动</el-radio-button>
-          <el-radio-button :label="1">国服</el-radio-button>
-          <el-radio-button :label="2">外服</el-radio-button>
+          <el-radio-button :label="0">{{text.auto}}</el-radio-button>
+          <el-radio-button :label="1">{{text.cnServer}}</el-radio-button>
+          <el-radio-button :label="2">{{text.seaServer}}</el-radio-button>
         </el-radio-group>
-        <p class="text-gray-400 text-xs mt-1.5">使用游戏日志获取URL时，优先选择哪种服务器生成的日志文件。</p>
+        <p class="text-gray-400 text-xs mt-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
-      <el-form-item label="自动更新">
+      <el-form-item :label="text.autoUpdate">
         <el-switch
           @change="saveSetting"
           v-model="settingForm.autoUpdate">
         </el-switch>
       </el-form-item>
-      <el-form-item label="代理模式">
+      <el-form-item :label="text.proxyMode">
         <el-switch
           @change="saveSetting"
           v-model="settingForm.proxyMode">
         </el-switch>
-        <p class="text-gray-400 text-xs my-1.5">通过设置系统代理来获取URL，打开后会在从日志中获取URL失败时启动。</p>
-        <el-button size="small" class="focus:outline-none" @click="disableProxy">关闭系统代理</el-button>
-        <p class="text-gray-400 text-xs mt-1.5">如果使用过代理模式时工具非正常关闭，可能导致系统代理设置没能清除，可以通过这个按钮来清除设置过的系统代理。</p>
+        <p class="text-gray-400 text-xs my-1.5">{{text.proxyModeHint}}</p>
+        <el-button size="small" class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
+        <p class="text-gray-400 text-xs mt-1.5">{{text.closeProxyHint}}</p>
       </el-form-item>
     </el-form>
-    <h3 class="text-lg my-4">关于</h3>
-    <p class="text-gray-600 text-xs mt-1">本工具为开源软件，源代码使用 MIT 协议授权</p>
+    <h3 class="text-lg my-4">{{about.title}}</h3>
+    <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
     <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-gacha-export</a></p>
   </div>
 </template>
 
-<script setup="props, { emit }">
+<script setup>
 const { ipcRenderer, shell } = require('electron')
-import { reactive, onMounted, defineEmit } from 'vue'
+import { reactive, onMounted, defineEmit, defineProps, computed } from 'vue'
 
 const emit = defineEmit(['close', 'changeLang'])
+
+const props = defineProps({
+  i18n: Object
+})
 
 const data = reactive({
   langMap: new Map()
@@ -56,6 +61,9 @@ const settingForm = reactive({
   proxyMode: true,
   autoUpdate: true
 })
+
+const text = computed(() => props.i18n.ui.setting)
+const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
   const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate']

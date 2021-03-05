@@ -22,18 +22,11 @@ echarts.use(
 
 const props = defineProps({
   data: Object,
-  typeMap: Map
+  typeMap: Map,
+  i18n: Object
 })
 
 const chart = ref(null)
-
-const keys = [
-  ['5星角色', 'count5c'],
-  ['5星武器', 'count5w'],
-  ['4星角色', 'count4c'],
-  ['4星武器', 'count4w'],
-  ['3星武器', 'count3w']
-]
 
 const colors = [
   '#fac858',
@@ -44,10 +37,18 @@ const colors = [
 ]
 
 const parseData = (detail, type) => {
+  const text = props.i18n.ui.data
+  const keys = [
+    [text.chara5, 'count5c'],
+    [text.weapon5, 'count5w'],
+    [text.chara4, 'count4c'],
+    [text.weapon4, 'count4w'],
+    [text.weapon3, 'count3w']
+  ]
   const result = []
   const color = []
   const selected = {
-    '3星武器': false
+    [text.weapon3] : false
   }
   keys.forEach((key, index) => {
     if (!detail[key[1]]) return
@@ -58,7 +59,7 @@ const parseData = (detail, type) => {
     color.push(colors[index])
   })
   if (type === '100' || result.findIndex(item => item.name.includes('5')) === -1) {
-    selected['3星武器'] = true
+    selected[text.weapon3] = true
   }
   return [result, color, selected]
 }
@@ -69,12 +70,13 @@ const updateChart = throttle(() => {
     pieChart = echarts.init(chart.value)
   }
 
+  const colon = props.i18n.symbol.colon
   const result = parseData(props.data[1], props.data[0])
 
   const option = {
     tooltip: {
       trigger: 'item',
-      formatter: '{b0}: {c0}',
+      formatter: `{b0}${colon}{c0}`,
       padding: 4,
       textStyle: {
         fontSize: 12
@@ -98,6 +100,9 @@ const updateChart = throttle(() => {
         labelLine: {
           length: 0,
           length2: 10
+        },
+        label: {
+          overflow: 'break'
         },
         data: result[0]
       }

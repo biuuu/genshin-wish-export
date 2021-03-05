@@ -45,16 +45,38 @@ const parseData = (data) => {
 const i18nMap = new Map()
 const prepareData = () => {
   for (let key in raw) {
-    i18nMap.set(key, parseData(raw[key]))
+    let temp = {}
+    if (key === 'zh-tw') {
+      Object.assign(temp, raw['zh-cn'], raw[key])
+    } else {
+      Object.assign(temp, raw['zh-cn'], raw['en-us'], raw[key])
+    }
+    i18nMap.set(key, parseData(temp))
   }
 }
 
 prepareData()
 
+const parseText = (text, data) => {
+  return text.replace(/(\${.+?})/g, function (...args) {
+    const key = args[0].slice(2, args[0].length - 1)
+    if (data[key]) return data[key]
+    return args[0]
+  })
+}
+
+const mainProps = [
+  'symbol', 'ui', 'log', 'excel'
+]
+
 const i18n = new Proxy(raw, {
   get (obj, prop) {
     if (prop === 'data') {
       return i18nMap.get(config.lang)
+    } else if (mainProps.includes(prop)) {
+      return i18nMap.get(config.lang)[prop]
+    } else if (prop === 'parse') {
+      return parseText
     }
     return obj[prop]
   }
