@@ -1,31 +1,34 @@
 <template>
-  <div class="flex justify-between" v-if="ui">
-    <div>
-      <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-sugar': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? '加载数据': ui.button.update}}</el-button>
-      <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>导出Excel</el-button>
-      <el-tooltip v-if="detail && state.status !== 'loading'" content="从其它账号导出数据" placement="bottom">
-        <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
-      </el-tooltip>
+  <div v-if="ui">
+    <div class="flex justify-between">
+      <div>
+        <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-milk-tea': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
+        <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>{{ui.button.excel}}</el-button>
+        <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
+          <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
+        </el-tooltip>
+      </div>
+      <div class="flex gap-2">
+        <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText">
+          <el-option
+            v-for="item of state.dataMap"
+            :key="item[0]"
+            :label="maskUid(item[0])"
+            :value="item[0]">
+          </el-option>
+        </el-select>
+        <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-setting" size="small">{{ui.button.setting}}</el-button>
+      </div>
     </div>
-    <div class="flex gap-2">
-      <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-32" size="small" @change="changeCurrent" v-model="uidSelectText">
-        <el-option
-          v-for="item of state.dataMap"
-          :key="item[0]"
-          :label="maskUid(item[0])"
-          :value="item[0]">
-        </el-option>
-      </el-select>
-      <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-setting" size="small">设置</el-button>
+    <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
+    <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
+      <div class="mb-4" v-for="(item, i) of detail" :key="i">
+        <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
+        <pie-chart :data="item" :i18n="state.i18n" :typeMap="typeMap"></pie-chart>
+        <gacha-detail :i18n="state.i18n" :data="item" :typeMap="typeMap"></gacha-detail>
+      </div>
     </div>
-  </div>
-  <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
-  <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
-    <div class="mb-4" v-for="(item, i) of detail" :key="i">
-      <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
-      <pie-chart :data="item" :typeMap="typeMap"></pie-chart>
-      <gacha-detail :data="item" :typeMap="typeMap"></gacha-detail>
-    </div>
+    <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
   </div>
   <Setting v-show="state.showSetting" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
 </template>
@@ -61,7 +64,7 @@ const gachaData = computed(() => {
 
 const uidSelectText = computed(() => {
   if (state.current === 0) {
-    return '新账号'
+    return state.i18n.ui.select.newAccount
   } else {
     return state.current
   }
@@ -78,16 +81,21 @@ const allowClick = () => {
 
 const hint = computed(() => {
   const data = state.dataMap.get(state.current)
+  if (!state.i18n) {
+    return 'Loading...'
+  }
+  const { hint } = state.i18n.ui
+  const { colon } = state.i18n.symbol
   if (state.status === 'init') {
-    return '请先在游戏里打开任意一个抽卡记录后再点击“加载数据”按钮'
+    return hint.init
   } else if (state.status === 'loaded') {
-    return `上次数据更新时间为：${new Date(data.time).toLocaleString()}`
+    return `${hint.lastUpdate}${colon}${new Date(data.time).toLocaleString()}`
   } else if (state.status === 'loading') {
     return state.log || 'Loading...'
   } else if (state.status === 'updated') {
     return state.log
   } else if (state.status === 'failed') {
-    return state.log + ' - 操作失败'
+    return state.log + ' - ${hint.failed}'
   }
   return '　'
 })
@@ -131,6 +139,7 @@ const getI18nData = async () => {
   const data = await ipcRenderer.invoke('I18N_DATA')
   if (data) {
     state.i18n = data
+    setTitle()
   }
 }
 
@@ -164,9 +173,13 @@ const showSetting = (show) => {
   }
 }
 
-onMounted(() => {
-  readData()
-  getI18nData()
+const setTitle = () => {
+  document.title = `${state.i18n.ui.win.title} - v${version}`
+}
+
+onMounted(async () => {
+  await readData()
+  await getI18nData()
 
   ipcRenderer.on('LOAD_DATA_STATUS', (event, message) => {
     state.log = message
@@ -180,7 +193,5 @@ onMounted(() => {
     state.log = message
     state.status = 'updated'
   })
-
-  document.title = `原神抽卡记录导出工具 - v${version}`
 })
 </script>

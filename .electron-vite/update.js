@@ -33,7 +33,7 @@ const start = async () => {
   await fs.copy(zipPath, path.resolve(outputPath, `${hashName}.zip`))
   await fs.remove(zipPath)
   await fs.outputJSON(path.join(outputPath, 'manifest.json'), {
-    active: true,
+    active: false,
     version,
     from: '0.1.5',
     name: `${hashName}.zip`,

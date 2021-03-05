@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "symbol.colon": ": ",
   "ui.button.load": "Load data",
@@ -67,3 +68,6 @@
   "excel.filePrefix": "Genshin gacha logger",
   "excel.fileType": "Excel file"
 }
+=======
+{}
+>>>>>>> 2b5185d6d6438275cbd6234041f0462e4d2938f0
