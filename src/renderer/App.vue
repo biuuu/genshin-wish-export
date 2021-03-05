@@ -94,7 +94,7 @@ const hint = computed(() => {
   } else if (state.status === 'updated') {
     return state.log
   } else if (state.status === 'failed') {
-    return state.log + ' - ${hint.failed}'
+    return state.log + ` - ${hint.failed}`
   }
   return '　'
 })
