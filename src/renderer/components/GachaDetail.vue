@@ -5,35 +5,35 @@
     <span class="mx-2" :title="new Date(detail.date[1]).toLocaleString()">{{new Date(detail.date[1]).toLocaleDateString()}}</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span class="mr-1">一共
-      <span class="text-blue-600">{{detail.total}}</span> 抽
+    <span class="mr-1">{{text.total}}
+      <span class="text-blue-600">{{detail.total}}</span> {{text.times}}
     </span>
-    <span v-if="type !== '100'">已累计<span class="mx-1 text-green-600">{{detail.countMio}}</span>抽未出5星</span>
+    <span v-if="type !== '100'">{{text.sum}}<span class="mx-1 text-green-600">{{detail.countMio}}</span>{{text.no5star}}</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span :title="`角色：${detail.count5c}\n武器：${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
-      <span class="min-w-10 inline-block">5星：{{detail.count5}}</span>
+    <span :title="`${text.character}${colon}${detail.count5c}\n${text.weapon}${colon}${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
+      <span class="min-w-10 inline-block">{{text.star5}}{{colon}}{{detail.count5}}</span>
       [{{percent(detail.count5, detail.total)}}]
     </span>
-    <br><span :title="`角色：${detail.count4c}\n武器：${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
-      <span class="min-w-10 inline-block">4星：{{detail.count4}}</span>
+    <br><span :title="`${text.character}${colon}${detail.count4c}\n${text.weapon}${colon}${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
+      <span class="min-w-10 inline-block">{{text.star4}}{{colon}}{{detail.count4}}</span>
       [{{percent(detail.count4, detail.total)}}]
     </span>
     <br><span class="text-blue-500 whitespace-pre">
-      <span class="min-w-10 inline-block">3星：{{detail.count3}}</span>
+      <span class="min-w-10 inline-block">{{text.star3}}{{colon}}{{detail.count3}}</span>
       [{{percent(detail.count3, detail.total)}}]
     </span>
   </p>
 
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">
-    5星历史记录：
+    {{text.history}}{{colon}}
     <span :title="item[2]" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
       v-for="(item, index) of detail.ssrPos" :key="item"
     >
       {{item[0]}}[{{item[1]}}]
     </span>
   </p>
-  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">5星平均出货次数为：<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
+  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
 </template>
 
 <script setup>
@@ -41,11 +41,14 @@ import { defineProps, computed } from 'vue'
 
 const props = defineProps({
   data: Object,
-  typeMap: Map
+  typeMap: Map,
+  i18n: Object
 })
 
 const type = computed(() => props.data[0])
 const detail = computed(() => props.data[1])
+const text = computed(() => props.i18n.ui.data)
+const colon = computed(() => props.i18n.symbol.colon)
 
 const avg5 = (list) => {
   let n = 0

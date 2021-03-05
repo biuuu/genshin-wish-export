@@ -8,6 +8,7 @@ const extract = require('../module/extract-zip')
 const { version } = require('../../../package.json')
 const { hash, sendMsg } = require('../utils')
 const config = require('../config')
+const i18n = require('../i18n')
 const streamPipeline = util.promisify(require('stream').pipeline)
 
 async function download(url, filePath) {
@@ -49,7 +50,7 @@ const update = async () => {
       await fs.emptyDir(appPath)
       await fs.copy(appPathTemp, appPath)
       updateInfo.status = 'finished'
-      sendMsg('自动更新已完成，重启工具后生效', 'UPDATE_HINT')
+      sendMsg(i18n.log.autoUpdate.success, 'UPDATE_HINT')
     }
   } catch (e) {
     updateInfo.status = 'failed'

@@ -5,6 +5,7 @@ const { URL } = require('url')
 const { app, ipcMain } = require('electron')
 const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
+const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
 
@@ -112,11 +113,12 @@ const detectGameLocale = async (userPath) => {
 }
 
 const readLog = async () => {
+  const text = i18n.log
   try {
     const userPath = app.getPath('home')
     const gameNames = await detectGameLocale(userPath)
     if (!gameNames.length) {
-      sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
+      sendMsg(text.file.notFound)
       return false
     }
     const promises = gameNames.map(async name => {
@@ -132,32 +134,34 @@ const readLog = async () => {
         return url
       }
     }
-    sendMsg('未找到URL')
+    sendMsg(text.url.notFound)
     return false
   } catch (e) {
-    sendMsg('读取日志失败')
+    sendMsg(text.file.readFailed)
     return false
   }
 }
 
 const getGachaLog = async ({ key, page, name, retryCount, url }) => {
+  const text = i18n.log
   try {
     const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}`)
     return res.data.list
   } catch (e) {
     if (retryCount) {
-      sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      sendMsg(i18n.parse(text.fetch.retry, { name, page, count: 6 - retryCount }))
       await sleep(5)
       retryCount--
       return await getGachaLog({ key, page, name, retryCount, url })
     } else {
-      sendMsg(`获取${name}第${page}页失败，已超出重试次数`)
+      sendMsg(i18n.parse(text.fetch.retryFailed, { name, page }))
       throw e
     }
   }
 }
 
 const getGachaLogs = async ({ name, key }, queryString) => {
+  const text = i18n.log
   let page = 1
   let list = []
   let res = []
@@ -165,10 +169,10 @@ const getGachaLogs = async ({ name, key }, queryString) => {
   const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
-      sendMsg(`正在获取${name}第${page}页，每10页休息1秒……`)
+      sendMsg(i18n.parse(text.fetch.interval, { name, page }))
       await sleep(1)
     }
-    sendMsg(`正在获取${name}第${page}页`)
+    sendMsg(i18n.parse(text.fetch.current, { name, page }))
     res = await getGachaLog({ key, page, name, url, retryCount: 5 })
     if (!uid && res.length) {
       uid = res[0].uid
@@ -180,10 +184,11 @@ const getGachaLogs = async ({ name, key }, queryString) => {
 }
 
 const checkResStatus = (res) => {
+  const text = i18n.log
   if (res.retcode !== 0) {
     let message = res.message
     if (res.message === 'authkey timeout') {
-      message = '身份认证已过期，请重新打开游戏抽卡记录'
+      message = text.fetch.authTimeout
     }
     sendMsg(message)
     throw new Error(message)
@@ -206,8 +211,9 @@ const tryGetUid = async (queryString) => {
 }
 
 const getGachaType = async (queryString) => {
+  const text = i18n.log
   const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
-  sendMsg('正在获取抽卡活动类型')
+  sendMsg(text.fetch.gachaType)
   const res = await request(gachaTypeUrl)
   checkResStatus(res)
   const gachaTypes = res.data.gacha_type_list
@@ -219,11 +225,12 @@ const getGachaType = async (queryString) => {
     }
   })
   orderedGachaTypes.push(...gachaTypes)
-  sendMsg('获取抽卡活动类型成功')
+  sendMsg(text.fetch.gachaTypeOk)
   return orderedGachaTypes
 }
 
 const getQuerystring = (url) => {
+  const text = i18n.log
   const { searchParams, host } = new URL(url)
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
     apiDomain = 'https://hk4e-api-os.mihoyo.com'
@@ -231,7 +238,7 @@ const getQuerystring = (url) => {
     apiDomain = 'https://hk4e-api.mihoyo.com'
   }
   if (!searchParams.get('authkey')) {
-    sendMsg('URL中缺少authkey')
+    sendMsg(text.url.lackAuth)
     return false
   }
   searchParams.delete('page')
@@ -244,13 +251,13 @@ const proxyServer = (port) => {
   return new Promise((rev) => {
     mitmproxy.createProxy({
       sslConnectInterceptor: (req, cltSocket, head) => {
-        if (req.url.includes('hk4e-api.mihoyo.com')) {
+        if (/hk4e-api[^\.]{2,10}\.mihoyo\.com/.test(req.url)) {
           return true
         }
       },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
         next()
-        if (rOptions.hostname.includes('hk4e-api.mihoyo.com')) {
+        if (/hk4e-api[^\.]{2,10}\.mihoyo\.com/.test(rOptions.hostname)) {
           if (/authkey=[^&]+/.test(rOptions.path)) {
             rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
           }
@@ -266,9 +273,10 @@ const proxyServer = (port) => {
 }
 
 const useProxy = async () => {
+  const text = i18n.log
   const ip = localIp()
   const port = config.proxyPort
-  sendMsg(`正在使用代理模式[${ip}:${port}]获取URL，请打开游戏抽卡记录，或刷新抽卡记录`)
+  sendMsg(i18n.parse(text.proxy.hint, { ip, port }))
   await enableProxy('127.0.0.1', port)
   const url = await proxyServer(port)
   await disableProxy()
@@ -326,16 +334,17 @@ const getUrl = async () => {
 }
 
 const fetchData = async () => {
+  const text = i18n.log
   await readData()
   const url = await getUrl()
   if (!url) {
-    const message = '未找到URL，请确认是否已打开游戏抽卡记录'
+    const message = text.url.notFound2
     sendMsg(message)
     throw new Error(message)
   }
   const searchParams = await getQuerystring(url)
   if (!searchParams) {
-    const message = '获取URL参数失败'
+    const message = text.url.incorrect
     sendMsg(message)
     throw new Error(message)
   }
@@ -412,6 +421,10 @@ ipcMain.handle('SAVE_CONFIG', (event, [key, value]) => {
 
 ipcMain.handle('DISABLE_PROXY', async () => {
   await disableProxy()
+})
+
+ipcMain.handle('I18N_DATA', () => {
+  return i18n.data
 })
 
 exports.getData = () => {
