@@ -30,7 +30,6 @@
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
   </div>
-  <Setting v-show="state.showSetting" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
 </template>
 
 <script setup>
