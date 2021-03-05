@@ -369,7 +369,9 @@ const fetchData = async () => {
     logs.reverse()
     typeMap.set(type.key, type.name)
     result.set(type.key, logs)
-    originUid = uid
+    if (!originUid) {
+      originUid = uid
+    }
   }
   const data = { result, time: Date.now(), typeMap, uid: originUid, lang }
   const localData = dataMap.get(originUid)
