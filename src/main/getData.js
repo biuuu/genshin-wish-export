@@ -8,6 +8,7 @@ const config = require('./config')
 const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
+const moment = require('moment')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
@@ -86,6 +87,7 @@ const mergeData = (local, origin) => {
       const newVal = mergeList(value, localResult.get(key))
       originResult.set(key, newVal)
     }
+    return originResult
   }
   return origin.result
 }
@@ -179,6 +181,20 @@ const getGachaLogs = async ({ name, key }, queryString) => {
     }
     list.push(...res)
     page += 1
+
+    if (res.length && uid && dataMap.has(uid)) {
+      const result = dataMap.get(uid).result
+      if (result.has(key)) {
+        const arr = result.get(key)
+        if (arr.length) {
+          const localLatestTime = arr[arr.length - 1][0]
+          const remoteTime = res[0].time
+          if (moment(localLatestTime).isAfter(remoteTime)) {
+            break
+          }
+        }
+      }
+    }
   } while (res.length > 0)
   return { list, uid }
 }
