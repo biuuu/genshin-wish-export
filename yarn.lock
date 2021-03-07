@@ -1272,10 +1272,10 @@ electron@^12.0.0:
     "@types/node" "^14.6.2"
     extract-zip "^1.0.3"
 
-element-plus@^1.0.2-beta.32:
-  version "1.0.2-beta.32"
-  resolved "https://registry.npm.taobao.org/element-plus/download/element-plus-1.0.2-beta.32.tgz#228975cfc2255993ef7ccd90238cea9a707f0742"
-  integrity sha1-Iol1z8IlWZPvfM2QI4zqmnB/B0I=
+element-plus@^1.0.2-beta.33:
+  version "1.0.2-beta.33"
+  resolved "https://registry.yarnpkg.com/element-plus/-/element-plus-1.0.2-beta.33.tgz#0e924c8872dbc14e916ed5d6452d9799b04d4c60"
+  integrity sha512-CHm+KO/d1rJ8R+0S3Hi0xwHhia5KSGChp/w1M8rWZNDQsjHJv/8CEpGSet8htXzgpl4amIFEOb7+uKP38Hu2Xw==
   dependencies:
     "@popperjs/core" "^2.4.4"
     async-validator "^3.4.0"

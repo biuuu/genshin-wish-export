@@ -1,6 +1,6 @@
 {
   "name": "genshin-gacha-export-electron",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "license": "MIT",
@@ -89,7 +89,7 @@
     "electron-fetch": "^1.7.3",
     "electron-unhandled": "^3.0.2",
     "electron-window-state": "^5.0.3",
-    "element-plus": "^1.0.2-beta.32",
+    "element-plus": "^1.0.2-beta.33",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
     "lodash-es": "^4.17.21",
