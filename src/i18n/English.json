@@ -12,7 +12,7 @@
   "ui.win.title": "Genshin gacha history exporter",
   "ui.data.total": "Total",
   "ui.data.times": "Pulls",
-  "ui.data.sum": "Accumulated pulls",
+  "ui.data.sum": "Accumulated",
   "ui.data.no5star": "pulls without a 5 star",
   "ui.data.character": "Character",
   "ui.data.weapon": "Weapon",
