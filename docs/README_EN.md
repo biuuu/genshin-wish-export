@@ -1,4 +1,4 @@
-# Genshi Impact Gacha Data Export
+# Genshi Impact Wish Record Export
 
 Electron + Vite + Vue3 + Tailwindcss
 
@@ -7,6 +7,7 @@ Electron + Vite + Vue3 + Tailwindcss
 # Localization
 Modify the JSON file in the `src/i18n/` directory to translate into the appropriate language.
 
+If you feel that the existing translation is inappropriate, you can send a pull request to modify it at any time. 
 ## Devlopment
 
 ```
