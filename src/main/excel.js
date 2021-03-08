@@ -29,24 +29,28 @@ const start = async () => {
   for (let [key, value] of data.result) {
     const name = data.typeMap.get(key)
     const sheet = workbook.addWorksheet(name, {views: [{state: 'frozen', ySplit: 1}]})
-    sheet.columns = [
-      { header: header.time, key: "time", width: 24 },
-      { header: header.name, key: "name", width: 14 },
-      { header: header.type, key: "type", width: 8 },
-      { header: header.rank, key: "rank", width: 8 },
-      { header: header.total, key: "idx", width: 8 },
-      { header: header.pity, key: "pdx", width: 8 },
-    ]
+    let width = [24, 14, 8, 8, 8, 8]
+    if (!data.lang.includes('zh-')) {
+      width = [24, 32, 16, 12, 12, 12]
+    }
+    const excelKeys = ['time', 'name', 'type', 'rank', 'total', 'pity']
+    sheet.columns = excelKeys.map((key, index) => {
+      return {
+        header: header[key],
+        key,
+        width: width[index]
+      }
+    })
     // get gacha logs
     const logs = value
-    let idx = 0
-    let pdx = 0
+    let total = 0
+    let pity = 0
     for (let log of logs){
-      idx += 1
-      pdx += 1
-      log.push(idx,pdx)
+      total += 1
+      pity += 1
+      log.push(total, pity)
       if (log[3] === 5) {
-        pdx = 0
+        pity = 0
       }
     }
 
