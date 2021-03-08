@@ -61,6 +61,12 @@ const changeCurrent = async (uid) => {
   await config.save()
 }
 
+const compareList = (a, b) => {
+  const strA = a.map(item => item.join('-')).join(',')
+  const strB = b.map(item => item.join('-')).join(',')
+  return strA === strB
+}
+
 const mergeList = (a, b) => {
   if (!a || !a.length) return b || []
   if (!b || !b.length) return a
@@ -69,8 +75,10 @@ const mergeList = (a, b) => {
   for (let i = 0; i < b.length; i++) {
     const time = new Date(b[i][0]).getTime()
     if (time >= minA) {
-      pos = i
-      break
+      if (compareList(b.slice(i, b.length), a.slice(0, b.length - i))) {
+        pos = i
+        break
+      }
     }
   }
   return b.slice(0, pos).concat(a)
