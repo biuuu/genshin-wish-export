@@ -1,4 +1,4 @@
-# Genshi Impact Wish Record Export
+# Genshi Impact Wish Record Exporter
 
 [中文](https://github.com/biuuu/genshin-gacha-export/blob/main/README.md) | English
 
@@ -19,18 +19,18 @@ If you feel that the existing translation is inappropriate, you can send a pull 
 1. Unzip after downloading the tool - [Download](https://github.com/biuuu/genshin-gacha-export/releases/latest/download/Genshin-Gacha-Export.zip)
 2. Open the wish history of the game
 
-    ![wish history](/docs/wish-history.png)
+    ![wish history](/docs/wish-history-en.png)
 
 3. Click the tool's "Load data" button
 
-    ![load data](/docs/load-data.png)
+    ![load data](/docs/load-data-en.png)
 
     If nothing goes wrong, you'll be prompted to read the data, and the final result will look like this
 
     <details>
     <summary>Expand the picture</summary>
 
-    ![preview](/docs/preview.png)
+    ![preview](/docs/preview-en.png)
     </details>
 
 If you need to export the data of multiple accounts, you can click the plus button next to it.
