@@ -1,4 +1,4 @@
-# Genshi Impact Wish History Exporter
+# Genshin Impact Wish History Exporter
 
 [中文](https://github.com/biuuu/genshin-wish-export/blob/main/README.md) | English
 
