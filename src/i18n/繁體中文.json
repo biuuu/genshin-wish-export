@@ -9,7 +9,7 @@
   "ui.hint.init": "請先在遊戲裡打開任意一個抽卡紀錄後，再點擊“加載資料“按鈕。",
   "ui.hint.lastUpdate": "上次資料更新時間為",
   "ui.hint.failed": "操作失敗",
-  "ui.win.title": "原神抽卡紀錄導出工具",
+  "ui.win.title": "原神祈願紀錄導出工具",
   "ui.data.total": "總共",
   "ui.data.times": "抽",
   "ui.data.sum": "已累計",
@@ -50,8 +50,8 @@
   "log.fetch.interval": "正在獲取${name}第${page}頁，每10頁休息1秒……",
   "log.fetch.current": "正在獲取${name}第${page}頁",
   "log.fetch.authTimeout": "身分認證已過期，請重新打開遊戲抽卡紀錄。",
-  "log.fetch.gachaType": "正在獲取抽卡活動類型",
-  "log.fetch.gachaTypeOk": "獲取抽卡活動類型成功",
+  "log.fetch.gachaType": "正在獲取祈愿活動類型",
+  "log.fetch.gachaTypeOk": "獲取祈愿活動類型成功",
   "log.url.lackAuth": "URL中缺少authkey",
   "log.proxy.hint": "正在使用代理模式[${ip}:${port}]獲取URL，請打開遊戲抽卡紀錄，或刷新抽卡紀錄。",
   "log.url.notFound2": "未找到URL，請確認是否已打開遊戲抽卡紀錄。",
@@ -64,6 +64,6 @@
   "excel.header.total": "總次數",
   "excel.header.pity": "保底內",
   "excel.customFont": "微軟雅黑",
-  "excel.filePrefix": "原神抽卡紀錄",
+  "excel.filePrefix": "原神祈願紀錄",
   "excel.fileType": "Excel文件"
 }

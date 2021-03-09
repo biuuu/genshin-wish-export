@@ -1,12 +1,12 @@
-# Genshi Impact Wish Record Exporter
+# Genshi Impact Wish History Exporter
 
-[中文](https://github.com/biuuu/genshin-gacha-export/blob/main/README.md) | English
+[中文](https://github.com/biuuu/genshin-wish-export/blob/main/README.md) | English
 
 A tool made from Electron that runs on the Windows 64 bit operating system.
 
-Read the game log or proxy to get the authKey needed to access the game wish record API, and then use the authKey to read the game wish record.
+Read the game log or proxy to get the authKey needed to access the game wish history API, and then use the authKey to read the game wish history.
 
-The tool will save the data in the `userData` folder in the current directory and will merge with the local data when a new wish record is obtained.
+The tool will save the data in the `userData` folder in the current directory and will merge with the local data when a new wish history is obtained.
 
 ## Other languages
 
@@ -16,7 +16,7 @@ If you feel that the existing translation is inappropriate, you can send a pull 
 
 ## Usage
 
-1. Unzip after downloading the tool - [Download](https://github.com/biuuu/genshin-gacha-export/releases/latest/download/Genshin-Gacha-Export.zip)
+1. Unzip after downloading the tool - [Download](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip)
 2. Open the wish history of the game
 
     ![wish history](/docs/wish-history-en.png)
@@ -52,5 +52,5 @@ yarn build
 
 ## License
 
-[MIT](https://github.com/biuuu/genshin-gacha-export/blob/main/LICENSE)
+[MIT](https://github.com/biuuu/genshin-wish-export/blob/main/LICENSE)
 

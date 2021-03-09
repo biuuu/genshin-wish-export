@@ -9,7 +9,7 @@
   "ui.hint.init": "请先在游戏里打开任意一个抽卡记录后再点击“加载数据”按钮",
   "ui.hint.lastUpdate": "上次数据更新时间为",
   "ui.hint.failed": "操作失败",
-  "ui.win.title": "原神抽卡记录导出工具",
+  "ui.win.title": "原神祈愿记录导出工具",
   "ui.data.total": "一共",
   "ui.data.times": "抽",
   "ui.data.sum": "已累计",
@@ -50,8 +50,8 @@
   "log.fetch.interval": "正在获取${name}第${page}页，每10页休息1秒……",
   "log.fetch.current": "正在获取${name}第${page}页",
   "log.fetch.authTimeout": "身份认证已过期，请重新打开游戏抽卡记录",
-  "log.fetch.gachaType": "正在获取抽卡活动类型",
-  "log.fetch.gachaTypeOk": "获取抽卡活动类型成功",
+  "log.fetch.gachaType": "正在获取祈愿活动类型",
+  "log.fetch.gachaTypeOk": "获取祈愿活动类型成功",
   "log.url.lackAuth": "URL中缺少authkey",
   "log.proxy.hint": "正在使用代理模式[${ip}:${port}]获取URL，请打开游戏抽卡记录，或刷新抽卡记录",
   "log.url.notFound2": "未找到URL，请确认是否已打开游戏抽卡记录",
@@ -64,6 +64,6 @@
   "excel.header.total": "总次数",
   "excel.header.pity": "保底内",
   "excel.customFont": "微软雅黑",
-  "excel.filePrefix": "原神抽卡记录",
+  "excel.filePrefix": "原神祈愿记录",
   "excel.fileType": "Excel文件"
 }
