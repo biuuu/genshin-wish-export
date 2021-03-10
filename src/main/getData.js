@@ -125,7 +125,12 @@ const detectGameLocale = async (userPath) => {
 const readLog = async () => {
   const text = i18n.log
   try {
-    const userPath = app.getPath('home')
+    let userPath
+    if (!process.env.WINEPREFIX) {
+      userPath = app.getPath('home')
+    } else {
+      userPath = path.join(process.env.WINEPREFIX, 'drive_c/users', process.env.USER)
+    }
     const gameNames = await detectGameLocale(userPath)
     if (!gameNames.length) {
       sendMsg(text.file.notFound)

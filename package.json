@@ -11,6 +11,7 @@
     "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --ia32",
     "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --x64",
     "build:mac": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --mac",
+    "build:linux": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --linux",
     "build:dir": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vite/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vite/build.js",
