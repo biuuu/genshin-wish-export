@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node .electron-vite/dev-runner.js",
     "dev:web": "cross-env TARGET=web node .electron-vite/dev-runner.js",
+    "start": "electron ./src/main/main.js",
     "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder",
     "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --ia32",
     "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --x64",

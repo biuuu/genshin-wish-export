@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ui">
+  <div v-if="ui" class="relative">
     <div class="flex justify-between">
       <div>
         <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-milk-tea': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
