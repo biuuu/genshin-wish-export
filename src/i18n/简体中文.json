@@ -36,7 +36,7 @@
   "ui.setting.logTypeHint": "使用游戏日志获取URL时，优先选择哪种服务器生成的日志文件。",
   "ui.setting.autoUpdate": "自动更新",
   "ui.setting.proxyMode": "代理模式",
-  "ui.setting.proxyModeHint": "通过设置系统代理来获取URL，打开后会在从日志中获取URL失败时启动。",
+  "ui.setting.proxyModeHint": "通过设置系统代理来获取URL，无法从日志中获取到有效的URL时才会启动代理服务器。",
   "ui.setting.closeProxy": "关闭系统代理",
   "ui.setting.closeProxyHint": "如果使用过代理模式时工具非正常关闭，可能导致系统代理设置没能清除，可以通过这个按钮来清除设置过的系统代理。",
   "ui.about.title": "关于",
