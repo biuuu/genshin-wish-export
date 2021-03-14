@@ -2,7 +2,8 @@
   <div v-if="ui" class="relative">
     <div class="flex justify-between">
       <div>
-        <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-milk-tea': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
+        <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-milk-tea': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
+        <el-button type="primary" icon="el-icon-link" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="state.urlInput = '', state.showUrlDlg = true" :loading="state.status === 'loading'">{{ui.button.url}}</el-button>
         <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>{{ui.button.excel}}</el-button>
         <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
           <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
@@ -29,6 +30,17 @@
       </div>
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
+
+    <el-dialog :title="ui.urldlg.title" v-model="state.showUrlDlg" width="90%">
+      <el-input type="textarea" :autosize="{minRows: 4}" :placeholder="ui.urldlg.hint" v-model="state.urlInput" spellcheck="false"></el-input>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="state.showUrlDlg = false" class="focus:outline-none">{{ui.urldlg.cancel}}</el-button>
+          <el-button type="primary" @click="state.showUrlDlg = false, fetchData(state.urlInput)" class="focus:outline-none">{{ui.urldlg.ok}}</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -48,7 +60,9 @@ const state = reactive({
   dataMap: new Map(),
   current: 0,
   showSetting: false,
-  i18n: null
+  i18n: null,
+  showUrlDlg: false,
+  urlInput: ''
 })
 
 const ui = computed(() => {
@@ -111,9 +125,9 @@ const typeMap = computed(() => {
   return data.typeMap
 })
 
-const fetchData = async () => {
+const fetchData = async (url) => {
   state.status = 'loading'
-  const data = await ipcRenderer.invoke('FETCH_DATA')
+  const data = await ipcRenderer.invoke('FETCH_DATA', url)
   if (data) {
     state.dataMap = data.dataMap
     state.current = data.current

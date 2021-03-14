@@ -362,10 +362,13 @@ const getUrl = async () => {
   return url
 }
 
-const fetchData = async () => {
+const fetchData = async (urlOverride) => {
   const text = i18n.log
   await readData()
-  const url = await getUrl()
+  let url = urlOverride
+  if (!url) {
+    url = await getUrl()
+  }
   if (!url) {
     const message = text.url.notFound2
     sendMsg(message)
@@ -411,9 +414,9 @@ const fetchData = async () => {
   await saveData(data, url)
 }
 
-ipcMain.handle('FETCH_DATA', async () => {
+ipcMain.handle('FETCH_DATA', async (event, url) => {
   try {
-    await fetchData()
+    await fetchData(url)
     return {
       dataMap,
       current: config.current
