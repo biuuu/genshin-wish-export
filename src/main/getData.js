@@ -301,13 +301,17 @@ const proxyServer = (port) => {
   })
 }
 
+let proxyServerPromise
 const useProxy = async () => {
   const text = i18n.log
   const ip = localIp()
   const port = config.proxyPort
   sendMsg(i18n.parse(text.proxy.hint, { ip, port }))
   await enableProxy('127.0.0.1', port)
-  const url = await proxyServer(port)
+  if (!proxyServerPromise) {
+    proxyServerPromise = proxyServer(port)
+  }
+  const url = await proxyServerPromise
   await disableProxy()
   return url
 }
@@ -414,9 +418,21 @@ const fetchData = async (urlOverride) => {
   await saveData(data, url)
 }
 
-ipcMain.handle('FETCH_DATA', async (event, url) => {
+let proxyStarted = false
+const fetchDataByProxy = async () => {
+  if (proxyStarted) return
+  proxyStarted = true
+  const url = await useProxy()
+  await fetchData(url)
+}
+
+ipcMain.handle('FETCH_DATA', async (event, param) => {
   try {
-    await fetchData(url)
+    if (param === 'proxy') {
+      await fetchDataByProxy()
+    } else {
+      await fetchData(param)
+    }
     return {
       dataMap,
       current: config.current

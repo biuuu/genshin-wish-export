@@ -23,6 +23,7 @@
             <el-dropdown-menu>
               <el-dropdown-item command="setting" icon="el-icon-setting">{{ui.button.setting}}</el-dropdown-item>
               <el-dropdown-item :disabled="!allowClick() || state.status === 'loading'" command="url" icon="el-icon-link">{{ui.button.url}}</el-dropdown-item>
+              <el-dropdown-item :disabled="!allowClick() || state.status === 'loading'" command="proxy" icon="el-icon-position">{{ui.button.startProxy}}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -38,9 +39,9 @@
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
 
-    <el-dialog :title="ui.urldialog.title" v-model="state.showUrlDlg" width="90%" custom-class="max-w-md">
-      <p class="mb-4 text-gray-500">{{ui.urldialog.hint}}</p>
-      <el-input size="small" type="textarea" :autosize="{minRows: 4}" :placeholder="ui.urldialog.placeholder" v-model="state.urlInput" spellcheck="false"></el-input>
+    <el-dialog :title="ui.urlDialog.title" v-model="state.showUrlDlg" width="90%" custom-class="max-w-md">
+      <p class="mb-4 text-gray-500">{{ui.urlDialog.hint}}</p>
+      <el-input size="small" type="textarea" :autosize="{minRows: 4}" :placeholder="ui.urlDialog.placeholder" v-model="state.urlInput" spellcheck="false"></el-input>
       <template #footer>
         <span class="dialog-footer">
           <el-button size="small" @click="state.showUrlDlg = false" class="focus:outline-none">{{ui.common.cancel}}</el-button>
@@ -200,6 +201,8 @@ const optionCommand = (type) => {
   } else if (type === 'url') {
     state.urlInput = ''
     state.showUrlDlg = true
+  } else if (type === 'proxy') {
+    fetchData('proxy')
   }
 }
 
