@@ -3,7 +3,6 @@
     <div class="flex justify-between">
       <div>
         <el-button type="primary" :icon="state.status === 'init' ? 'el-icon-milk-tea': 'el-icon-refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
-        <el-button type="primary" icon="el-icon-link" class="focus:outline-none" :disabled="!allowClick()" plain size="small" @click="state.urlInput = '', state.showUrlDlg = true" :loading="state.status === 'loading'">{{ui.button.url}}</el-button>
         <el-button icon="el-icon-folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData" size="small" type="success" plain>{{ui.button.excel}}</el-button>
         <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
           <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
@@ -18,7 +17,15 @@
             :value="item[0]">
           </el-option>
         </el-select>
-        <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-setting" size="small">{{ui.button.setting}}</el-button>
+        <el-dropdown @command="optionCommand" size="small">
+          <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-star-off" size="small">{{ui.button.option}}</el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="setting" icon="el-icon-setting">{{ui.button.setting}}</el-dropdown-item>
+              <el-dropdown-item :disabled="!allowClick() || state.status === 'loading'" command="url" icon="el-icon-link">{{ui.button.url}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
     <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
@@ -31,12 +38,13 @@
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
 
-    <el-dialog :title="ui.urldlg.title" v-model="state.showUrlDlg" width="90%">
-      <el-input type="textarea" :autosize="{minRows: 4}" :placeholder="ui.urldlg.hint" v-model="state.urlInput" spellcheck="false"></el-input>
+    <el-dialog :title="ui.urldialog.title" v-model="state.showUrlDlg" width="90%" custom-class="max-w-md">
+      <p class="mb-4 text-gray-500">{{ui.urldialog.hint}}</p>
+      <el-input size="small" type="textarea" :autosize="{minRows: 4}" :placeholder="ui.urldialog.placeholder" v-model="state.urlInput" spellcheck="false"></el-input>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="state.showUrlDlg = false" class="focus:outline-none">{{ui.urldlg.cancel}}</el-button>
-          <el-button type="primary" @click="state.showUrlDlg = false, fetchData(state.urlInput)" class="focus:outline-none">{{ui.urldlg.ok}}</el-button>
+          <el-button size="small" @click="state.showUrlDlg = false" class="focus:outline-none">{{ui.common.cancel}}</el-button>
+          <el-button size="small" type="primary" @click="state.showUrlDlg = false, fetchData(state.urlInput)" class="focus:outline-none">{{ui.common.ok}}</el-button>
         </span>
       </template>
     </el-dialog>
@@ -183,6 +191,15 @@ const showSetting = (show) => {
     state.showSetting = true
   } else {
     state.showSetting = false
+  }
+}
+
+const optionCommand = (type) => {
+  if (type === 'setting') {
+    showSetting(true)
+  } else if (type === 'url') {
+    state.urlInput = ''
+    state.showUrlDlg = true
   }
 }
 
