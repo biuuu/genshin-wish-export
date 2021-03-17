@@ -157,17 +157,17 @@ const readLog = async () => {
   }
 }
 
-const getGachaLog = async ({ key, page, name, retryCount, url }) => {
+const getGachaLog = async ({ key, page, name, retryCount, url, endId }) => {
   const text = i18n.log
   try {
-    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}`)
+    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}${endId ? '&end_id=' + endId : ''}`)
     return res.data.list
   } catch (e) {
     if (retryCount) {
       sendMsg(i18n.parse(text.fetch.retry, { name, page, count: 6 - retryCount }))
       await sleep(5)
       retryCount--
-      return await getGachaLog({ key, page, name, retryCount, url })
+      return await getGachaLog({ key, page, name, retryCount, url, endId })
     } else {
       sendMsg(i18n.parse(text.fetch.retryFailed, { name, page }))
       throw e
@@ -181,6 +181,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
   let list = []
   let res = []
   let uid = 0
+  let endId = 0
   const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
@@ -188,12 +189,16 @@ const getGachaLogs = async ({ name, key }, queryString) => {
       await sleep(1)
     }
     sendMsg(i18n.parse(text.fetch.current, { name, page }))
-    res = await getGachaLog({ key, page, name, url, retryCount: 5 })
+    res = await getGachaLog({ key, page, name, url, endId, retryCount: 5 })
     if (!uid && res.length) {
       uid = res[0].uid
     }
     list.push(...res)
     page += 1
+
+    if (res.length) {
+      endId = BigInt(res[res.length - 1].id) - 1n
+    }
 
     if (res.length && uid && dataMap.has(uid)) {
       const result = dataMap.get(uid).result
