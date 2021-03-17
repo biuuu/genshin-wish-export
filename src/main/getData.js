@@ -160,7 +160,7 @@ const readLog = async () => {
 const getGachaLog = async ({ key, page, name, retryCount, url, endId }) => {
   const text = i18n.log
   try {
-    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}${endId ? '&end_id=' + endId : ''}`)
+    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${6}${endId ? '&end_id=' + endId : ''}`)
     return res.data.list
   } catch (e) {
     if (retryCount) {
@@ -197,7 +197,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
     page += 1
 
     if (res.length) {
-      endId = BigInt(res[res.length - 1].id) - 1n
+      endId = BigInt(res[res.length - 1].id)
     }
 
     if (res.length && uid && dataMap.has(uid)) {
