@@ -160,7 +160,7 @@ const readLog = async () => {
 const getGachaLog = async ({ key, page, name, retryCount, url, endId }) => {
   const text = i18n.log
   try {
-    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${6}${endId ? '&end_id=' + endId : ''}`)
+    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}${endId ? '&end_id=' + endId : ''}`)
     return res.data.list
   } catch (e) {
     if (retryCount) {
