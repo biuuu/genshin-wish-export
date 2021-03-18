@@ -278,6 +278,7 @@ const getQuerystring = (url) => {
   searchParams.delete('page')
   searchParams.delete('size')
   searchParams.delete('gacha_type')
+  searchParams.delete('end_id')
   return searchParams
 }
 
