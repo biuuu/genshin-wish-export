@@ -18,7 +18,7 @@
           </el-option>
         </el-select>
         <el-dropdown @command="optionCommand" size="small">
-          <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-star-off" size="small">{{ui.button.option}}</el-button>
+          <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="el-icon-more" size="small">{{ui.button.option}}</el-button>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="setting" icon="el-icon-setting">{{ui.button.setting}}</el-dropdown-item>
