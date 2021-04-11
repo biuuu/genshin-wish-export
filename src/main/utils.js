@@ -143,7 +143,9 @@ const detectLocale = () => {
 
 const saveJSON = async (name, data) => {
   try {
-    await fs.outputJSON(path.join(userDataPath, name), data)
+    await fs.outputJSON(path.join(userDataPath, name), data, {
+      spaces: 2
+    })
   } catch (e) {
     sendMsg(e, 'ERROR')
     await sleep(3)
