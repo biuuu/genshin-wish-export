@@ -5,6 +5,7 @@
   "ui.button.excel": "輸出Excel",
   "ui.button.url": "輸入URL",
   "ui.button.setting": "設定",
+  "ui.button.option": "選項",
   "ui.button.startProxy": "代理模式",
   "ui.select.newAccount": "新帳號",
   "ui.hint.newAccount": "從其他帳號導出資料",
