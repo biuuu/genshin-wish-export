@@ -4,6 +4,7 @@ const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
 const i18n = require('./i18n')
+const cloneDeep  = require('lodash-es/cloneDeep').default
 
 function pad(num) {
   return `${num}`.padStart(2, "0");
@@ -42,7 +43,7 @@ const start = async () => {
       }
     })
     // get gacha logs
-    const logs = value
+    const logs = cloneDeep(value)
     let total = 0
     let pity = 0
     for (let log of logs){
