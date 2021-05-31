@@ -39,6 +39,7 @@ const start = async () => {
     name: `${hashName}.zip`,
     hash: sha256
   })
+  copyHTML()
 }
 
 const copyAppZip = () => {
@@ -47,6 +48,16 @@ const copyAppZip = () => {
     const filePath = path.resolve(dir, `Genshin Wish Export-${version}-win.zip`)
     fs.copySync(filePath, path.join(dir, 'app.zip'))
   } catch (e) {}
+}
+
+const copyHTML = () => {
+  try {
+    const output = path.resolve('./build/update/')
+    const dir = path.resolve('./src/web/')
+    fs.copySync(dir, output)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 start()

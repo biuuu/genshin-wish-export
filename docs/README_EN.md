@@ -14,6 +14,14 @@ Modify the JSON file in the `src/i18n/` directory to translate into the appropri
 
 If you feel that the existing translation is inappropriate, you can send a pull request to modify it at any time.
 
+## Recover data from Excel
+https://genshin-gacha-export.danmu9.com
+You can export JSON data from an Excel file through this web page, or you can select a End Date on the web page to remove duplicate data.
+
+Copy the downloaded JSON file to the userData folder of the tool to recover the data.
+
+When using web pages, be sure to fill in the correct UID and select the correct language used in the Excel file.
+
 ## Usage
 
 1. Unzip after downloading the tool - [Download](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip)
