@@ -12,6 +12,7 @@
 
 ## 从 Excel 恢复数据
 https://genshin-gacha-export.danmu9.com
+
 可以通过这个网页从 Excel 文件导出 JSON 数据，也可以在网页上选择截止时间来去除重复数据。
 
 将下载的JSON文件复制到工具的 userData 文件夹即可恢复数据。

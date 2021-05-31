@@ -16,6 +16,7 @@ If you feel that the existing translation is inappropriate, you can send a pull 
 
 ## Recover data from Excel
 https://genshin-gacha-export.danmu9.com
+
 You can export JSON data from an Excel file through this web page, or you can select a End Date on the web page to remove duplicate data.
 
 Copy the downloaded JSON file to the userData folder of the tool to recover the data.
