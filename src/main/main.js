@@ -13,13 +13,13 @@ let win = null
 function createWindow() {
   win = initWindow()
   win.setMenuBarVisibility(false)
-  isDev ? win.loadURL(`http://localhost:${process.env.PORT}`) : win.loadFile('dist/electron/renderer/index.html')
+  isDev ? win.loadURL(`http://localhost:9080`) : win.loadFile('dist/electron/renderer/index.html')
   if (isDev) {
-    const electronDevtoolsInstaller = require('electron-devtools-installer').default
+    // const electronDevtoolsInstaller = require('electron-devtools-installer').default
     win.webContents.openDevTools({ mode: 'undocked', activate: true })
-    electronDevtoolsInstaller('ljjemllljcmogpfapbkkighbhhppjdbg', true)
-      .then((name) => console.log(`已安装: ${name}`))
-      .catch(err => console.log('无法安装 `vue-devtools`: \n 可能发生的错误：网络连接问题 \n', err))
+    // electronDevtoolsInstaller('ljjemllljcmogpfapbkkighbhhppjdbg', true)
+    //   .then((name) => console.log(`已安装: ${name}`))
+    //   .catch(err => console.log('无法安装 `vue-devtools`: \n 可能发生的错误：网络连接问题 \n', err))
   }
 }
 

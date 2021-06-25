@@ -1,15 +1,18 @@
 {
-  "name": "genshin-gacha-export-electron",
-  "version": "0.3.3",
+  "name": "genshin-wish-export",
+  "version": "0.6.11",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "license": "MIT",
   "scripts": {
     "dev": "node .electron-vite/dev-runner.js",
+    "dev:web": "cross-env TARGET=web node .electron-vite/dev-runner.js",
+    "start": "electron ./src/main/main.js",
     "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder",
     "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --ia32",
     "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --win  --x64",
     "build:mac": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --mac",
+    "build:linux": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --linux",
     "build:dir": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && node .electron-vite/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vite/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vite/build.js",
@@ -30,8 +33,8 @@
         "url": "http://127.0.0.1"
       }
     ],
-    "productName": "Genshin Gacha Export",
-    "appId": "org.biuuu.genshin-gacha-export",
+    "productName": "Genshin Wish Export",
+    "appId": "org.biuuu.genshin-wish-export",
     "directories": {
       "output": "build"
     },
@@ -88,11 +91,11 @@
     "electron-fetch": "^1.7.3",
     "electron-unhandled": "^3.0.2",
     "electron-window-state": "^5.0.3",
-    "element-plus": "^1.0.2-beta.32",
+    "element-plus": "^1.0.2-beta.33",
     "fs-extra": "^9.1.0",
     "get-stream": "^6.0.0",
     "lodash-es": "^4.17.21",
-    "minimist": "^1.2.5",
+    "moment": "^2.29.1",
     "multispinner": "^0.2.1",
     "ora": "^5.3.0",
     "portfinder": "^1.0.28",
@@ -101,9 +104,7 @@
     "semver": "^7.3.4",
     "tailwindcss": "^2.0.3",
     "vite": "2.0.5",
-    "vue": "^3.0.6",
-    "vue-router": "^4.0.4",
-    "vuex": "^4.0.0",
+    "vue": "^3.0.7",
     "winreg": "^1.2.4",
     "yauzl": "^2.10.0"
   },

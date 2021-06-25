@@ -3,10 +3,12 @@ const util = require('util')
 const path = require('path')
 const { URL } = require('url')
 const { app, ipcMain } = require('electron')
-const { sleep, request, detectGameLocale, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp } = require('./utils')
+const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
+const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
+const moment = require('moment')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
@@ -59,6 +61,12 @@ const changeCurrent = async (uid) => {
   await config.save()
 }
 
+const compareList = (a, b) => {
+  const strA = a.map(item => item.join('-')).join(',')
+  const strB = b.map(item => item.join('-')).join(',')
+  return strA === strB
+}
+
 const mergeList = (a, b) => {
   if (!a || !a.length) return b || []
   if (!b || !b.length) return a
@@ -67,8 +75,10 @@ const mergeList = (a, b) => {
   for (let i = 0; i < b.length; i++) {
     const time = new Date(b[i][0]).getTime()
     if (time >= minA) {
-      pos = i
-      break
+      if (compareList(b.slice(i, b.length), a.slice(0, b.length - i))) {
+        pos = i
+        break
+      }
     }
   }
   return b.slice(0, pos).concat(a)
@@ -85,16 +95,45 @@ const mergeData = (local, origin) => {
       const newVal = mergeList(value, localResult.get(key))
       originResult.set(key, newVal)
     }
+    return originResult
   }
   return origin.result
 }
 
-const readLog = async () => {
+const detectGameLocale = async (userPath) => {
+  let list = []
+  const lang = app.getLocale()
   try {
-    const userPath = app.getPath('home')
+    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', '原神/output_log.txt'), fs.constants.F_OK)
+    list.push('原神')
+  } catch (e) {}
+  try {
+    await fs.access(path.join(userPath, '/AppData/LocalLow/miHoYo/', 'Genshin Impact/output_log.txt'), fs.constants.F_OK)
+    list.push('Genshin Impact')
+  } catch (e) {}
+  if (config.logType) {
+    if (config.logType === 2) {
+      list.reverse()
+    }
+    list = list.slice(0, 1)
+  } else if (lang !== 'zh-CN') {
+    list.reverse()
+  }
+  return list
+}
+
+const readLog = async () => {
+  const text = i18n.log
+  try {
+    let userPath
+    if (!process.env.WINEPREFIX) {
+      userPath = app.getPath('home')
+    } else {
+      userPath = path.join(process.env.WINEPREFIX, 'drive_c/users', process.env.USER)
+    }
     const gameNames = await detectGameLocale(userPath)
     if (!gameNames.length) {
-      sendMsg('未找到游戏日志，确认是否已打开游戏抽卡记录')
+      sendMsg(text.file.notFound)
       return false
     }
     const promises = gameNames.map(async name => {
@@ -110,76 +149,107 @@ const readLog = async () => {
         return url
       }
     }
-    sendMsg('未找到URL')
+    sendMsg(text.url.notFound)
     return false
   } catch (e) {
-    sendMsg('读取日志失败')
+    sendMsg(text.file.readFailed)
     return false
   }
 }
 
-const getGachaLog = async ({ key, page, name, retryCount, url }) => {
+const getGachaLog = async ({ key, page, name, retryCount, url, endId }) => {
+  const text = i18n.log
   try {
-    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}`)
+    const res = await request(`${url}&gacha_type=${key}&page=${page}&size=${20}${endId ? '&end_id=' + endId : ''}`)
     return res.data.list
   } catch (e) {
     if (retryCount) {
-      sendMsg(`获取${name}第${page}页失败，5秒后进行第${6 - retryCount}次重试……`)
+      sendMsg(i18n.parse(text.fetch.retry, { name, page, count: 6 - retryCount }))
       await sleep(5)
       retryCount--
-      return await getGachaLog({ key, page, name, retryCount, url })
+      return await getGachaLog({ key, page, name, retryCount, url, endId })
     } else {
-      sendMsg(`获取${name}第${page}页失败，已超出重试次数`)
+      sendMsg(i18n.parse(text.fetch.retryFailed, { name, page }))
       throw e
     }
   }
 }
 
 const getGachaLogs = async ({ name, key }, queryString) => {
+  const text = i18n.log
   let page = 1
   let list = []
   let res = []
   let uid = 0
+  let endId = 0
   const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
-      sendMsg(`正在获取${name}第${page}页，每10页休息1秒……`)
+      sendMsg(i18n.parse(text.fetch.interval, { name, page }))
       await sleep(1)
     }
-    sendMsg(`正在获取${name}第${page}页`)
-    res = await getGachaLog({ key, page, name, url, retryCount: 5 })
+    sendMsg(i18n.parse(text.fetch.current, { name, page }))
+    res = await getGachaLog({ key, page, name, url, endId, retryCount: 5 })
     if (!uid && res.length) {
       uid = res[0].uid
     }
     list.push(...res)
     page += 1
+
+    if (res.length) {
+      endId = BigInt(res[res.length - 1].id)
+    }
+
+    if (res.length && uid && dataMap.has(uid)) {
+      const result = dataMap.get(uid).result
+      if (result.has(key)) {
+        const arr = result.get(key)
+        if (arr.length) {
+          const localLatestTime = arr[arr.length - 1][0]
+          const remoteTime = res[0].time
+          if (moment(localLatestTime).isAfter(remoteTime)) {
+            break
+          }
+        }
+      }
+    }
   } while (res.length > 0)
   return { list, uid }
 }
 
+const checkResStatus = (res) => {
+  const text = i18n.log
+  if (res.retcode !== 0) {
+    let message = res.message
+    if (res.message === 'authkey timeout') {
+      message = text.fetch.authTimeout
+    }
+    sendMsg(message)
+    throw new Error(message)
+  }
+  return res
+}
+
 const tryGetUid = async (queryString) => {
   const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
-  for (let [key] of defaultTypeMap) {
-    const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
-    if (res.data.list && res.data.list.length) {
-      return res.data.list[0].uid
+  try {
+    for (let [key] of defaultTypeMap) {
+      const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
+      checkResStatus(res)
+      if (res.data.list && res.data.list.length) {
+        return res.data.list[0].uid
+      }
     }
-  }
+  } catch (e) {}
   return config.current
 }
 
 const getGachaType = async (queryString) => {
+  const text = i18n.log
   const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
-  sendMsg('正在获取抽卡活动类型')
+  sendMsg(text.fetch.gachaType)
   const res = await request(gachaTypeUrl)
-  if (res.retcode !== 0) {
-    if (res.message === 'authkey timeout') {
-      sendMsg('身份认证已过期，请重新打开游戏抽卡记录')
-    } else {
-      sendMsg(res.message)
-    }
-    return false
-  }
+  checkResStatus(res)
   const gachaTypes = res.data.gacha_type_list
   const orderedGachaTypes = []
   order.forEach(key => {
@@ -189,11 +259,12 @@ const getGachaType = async (queryString) => {
     }
   })
   orderedGachaTypes.push(...gachaTypes)
-  sendMsg('获取抽卡活动类型成功')
+  sendMsg(text.fetch.gachaTypeOk)
   return orderedGachaTypes
 }
 
 const getQuerystring = (url) => {
+  const text = i18n.log
   const { searchParams, host } = new URL(url)
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
     apiDomain = 'https://hk4e-api-os.mihoyo.com'
@@ -201,12 +272,13 @@ const getQuerystring = (url) => {
     apiDomain = 'https://hk4e-api.mihoyo.com'
   }
   if (!searchParams.get('authkey')) {
-    sendMsg('URL中缺少authkey')
+    sendMsg(text.url.lackAuth)
     return false
   }
   searchParams.delete('page')
   searchParams.delete('size')
   searchParams.delete('gacha_type')
+  searchParams.delete('end_id')
   return searchParams
 }
 
@@ -214,13 +286,13 @@ const proxyServer = (port) => {
   return new Promise((rev) => {
     mitmproxy.createProxy({
       sslConnectInterceptor: (req, cltSocket, head) => {
-        if (req.url.includes('hk4e-api.mihoyo.com')) {
+        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(req.url)) {
           return true
         }
       },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
         next()
-        if (rOptions.hostname.includes('hk4e-api.mihoyo.com')) {
+        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(rOptions.hostname)) {
           if (/authkey=[^&]+/.test(rOptions.path)) {
             rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
           }
@@ -235,12 +307,17 @@ const proxyServer = (port) => {
   })
 }
 
+let proxyServerPromise
 const useProxy = async () => {
+  const text = i18n.log
   const ip = localIp()
   const port = config.proxyPort
-  sendMsg(`正在使用代理模式[${ip}:${port}]获取URL，请打开游戏抽卡记录，或刷新抽卡记录`)
+  sendMsg(i18n.parse(text.proxy.hint, { ip, port }))
   await enableProxy('127.0.0.1', port)
-  const url = await proxyServer(port)
+  if (!proxyServerPromise) {
+    proxyServerPromise = proxyServer(port)
+  }
+  const url = await proxyServerPromise
   await disableProxy()
   return url
 }
@@ -284,23 +361,35 @@ const getUrl = async () => {
       url = await readLog()
     }
   }
-  if (!url) {
+  if (!url && config.proxyMode) {
     url = await useProxy()
-  } else {
+  } else if (url) {
     const result = await tryRequest(url)
-    if (!result) {
+    if (!result && config.proxyMode) {
       url = await useProxy()
     }
   }
   return url
 }
 
-const fetchData = async () => {
+const fetchData = async (urlOverride) => {
+  const text = i18n.log
   await readData()
-  const url = await getUrl()
-  if (!url) return false
+  let url = urlOverride
+  if (!url) {
+    url = await getUrl()
+  }
+  if (!url) {
+    const message = text.url.notFound2
+    sendMsg(message)
+    throw new Error(message)
+  }
   const searchParams = await getQuerystring(url)
-  if (!searchParams) return false
+  if (!searchParams) {
+    const message = text.url.incorrect
+    sendMsg(message)
+    throw new Error(message)
+  }
   let queryString = searchParams.toString()
   const vUid = await tryGetUid(queryString)
   const localLang = dataMap.has(vUid) ? dataMap.get(vUid).lang : ''
@@ -322,7 +411,9 @@ const fetchData = async () => {
     logs.reverse()
     typeMap.set(type.key, type.name)
     result.set(type.key, logs)
-    originUid = uid
+    if (!originUid) {
+      originUid = uid
+    }
   }
   const data = { result, time: Date.now(), typeMap, uid: originUid, lang }
   const localData = dataMap.get(originUid)
@@ -333,9 +424,21 @@ const fetchData = async () => {
   await saveData(data, url)
 }
 
-ipcMain.handle('FETCH_DATA', async () => {
+let proxyStarted = false
+const fetchDataByProxy = async () => {
+  if (proxyStarted) return
+  proxyStarted = true
+  const url = await useProxy()
+  await fetchData(url)
+}
+
+ipcMain.handle('FETCH_DATA', async (event, param) => {
   try {
-    await fetchData()
+    if (param === 'proxy') {
+      await fetchDataByProxy()
+    } else {
+      await fetchData(param)
+    }
     return {
       dataMap,
       current: config.current
@@ -355,8 +458,29 @@ ipcMain.handle('READ_DATA', async () => {
   }
 })
 
-ipcMain.handle('CHANGE_UID', async (event, uid) => {
+ipcMain.handle('CHANGE_UID', (event, uid) => {
   config.current = uid
+})
+
+ipcMain.handle('GET_CONFIG', () => {
+  return config.value()
+})
+
+ipcMain.handle('LANG_MAP', () => {
+  return langMap
+})
+
+ipcMain.handle('SAVE_CONFIG', (event, [key, value]) => {
+  config[key] = value
+  config.save()
+})
+
+ipcMain.handle('DISABLE_PROXY', async () => {
+  await disableProxy()
+})
+
+ipcMain.handle('I18N_DATA', () => {
+  return i18n.data
 })
 
 exports.getData = () => {

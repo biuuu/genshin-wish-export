@@ -25,7 +25,7 @@ module.exports = (env = 'production') => {
         // watch: process.argv.includes('--watch'), // rollup 中有配置
         sourceMap: false, // default
         minify: process.env.NODE_ENV === 'production',
-        target: 'es2017', // default, or 'es20XX', 'esnext'
+        target: 'esnext', // default, or 'es20XX', 'esnext'
         // Like @rollup/plugin-replace
         define: {
           __VERSION__: '"x.y.z"'

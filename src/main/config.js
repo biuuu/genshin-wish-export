@@ -1,25 +1,32 @@
-const { readJSON, saveJSON, decipherAes, cipherAes } = require('./utils')
+const { readJSON, saveJSON, decipherAes, cipherAes, detectLocale } = require('./utils')
 
 const config = {
   urls: [],
-  logDir: 'auto',
-  locales: 'auto',
+  logType: 0,
+  lang: detectLocale(),
   current: 0,
   proxyPort: 8325,
-  mode: 'log'
+  proxyMode: false,
+  autoUpdate: true
 }
 
 const getLocalConfig = async () => {
   const localConfig = await readJSON('config.json')
   if (!localConfig) return
-  localConfig.urls.forEach(item => {
+  const configTemp = {}
+  for (let key in localConfig) {
+    if (typeof config[key] !== 'undefined') {
+      configTemp[key] = localConfig[key]
+    }
+  }
+  configTemp.urls.forEach(item => {
     try {
       item[1] = decipherAes(item[1])
     } catch (e) {
       item[1] = ''
     }
   })
-  Object.assign(config, localConfig)
+  Object.assign(config, configTemp)
 }
 
 getLocalConfig()
@@ -45,6 +52,8 @@ const saveConfig = async () => {
   await saveJSON('config.json', configTemp)
 }
 
+const getPlainConfig = () => config
+
 const configProxy = new Proxy(config, {
   get: function (obj, prop) {
     if (prop === 'urls') {
@@ -56,6 +65,8 @@ const configProxy = new Proxy(config, {
       return setConfig
     } else if (prop === 'save') {
       return saveConfig
+    } else if (prop === 'value') {
+      return getPlainConfig
     }
     return obj[prop]
   }
