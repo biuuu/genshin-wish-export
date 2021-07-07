@@ -1,7 +1,7 @@
 const Registry = require('winreg')
 
 const proxyStatus = {
-  started: true
+  started: false
 }
 const setProxy = async (enable, proxyIp = '', ignoreIp = '') => {
   const regKey = new Registry({
