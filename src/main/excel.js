@@ -51,7 +51,7 @@ const start = async () => {
       pity += 1
       let gachaType = log[4]
       log[4] = total
-      log.push(pity)
+      log[5] = pity
       if (log[3] === 5) {
         pity = 0
       }
