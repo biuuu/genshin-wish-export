@@ -1,6 +1,6 @@
 {
   "name": "genshin-wish-export",
-  "version": "0.6.12",
+  "version": "0.7.0",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "license": "MIT",
