@@ -190,6 +190,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
     }
     sendMsg(i18n.parse(text.fetch.current, { name, page }))
     res = await getGachaLog({ key, page, name, url, endId, retryCount: 5 })
+    await sleep(0.3)
     if (!uid && res.length) {
       uid = res[0].uid
     }
