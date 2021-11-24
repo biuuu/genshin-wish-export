@@ -8,8 +8,6 @@ const config = require('./config')
 const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
-const moment = require('moment')
-const { min } = require('lodash')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
