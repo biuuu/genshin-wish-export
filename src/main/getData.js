@@ -407,7 +407,7 @@ const fetchData = async (urlOverride) => {
   for (const type of gachaType) {
     const { list, uid } = await getGachaLogs(type, queryString)
     const logs = list.map((item) => {
-      return [item.time, item.name, item.item_type, parseInt(item.rank_type)]
+      return [item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type]
     })
     logs.reverse()
     typeMap.set(type.key, type.name)

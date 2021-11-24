@@ -71,6 +71,8 @@
   "excel.header.rank": "rarity",
   "excel.header.total": "total",
   "excel.header.pity": "within pity",
+  "excel.header.remark": "remark",
+  "excel.wish2": "Wish 2",
   "excel.customFont": "Arial",
   "excel.filePrefix": "Genshin wish logger",
   "excel.fileType": "Excel file"

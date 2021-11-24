@@ -71,6 +71,8 @@
   "excel.header.rank": "星级",
   "excel.header.total": "总次数",
   "excel.header.pity": "保底内",
+  "excel.header.remark": "备注",
+  "excel.wish2": "祈愿2",
   "excel.customFont": "微软雅黑",
   "excel.filePrefix": "原神祈愿记录",
   "excel.fileType": "Excel文件"
