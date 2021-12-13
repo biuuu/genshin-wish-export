@@ -342,7 +342,7 @@ const useProxy = async () => {
     proxyServerPromise = proxyServer(port)
   }
   const url = await proxyServerPromise
-  await disableProxy()
+  // await disableProxy()
   return url
 }
 
