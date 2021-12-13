@@ -26,4 +26,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: "Build ${{ matrix.os }}"
-          path: build/Genshin*((zip)|(deb))
+          path:
+            - build/Genshin*zip
+            - build/Genshin*deb
