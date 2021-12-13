@@ -33,7 +33,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        os: [ windows-latest, macos-latest ]
 
     steps:
       - name: Checkout
@@ -52,12 +52,6 @@ jobs:
         with:
           name: "${{ matrix.os }} package"
           path: build/Genshin*zip
-      - uses: actions/upload-artifact@v2
-        name: "Upload package for ${{ matrix.os }}"
-        if: matrix.os == 'ubuntu-latest'
-        with:
-          name: "${{ matrix.os }} package"
-          path: build/Genshin*deb
       - uses: actions/upload-artifact@v2
         name: "Upload package for ${{ matrix.os }}"
         if: matrix.os == 'macos-latest'
