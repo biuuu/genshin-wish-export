@@ -16,6 +16,8 @@ userData
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+build
+dist
 
 # Editor directories and files
 .idea
