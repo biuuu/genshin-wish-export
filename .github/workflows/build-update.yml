@@ -6,9 +6,8 @@ on:
     branches: [ main ]
 
 jobs:
-  main:
+  build-update:
     runs-on: windows-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -29,3 +28,39 @@ jobs:
         build_dir: ./build/update
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-package:
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Build Update
+        run: |
+          yarn --frozen-lockfile
+          yarn build
+      - uses: actions/upload-artifact@v2
+        name: "Upload package for ${{ matrix.os }}"
+        if: matrix.os == 'windows-latest'
+        with:
+          name: "${{ matrix.os }} package"
+          path: build/Genshin*zip
+      - uses: actions/upload-artifact@v2
+        name: "Upload package for ${{ matrix.os }}"
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: "${{ matrix.os }} package"
+          path: build/Genshin*deb
+      - uses: actions/upload-artifact@v2
+        name: "Upload package for ${{ matrix.os }}"
+        if: matrix.os == 'macos-latest'
+        with:
+          name: "${{ matrix.os }} package"
+          path: build/Genshin*dmg
