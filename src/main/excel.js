@@ -22,7 +22,7 @@ function getTimeString() {
 }
 
 const start = async () => {
-  const { header, customFont, filePrefix, fileType } = i18n.excel
+  const { header, customFont, filePrefix, fileType, wish2 } = i18n.excel
   const { dataMap, current } = await getData()
   const data = dataMap.get(current)
   // https://github.com/sunfkny/genshin-gacha-export-js/blob/main/index.js
@@ -30,11 +30,11 @@ const start = async () => {
   for (let [key, value] of data.result) {
     const name = data.typeMap.get(key)
     const sheet = workbook.addWorksheet(name, {views: [{state: 'frozen', ySplit: 1}]})
-    let width = [24, 14, 8, 8, 8, 8]
+    let width = [24, 14, 8, 8, 8, 8, 8]
     if (!data.lang.includes('zh-')) {
-      width = [24, 32, 16, 12, 12, 12]
+      width = [24, 32, 16, 12, 12, 12, 8]
     }
-    const excelKeys = ['time', 'name', 'type', 'rank', 'total', 'pity']
+    const excelKeys = ['time', 'name', 'type', 'rank', 'total', 'pity', 'remark']
     sheet.columns = excelKeys.map((key, index) => {
       return {
         header: header[key],
@@ -49,15 +49,22 @@ const start = async () => {
     for (let log of logs){
       total += 1
       pity += 1
-      log.push(total, pity)
+      let gachaType = log[4]
+      log[4] = total
+      log[5] = pity
       if (log[3] === 5) {
         pity = 0
+      }
+      if (key === '301') {
+        if (gachaType === '400') {
+          log.push(wish2)
+        }
       }
     }
 
     sheet.addRows(logs)
     // set xlsx hearer style
-    ;(["A", "B", "C", "D","E","F"]).forEach((v) => {
+    ;(["A", "B", "C", "D","E","F", "G"]).forEach((v) => {
       sheet.getCell(`${v}1`).border = {
         top: {style:'thin', color: {argb:'ffc4c2bf'}},
         left: {style:'thin', color: {argb:'ffc4c2bf'}},
@@ -78,7 +85,7 @@ const start = async () => {
     })
     // set xlsx cell style
     logs.forEach((v, i) => {
-      ;(["A", "B", "C", "D","E","F"]).forEach((c) => {
+      ;(["A", "B", "C", "D","E","F", "G"]).forEach((c) => {
         sheet.getCell(`${c}${i + 2}`).border = {
           top: {style:'thin', color: {argb:'ffc4c2bf'}},
           left: {style:'thin', color: {argb:'ffc4c2bf'}},

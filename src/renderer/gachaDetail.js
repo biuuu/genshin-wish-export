@@ -23,7 +23,7 @@ const gachaDetail = (data) => {
     let dateMin = 0
     let dateMax = 0
     value.forEach((item, index) => {
-      const [time, name, type, rank] = item
+      const [time, name, type, rank, wishType] = item
       const timestamp = new Date(time).getTime()
       if (!dateMin) dateMin = timestamp
       if (!dateMax) dateMax = timestamp
@@ -47,7 +47,7 @@ const gachaDetail = (data) => {
           itemCount(detail.char4, name)
         }
       } else if (rank === 5) {
-        detail.ssrPos.push([name, index + 1 - lastSSR, time])
+        detail.ssrPos.push([name, index + 1 - lastSSR, time, wishType])
         lastSSR = index + 1
         detail.count5++
         detail.countMio = 0
