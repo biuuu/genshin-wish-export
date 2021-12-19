@@ -83,7 +83,7 @@ const disableProxy = async () => {
   await ipcRenderer.invoke('DISABLE_PROXY')
 }
 
-const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-gacha-export')
+const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-wish-export')
 
 onMounted(async () => {
   data.langMap = await ipcRenderer.invoke('LANG_MAP')
