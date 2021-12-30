@@ -37,7 +37,7 @@
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
-    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-gacha-export</a></p>
+    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-wish-export</a></p>
   </div>
 </template>
 
