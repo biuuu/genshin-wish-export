@@ -100,3 +100,11 @@ onMounted(async () => {
 })
 
 </script>
+
+<style>
+.el-form-item__label {
+  line-height: normal !important;
+  position: relative;
+  top: 6px;
+}
+</style>
