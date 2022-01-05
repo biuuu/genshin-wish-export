@@ -217,7 +217,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
       endId = BigInt(res[res.length - 1].id)
     }
 
-    if (res.length && uid && dataMap.has(uid)) {
+    if (!config.fetchFullHistory && res.length && uid && dataMap.has(uid)) {
       const result = dataMap.get(uid).result
       if (result.has(key)) {
         const arr = result.get(key)

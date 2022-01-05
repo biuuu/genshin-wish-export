@@ -7,6 +7,9 @@
         <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
           <el-button @click="newUser()" plain icon="el-icon-plus" size="small" class="focus:outline-none"></el-button>
         </el-tooltip>
+        <el-tooltip v-if="state.status === 'updated'" :content="ui.hint.relaunchHint" placement="bottom">
+          <el-button @click="relaunch()" type="success" icon="el-icon-refresh" size="small" class="focus:outline-none" style="margin-left: 48px">{{ui.button.directUpdate}}</el-button>
+        </el-tooltip>
       </div>
       <div class="flex gap-2">
         <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-44" size="small" @change="changeCurrent" v-model="uidSelectText">
@@ -181,6 +184,10 @@ const changeCurrent = async (uid) => {
 
 const newUser = async () => {
   await changeCurrent(0)
+}
+
+const relaunch = async () => {
+  await ipcRenderer.invoke('RELAUNCH')
 }
 
 const maskUid = (uid) => {
