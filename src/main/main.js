@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const { initWindow } = require('./utils')
 const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
@@ -36,6 +36,11 @@ if (!isFirstInstance) {
   })
 
   app.whenReady().then(createWindow)
+
+  ipcMain.handle('RELAUNCH', async () => {
+    app.relaunch()
+    app.exit(0)
+  })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
