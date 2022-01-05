@@ -40,6 +40,8 @@
   "ui.setting.autoUpdate": "自动更新",
   "ui.setting.proxyMode": "代理模式",
   "ui.setting.proxyModeHint": "通过设置系统代理来获取URL，无法从日志中获取到有效的URL时才会启动代理服务器。",
+  "ui.setting.fetchFullHistory": "获取完整数据",
+  "ui.setting.fetchFullHistoryHint": "开启时点击“更新数据”按钮会完整获取6个月内所有的抽卡记录，当记录里有6个月范围以内的错误数据时可以通过这个功能修复。",
   "ui.setting.closeProxy": "关闭系统代理",
   "ui.setting.closeProxyHint": "如果使用过代理模式时工具非正常关闭，可能导致系统代理设置没能清除，可以通过这个按钮来清除设置过的系统代理。",
   "ui.about.title": "关于",

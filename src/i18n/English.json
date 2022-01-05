@@ -40,6 +40,8 @@
   "ui.setting.autoUpdate": "Auto update",
   "ui.setting.proxyMode": "Proxy mode",
   "ui.setting.proxyModeHint": "When we fail to get the URL from system logs, use the system proxy",
+  "ui.setting.fetchFullHistory": "Get complete data",
+  "ui.setting.fetchFullHistoryHint": "When this option is enabled, click the \"Update Data\" button to get all the card draw records within 6 months. When there are incorrect data within 6 months, this function can be used to repair.",
   "ui.setting.closeProxy": "Disable system proxy",
   "ui.setting.closeProxyHint": "When you choose proxy mode, if the program crashes it can cause unwanted results that may affect your system. You can click this button to clear the system proxy settings.",
   "ui.about.title": "About",

@@ -25,6 +25,13 @@
           v-model="settingForm.autoUpdate">
         </el-switch>
       </el-form-item>
+      <el-form-item :label="text.fetchFullHistory">
+        <el-switch
+          @change="saveSetting"
+          v-model="settingForm.fetchFullHistory">
+        </el-switch>
+        <p class="text-gray-400 text-xs my-1.5">{{text.fetchFullHistoryHint}}</p>
+      </el-form-item>
       <el-form-item :label="text.proxyMode">
         <el-switch
           @change="saveSetting"
@@ -59,14 +66,15 @@ const settingForm = reactive({
   lang: 'zh-cn',
   logType: 1,
   proxyMode: true,
-  autoUpdate: true
+  autoUpdate: true,
+  fetchFullHistory: false
 })
 
 const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }
