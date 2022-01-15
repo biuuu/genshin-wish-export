@@ -57,7 +57,8 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "target" : { "target": "dmg", "arch": "arm64" }
     },
     "win": {
       "icon": "build/icons/icon.ico",
