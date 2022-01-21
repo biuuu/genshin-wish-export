@@ -8,7 +8,8 @@ const config = {
   proxyPort: 8325,
   proxyMode: false,
   autoUpdate: true,
-  fetchFullHistory: false
+  fetchFullHistory: false,
+  hideNovice: true
 }
 
 const getLocalConfig = async () => {
