@@ -35,9 +35,11 @@
     <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
     <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
       <div class="mb-4" v-for="(item, i) of detail" :key="i">
-        <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
-        <pie-chart :data="item" :i18n="state.i18n" :typeMap="typeMap"></pie-chart>
-        <gacha-detail :i18n="state.i18n" :data="item" :typeMap="typeMap"></gacha-detail>
+        <div :class="{hidden: state.config.hideNovice && item[0] === '100'}">
+          <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
+          <pie-chart :data="item" :i18n="state.i18n" :typeMap="typeMap"></pie-chart>
+          <gacha-detail :i18n="state.i18n" :data="item" :typeMap="typeMap"></gacha-detail>
+        </div>
       </div>
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
@@ -74,7 +76,8 @@ const state = reactive({
   showSetting: false,
   i18n: null,
   showUrlDlg: false,
-  urlInput: ''
+  urlInput: '',
+  config: {}
 })
 
 const ui = computed(() => {
@@ -191,7 +194,7 @@ const relaunch = async () => {
 }
 
 const maskUid = (uid) => {
-  return `${uid}`.replace(/(.+)(.{3})$/, '******$2')
+  return `${uid}`.replace(/(.{3})(.+)(.{3})$/, '$1***$3')
 }
 
 const showSetting = (show) => {
@@ -199,6 +202,7 @@ const showSetting = (show) => {
     state.showSetting = true
   } else {
     state.showSetting = false
+    updateConfig()
   }
 }
 
@@ -217,6 +221,10 @@ const setTitle = () => {
   document.title = `${state.i18n.ui.win.title} - v${version}`
 }
 
+const updateConfig = async () => {
+  state.config = await ipcRenderer.invoke('GET_CONFIG')
+}
+
 onMounted(async () => {
   await readData()
   await getI18nData()
@@ -233,5 +241,7 @@ onMounted(async () => {
     state.log = message
     state.status = 'updated'
   })
+
+  await updateConfig()
 })
 </script>
