@@ -25,6 +25,19 @@
           v-model="settingForm.autoUpdate">
         </el-switch>
       </el-form-item>
+      <el-form-item :label="text.hideNovice">
+        <el-switch
+          @change="saveSetting"
+          v-model="settingForm.hideNovice">
+        </el-switch>
+      </el-form-item>
+      <el-form-item :label="text.fetchFullHistory">
+        <el-switch
+          @change="saveSetting"
+          v-model="settingForm.fetchFullHistory">
+        </el-switch>
+        <p class="text-gray-400 text-xs my-1.5">{{text.fetchFullHistoryHint}}</p>
+      </el-form-item>
       <el-form-item :label="text.proxyMode">
         <el-switch
           @change="saveSetting"
@@ -37,7 +50,7 @@
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
-    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-gacha-export</a></p>
+    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-wish-export</a></p>
   </div>
 </template>
 
@@ -59,14 +72,16 @@ const settingForm = reactive({
   lang: 'zh-cn',
   logType: 1,
   proxyMode: true,
-  autoUpdate: true
+  autoUpdate: true,
+  fetchFullHistory: false,
+  hideNovice: true
 })
 
 const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }
@@ -92,3 +107,11 @@ onMounted(async () => {
 })
 
 </script>
+
+<style>
+.el-form-item__label {
+  line-height: normal !important;
+  position: relative;
+  top: 6px;
+}
+</style>

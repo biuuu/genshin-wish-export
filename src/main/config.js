@@ -7,7 +7,9 @@ const config = {
   current: 0,
   proxyPort: 8325,
   proxyMode: false,
-  autoUpdate: true
+  autoUpdate: true,
+  fetchFullHistory: false,
+  hideNovice: true
 }
 
 const getLocalConfig = async () => {

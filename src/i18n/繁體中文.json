@@ -38,7 +38,7 @@
   "ui.setting.seaServer": "國際服",
   "ui.setting.logTypeHint": "使用遊戲日誌獲取URL時，優先選擇哪種伺服器產生的日誌文件。",
   "ui.setting.autoUpdate": "自動更新",
-  "ui.setting.proxyMode": "Proxy代理模式",
+  "ui.setting.proxyMode": "代理模式",
   "ui.setting.proxyModeHint": "通過設置系統proxy來獲取URL，打開後會在從日誌中獲取URL失敗時啟動。",
   "ui.setting.closeProxy": "關閉系統proxy代理",
   "ui.setting.closeProxyHint": "如果使用過代理模式時工具非正常關閉，可能導致系統proxy設置未能清除，可以通過這個按鈕來清除設置過的系統proxy。",
