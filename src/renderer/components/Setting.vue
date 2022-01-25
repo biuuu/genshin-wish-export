@@ -2,14 +2,14 @@
   <div class="bg-white py-4 px-6 w-full h-full absolute inset-0">
     <div class="flex content-center items-center mb-4 justify-between">
       <h3 class="text-lg">{{text.title}}</h3>
-      <el-button icon="close" @click="closeSetting" plain circle type="default" size="small" class="shadow-md focus:shadow-none focus:outline-none"></el-button>
+      <el-button icon="close" @click="closeSetting" plain circle type="default" class="shadow-md focus:shadow-none focus:outline-none"></el-button>
     </div>
-    <el-form :model="settingForm" label-width="120px" size="small">
+    <el-form :model="settingForm" label-width="120px">
       <el-form-item :label="text.language">
         <el-select @change="saveLang" v-model="settingForm.lang">
           <el-option v-for="item of data.langMap" :key="item[0]" :label="item[1]" :value="item[0]"></el-option>
         </el-select>
-        <p class="text-gray-400 text-xs ml-1.5">{{text.languageHint}}</p>
+        <p class="text-gray-400 text-xs m-1.5">{{text.languageHint}}</p>
       </el-form-item>
       <el-form-item :label="text.logType">
         <el-radio-group @change="saveSetting" v-model.number="settingForm.logType">
@@ -17,7 +17,7 @@
           <el-radio-button :label="1">{{text.cnServer}}</el-radio-button>
           <el-radio-button :label="2">{{text.seaServer}}</el-radio-button>
         </el-radio-group>
-        <p class="text-gray-400 text-xs ml-1.5">{{text.logTypeHint}}</p>
+        <p class="text-gray-400 text-xs m-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
       <el-form-item :label="text.autoUpdate">
         <el-switch
@@ -36,16 +36,16 @@
           @change="saveSetting"
           v-model="settingForm.fetchFullHistory">
         </el-switch>
-        <p class="text-gray-400 text-xs my-1.5 ml-1.5">{{text.fetchFullHistoryHint}}</p>
+        <p class="text-gray-400 text-xs m-1.5">{{text.fetchFullHistoryHint}}</p>
       </el-form-item>
       <el-form-item :label="text.proxyMode">
         <el-switch
           @change="saveSetting"
           v-model="settingForm.proxyMode">
         </el-switch>
-        <p class="text-gray-400 text-xs my-1.5 ml-1.5">{{text.proxyModeHint}}</p>
-        <el-button size="small" class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
-        <p class="text-gray-400 text-xs ml-1.5">{{text.closeProxyHint}}</p>
+        <p class="text-gray-400 text-xs m-1.5">{{text.proxyModeHint}}</p>
+        <el-button class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
+        <p class="text-gray-400 text-xs m-1.5">{{text.closeProxyHint}}</p>
       </el-form-item>
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
@@ -113,5 +113,12 @@ onMounted(async () => {
   line-height: normal !important;
   position: relative;
   top: 6px;
+}
+.el-form-item__content {
+  flex-direction: column;
+  align-items: start !important;
+}
+.el-form-item--default {
+  margin-bottom: 14px !important;
 }
 </style>
