@@ -2,13 +2,13 @@
   <div v-if="ui" class="relative">
     <div class="flex justify-between">
       <div>
-        <el-button size="small" type="primary" :icon="state.status === 'init' ? 'milk-tea': 'refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain   @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
-        <el-button size="small" icon="folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData"  type="success" plain>{{ui.button.excel}}</el-button>
+        <el-button type="primary" :icon="state.status === 'init' ? 'milk-tea': 'refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain   @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
+        <el-button icon="folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData"  type="success" plain>{{ui.button.excel}}</el-button>
         <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
-          <el-button size="small" @click="newUser()" plain icon="plus"  class="focus:outline-none"></el-button>
+          <el-button @click="newUser()" plain icon="plus"  class="focus:outline-none"></el-button>
         </el-tooltip>
         <el-tooltip v-if="state.status === 'updated'" :content="ui.hint.relaunchHint" placement="bottom">
-          <el-button size="small" @click="relaunch()" type="success" icon="refresh"   class="focus:outline-none" style="margin-left: 48px">{{ui.button.directUpdate}}</el-button>
+          <el-button @click="relaunch()" type="success" icon="refresh"   class="focus:outline-none" style="margin-left: 48px">{{ui.button.directUpdate}}</el-button>
         </el-tooltip>
       </div>
       <div class="flex gap-2">
@@ -21,7 +21,7 @@
           </el-option>
         </el-select>
         <el-dropdown @command="optionCommand"  >
-          <el-button size="small" @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="more"  >{{ui.button.option}}</el-button>
+          <el-button @click="showSetting(true)" class="focus:outline-none" plain type="info" icon="more"  >{{ui.button.option}}</el-button>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="setting" icon="setting">{{ui.button.setting}}</el-dropdown-item>
