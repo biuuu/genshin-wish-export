@@ -47,10 +47,16 @@
         <el-button class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
         <p class="text-gray-400 text-xs m-1.5">{{text.closeProxyHint}}</p>
       </el-form-item>
+      <el-form-item v-if="settingForm.lang === 'zh-cn'" label="导出到其它工具">
+        <el-button @click="exportUIGFJSON" type="success" plain class="focus:outline-none">导出JSON</el-button>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于导出数据到其它抽卡记录管理工具，仅支持简体中文模式。<br>支持的工具参考这个链接：
+          <a class="cursor-pointer text-blue-400" @click="openLink('https://github.com/DGP-Studio/Snap.Genshin/wiki/StandardFormat#export_app')">统一可交换祈愿记录标准</a>
+        </p>
+      </el-form-item>
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
-    <p class="text-gray-600 text-xs mt-1">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-wish-export</a></p>
+    <p class="text-gray-600 text-xs mt-1 pb-6">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-wish-export</a></p>
   </div>
 </template>
 
@@ -99,6 +105,11 @@ const disableProxy = async () => {
 }
 
 const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-wish-export')
+const openLink = (link) => shell.openExternal(link)
+
+const exportUIGFJSON = () => {
+  ipcRenderer.invoke('EXPORT_UIGF_JSON')
+}
 
 onMounted(async () => {
   data.langMap = await ipcRenderer.invoke('LANG_MAP')
