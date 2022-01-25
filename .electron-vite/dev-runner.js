@@ -39,20 +39,20 @@ function logStats(proc, data) {
 }
 
 function removeJunk(chunk) {
-        // Example: 2018-08-10 22:48:42.866 Electron[90311:4883863] *** WARNING: Textured window <AtomNSWindow: 0x7fb75f68a770>
-        if (/\d+-\d+-\d+ \d+:\d+:\d+\.\d+ Electron(?: Helper)?\[\d+:\d+] /.test(chunk)) {
-            return false;
-        }
+    // Example: 2018-08-10 22:48:42.866 Electron[90311:4883863] *** WARNING: Textured window <AtomNSWindow: 0x7fb75f68a770>
+    if (/\d+-\d+-\d+ \d+:\d+:\d+\.\d+ Electron(?: Helper)?\[\d+:\d+] /.test(chunk)) {
+        return false;
+    }
 
-        // Example: [90789:0810/225804.894349:ERROR:CONSOLE(105)] "Uncaught (in promise) Error: Could not instantiate: ProductRegistryImpl.Registry", source: chrome-devtools://devtools/bundled/inspector.js (105)
-        if (/\[\d+:\d+\/|\d+\.\d+:ERROR:CONSOLE\(\d+\)\]/.test(chunk)) {
-            return false;
-        }
+    // Example: [90789:0810/225804.894349:ERROR:CONSOLE(105)] "Uncaught (in promise) Error: Could not instantiate: ProductRegistryImpl.Registry", source: chrome-devtools://devtools/bundled/inspector.js (105)
+    if (/\[\d+:\d+\/|\d+\.\d+:ERROR:CONSOLE\(\d+\)\]/.test(chunk)) {
+        return false;
+    }
 
-        // Example: ALSA lib confmisc.c:767:(parse_card) cannot find card '0'
-        if (/ALSA lib [a-z]+\.c:\d+:\([a-z_]+\)/.test(chunk)) {
-            return false;
-        }
+    // Example: ALSA lib confmisc.c:767:(parse_card) cannot find card '0'
+    if (/ALSA lib [a-z]+\.c:\d+:\([a-z_]+\)/.test(chunk)) {
+        return false;
+    }
 
 
     return chunk;
@@ -63,13 +63,23 @@ function startRenderer() {
         Portfinder.basePort = 9080
         Portfinder.getPort(async (err, port) => {
             if (err) {
-                reject("PortError:" + err)
+                console.log('PortError:', err)
+                process.exit(1)
             } else {
                 const server = await createServer(rendererOptions)
                 process.env.PORT = port
-                server.listen(port).then(() => {
-                    console.log('\n\n' + chalk.blue('  Preparing main process, please wait...') + '\n\n')
-                })
+                await server.listen(port)
+                if (process.env.TARGET === 'web') {
+                    server.config.logger.info(
+                        chalk.cyan(`\n  vite v${require('vite/package.json').version}`) +
+                        chalk.green(` dev server running at:\n`),
+                        {
+                            clear: !server.config.logger.hasWarned,
+                        }
+                    )
+                    server.printUrls()
+                }
+
                 resolve()
             }
         })
@@ -140,15 +150,13 @@ function electronLog(data, color) {
         data.forEach(line => {
             log += `  ${line}\n`
         })
-        if (/[0-9A-z]+/.test(log)) {
-            console.log(
-                chalk[color].bold(`┏ Electron -------------------`) +
-                '\n\n' +
-                log +
-                chalk[color].bold('┗ ----------------------------') +
-                '\n'
-            )
-        }
+        console.log(
+            chalk[color].bold(`┏ Electron -------------------`) +
+            '\n\n' +
+            log +
+            chalk[color].bold('┗ ----------------------------') +
+            '\n'
+        )
     }
 
 }
