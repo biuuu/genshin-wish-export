@@ -46,6 +46,9 @@ jobs:
         run: |
           yarn --frozen-lockfile
           yarn build
+        env:
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
       - uses: actions/upload-artifact@v2
         name: "Upload package for ${{ matrix.os }}"
         if: matrix.os == 'windows-latest'
