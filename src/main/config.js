@@ -6,9 +6,10 @@ const config = {
   lang: detectLocale(),
   current: 0,
   proxyPort: 8325,
-  proxyMode: false,
-  autoUpdate: true,
-  fetchFullHistory: false
+  proxyMode: true,
+  autoUpdate: false,
+  fetchFullHistory: false,
+  hideNovice: true
 }
 
 const getLocalConfig = async () => {

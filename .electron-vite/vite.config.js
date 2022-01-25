@@ -25,7 +25,11 @@ const config = defineConfig({
         port: Number(process.env.PORT),
     },
     plugins: [
-        vuePlugin()
+        vuePlugin({
+            script: {
+                refSugar: true
+            }
+        })
     ],
     publicDir: resolve('static')
 })
