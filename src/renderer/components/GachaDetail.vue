@@ -27,7 +27,7 @@
 
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">
     {{text.history}}{{colon}}
-    <span :title="item[2]" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
+    <span :title="`${item[2]}${item[3] === '400' ? '\n' + props.i18n.excel.wish2 : ''}`" :class="{wish2: item[3] === '400'}" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
       v-for="(item, index) of detail.ssrPos" :key="item"
     >
       {{item[0]}}[{{item[1]}}]
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   data: Object,

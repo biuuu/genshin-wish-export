@@ -8,7 +8,6 @@ const config = require('./config')
 const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
-const moment = require('moment')
 
 const dataMap = new Map()
 const order = ['301', '302', '200', '100']
@@ -61,9 +60,13 @@ const changeCurrent = async (uid) => {
   await config.save()
 }
 
-const compareList = (a, b) => {
-  const strA = a.map(item => item.join('-')).join(',')
-  const strB = b.map(item => item.join('-')).join(',')
+const compareList = (b, a) => {
+  if (!b.length) return false
+  if (b.length < a.length) {
+    a = a.slice(0, b.length)
+  }
+  const strA = a.map(item => item.slice(0, 4).join('-')).join(',')
+  const strB = b.map(item => item.slice(0, 4).join('-')).join(',')
   return strA === strB
 }
 
@@ -71,13 +74,26 @@ const mergeList = (a, b) => {
   if (!a || !a.length) return b || []
   if (!b || !b.length) return a
   const minA = new Date(a[0][0]).getTime()
+  const idA = a[0][5]
   let pos = b.length
-  for (let i = 0; i < b.length; i++) {
-    const time = new Date(b[i][0]).getTime()
-    if (time >= minA) {
-      if (compareList(b.slice(i, b.length), a.slice(0, b.length - i))) {
-        pos = i
-        break
+  let idFounded = false
+  for (let i = b.length - 1; i >= 0; i--) {
+    let idB = b[i][5]
+    if (idB && idB === idA) {
+      pos = i
+      idFounded = true
+      break
+    }
+  }
+  if (!idFounded) {
+    let width = Math.min(11, a.length, b.length)
+    for (let i = 0; i < b.length; i++) {
+      const time = new Date(b[i][0]).getTime()
+      if (time >= minA) {
+        if (compareList(b.slice(i, width + i), a.slice(0, width))) {
+          pos = i
+          break
+        }
       }
     }
   }
@@ -190,6 +206,7 @@ const getGachaLogs = async ({ name, key }, queryString) => {
     }
     sendMsg(i18n.parse(text.fetch.current, { name, page }))
     res = await getGachaLog({ key, page, name, url, endId, retryCount: 5 })
+    await sleep(0.3)
     if (!uid && res.length) {
       uid = res[0].uid
     }
@@ -200,15 +217,22 @@ const getGachaLogs = async ({ name, key }, queryString) => {
       endId = BigInt(res[res.length - 1].id)
     }
 
-    if (res.length && uid && dataMap.has(uid)) {
+    if (!config.fetchFullHistory && res.length && uid && dataMap.has(uid)) {
       const result = dataMap.get(uid).result
       if (result.has(key)) {
         const arr = result.get(key)
         if (arr.length) {
-          const localLatestTime = arr[arr.length - 1][0]
-          const remoteTime = res[0].time
-          if (moment(localLatestTime).isAfter(remoteTime)) {
-            break
+          const localLatestId = arr[arr.length - 1][5]
+          if (localLatestId) {
+            let shouldBreak = false
+            res.forEach(item => {
+              if (item.id === localLatestId) {
+                shouldBreak = true
+              }
+            })
+            if (shouldBreak) {
+              break
+            }
           }
         }
       }
@@ -406,7 +430,7 @@ const fetchData = async (urlOverride) => {
   for (const type of gachaType) {
     const { list, uid } = await getGachaLogs(type, queryString)
     const logs = list.map((item) => {
-      return [item.time, item.name, item.item_type, parseInt(item.rank_type)]
+      return [item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id]
     })
     logs.reverse()
     typeMap.set(type.key, type.name)

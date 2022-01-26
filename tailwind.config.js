@@ -1,6 +1,5 @@
 module.exports = {
-  purge: ['./src/renderer/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./src/renderer/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
       minWidth: {
