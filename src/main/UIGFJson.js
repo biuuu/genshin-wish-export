@@ -8,6 +8,13 @@ const getTimeString = () => {
   return new Date().toLocaleString('zh-cn', { hour12: false }).replace(/[/\s:]/g, '').slice(0, -2)
 }
 
+const formatDate = (date) => {
+  let y = date.getFullYear();
+  let m = `${date.getMonth()+1}`.padStart(2, "0");
+  let d = `${date.getDate()}`.padStart(2, "0");
+  return `${y}-${m}-${d} ${date.toLocaleString( 'zh-cn', { hour12: false }).slice(-8)}`
+}
+
 const start = async () => {
   const { dataMap, current } = await getData()
   const data = dataMap.get(current)
@@ -18,7 +25,7 @@ const start = async () => {
     info: {
       uid: data.uid,
       lang: data.lang,
-      export_time: Date.now(),
+      export_time: formatDate(new Date()),
       export_app: 'genshin-wish-export',
       export_app_version: version,
       uigf_version: '2.1'
