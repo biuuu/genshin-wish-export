@@ -9,10 +9,18 @@ const getTimeString = () => {
 }
 
 const formatDate = (date) => {
-  let y = date.getFullYear();
-  let m = `${date.getMonth()+1}`.padStart(2, "0");
-  let d = `${date.getDate()}`.padStart(2, "0");
-  return `${y}-${m}-${d} ${date.toLocaleString( 'zh-cn', { hour12: false }).slice(-8)}`
+  let y = date.getFullYear()
+  let m = `${date.getMonth()+1}`.padStart(2, '0')
+  let d = `${date.getDate()}`.padStart(2, '0')
+  return `${y}-${m}-${d} ${date.toLocaleString('zh-cn', { hour12: false }).slice(-8)}`
+}
+
+const fakeIdFn = () => {
+  let id = 1000000000000000000n
+  return () => {
+    id = id + 1n
+    return id.toString()
+  }
 }
 
 const start = async () => {
@@ -21,6 +29,7 @@ const start = async () => {
   if (!data.result.size) {
     throw new Error('数据为空')
   }
+  const fakeId = fakeIdFn()
   const result = {
     info: {
       uid: data.uid,
@@ -32,11 +41,13 @@ const start = async () => {
     },
     list: []
   }
+  const listTemp = []
   for (let [type, arr] of data.result) {
     arr.forEach(item => {
-      result.list.push({
+      listTemp.push({
         gacha_type: item[4] || type,
         time: item[0],
+        timestamp: new Date(item[0]).getTime(),
         name: item[1],
         item_type: item[2],
         rank_type: `${item[3]}`,
@@ -45,6 +56,14 @@ const start = async () => {
       })
     })
   }
+  listTemp.sort((a, b) => a.timestamp - b.timestamp)
+  listTemp.forEach(item => {
+    delete item.timestamp
+    result.list.push({
+      ...item,
+      id: item.id || fakeId()
+    })
+  })
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `UIGF_${data.uid}_${getTimeString()}`),
     filters: [
