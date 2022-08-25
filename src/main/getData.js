@@ -310,13 +310,13 @@ const proxyServer = (port) => {
   return new Promise((rev) => {
     mitmproxy.createProxy({
       sslConnectInterceptor: (req, cltSocket, head) => {
-        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(req.url)) {
+        if (/webstatic([^\.]{2,10})?\.(mihoyo|hoyoverse)\.com/.test(req.url)) {
           return true
         }
       },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
         next()
-        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(rOptions.hostname)) {
+        if (/webstatic([^\.]{2,10})?\.(mihoyo|hoyoverse)\.com/.test(rOptions.hostname)) {
           if (/authkey=[^&]+/.test(rOptions.path)) {
             rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
           }
