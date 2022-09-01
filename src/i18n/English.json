@@ -66,7 +66,7 @@
   "log.fetch.gachaType": "Getting wish type, please wait",
   "log.fetch.gachaTypeOk": "Wish type acquired",
   "log.url.lackAuth": "Authkey not found in URL",
-  "log.proxy.hint": "Using proxy mode [${ip}:${port}] to get URL，please open wish history or try to refresh",
+  "log.proxy.hint": "Using proxy mode [${ip}:${port}] to get URL，please reopen wish history inside the game client.",
   "log.url.notFound2": "Unable to find URL, please make sure you already opened wish history inside the game client",
   "log.url.incorrect": "Unable to get URL parameters",
   "log.autoUpdate.success": "Auto update successful，please restart the program",

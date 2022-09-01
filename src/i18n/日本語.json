@@ -61,7 +61,7 @@
   "log.fetch.gachaType": "祈願のタイプ取得中",
   "log.fetch.gachaTypeOk": "祈願のタイプに成功を得る",
   "log.url.lackAuth": "URLにauthkeyが含まれていない",
-  "log.proxy.hint": "URLを取得するためにプロキシモード[${ip}:${port}]を使用しています、祈願記録を開くか更新してください ",
+  "log.proxy.hint": "URLを取得するためにプロキシモード[${ip}:${port}]を使用しています、祈願記録を再開してください。",
   "log.url.notFound2": "URLが見つかりません、祈願記録を開いているか確認してください。",
   "log.url.incorrect": "URLパラメータの取得に失敗しました",
   "log.autoUpdate.success": "自動更新が完了しました、ツールを再起動してください。",

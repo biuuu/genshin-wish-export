@@ -61,7 +61,7 @@
    "log.fetch.gachaType": "Wunschtyp wird erworben, bitte warten",
    "log.fetch.gachaTypeOk": "Wunschtyp erworben",
    "log.url.lackAuth": "Der Authentifizierungsschlüssel konnte in der URL nicht aufgefunden werden",
-   "log.proxy.hint": "Nutze den Proxymodus [${ip}:${port}] um die URL zu erwerben，bitte öffnen Sie ihre Wunschaufzeichnungen oder versuchen Sie zu Aktualisieren",
+   "log.proxy.hint": "Nutze den Proxymodus [${ip}:${port}] um die URL zu erwerben, bitte öffne im Spiel die Wunschaufzeichnungen erneut.",
    "log.url.notFound2": "URL konnte nicht gefunden werden, bitte stelle sicher, dass du deinen Wunschverlauf schon einmal im Spiel geöffnet hast",
    "log.url.incorrect": "URL Parameter konnten nicht erworben werden",
    "log.autoUpdate.success": "Die automatische aktualisierung war erfolgreich, bitte starten sie das Programm neu",

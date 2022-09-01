@@ -61,7 +61,7 @@
   "log.fetch.gachaType": "Récupération du type de vœux, veuillez patienter.",
   "log.fetch.gachaTypeOk": "Le type de vœux a été récupéré.",
   "log.url.lackAuth": "Clé d'authentification introuvable dans l'URL.",
-  "log.proxy.hint": "Utilisation du mode proxy [${ip}:${port}] pour obtenir l'URL, veuillez ouvrir l'historique de vœux ou essayer d'actualiser.",
+  "log.proxy.hint": "Utilisation du mode proxy [${ip}:${port}] pour obtenir l'URL, veuillez rouvrir l'historique des vœux dans le client du jeu.",
   "log.url.notFound2": "URL introuvable, veuillez vous assurer que vous avez déjà ouvert l'historique de vœux dans le client du jeu.",
   "log.url.incorrect": "Impossible d'obtenir les paramètres d'URL.",
   "log.autoUpdate.success": "Mise à jour automatique réussie, veuillez redémarrer le programme.",

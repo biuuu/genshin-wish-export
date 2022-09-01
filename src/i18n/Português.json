@@ -53,7 +53,7 @@
   "log.fetch.gachaType": "Carregando tipo de Desejo, aguarde.",
   "log.fetch.gachaTypeOk": "Tipo de Desejo adquirido",
   "log.url.lackAuth": "Chave-acesso não encontrada na URL",
-  "log.proxy.hint": "Usando modo proxy [${ip}:${port}] para conseguir a URL，abra o Histórico de Desejos ou tente recarregar",
+  "log.proxy.hint": "Usando modo proxy [${ip}:${port}] para conseguir a URL, reabra novamente o Histórico de Desejos em seu jogo.",
   "log.url.notFound2": "Não foi possível encontrar a URL, tenha certeza de ter aberto o Histórico de Desejos dentro do jogo",
   "log.url.incorrect": "Não foi possível conseguir os parametros de URL",
   "log.autoUpdate.success": "Atualização automática bem-sucedida, por gentiliza reabra o programa",

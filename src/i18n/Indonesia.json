@@ -60,7 +60,7 @@
     "log.fetch.gachaType": "Sedang mengambil tipe permohonan, silahkan tunggu",
     "log.fetch.gachaTypeOk": "Jenis permohonan diperoleh",
     "log.url.lackAuth": "Authkey tidak ditemukan di URL",
-    "log.proxy.hint": "Menggunakan mode proksi [${ip}:${port}] untuk mendapatkan URL, buka riwayat permohonan atau coba segarkan",
+    "log.proxy.hint": "Menggunakan mode proksi [${ip}:${port}] untuk mendapatkan URL, buka kembali riwayat permohonan di dalam klien permainan.",
     "log.url.notFound2": "Tidak dapat menemukan URL, pastikan Anda telah membuka riwayat permohonan di dalam klien permainan",
     "log.url.incorrect": "Tidak bisa mendapatkan parameter URL",
     "log.autoUpdate.success": "Pembaruan otomatis berhasil, mulai ulang program",
