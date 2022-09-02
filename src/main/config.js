@@ -6,7 +6,7 @@ const config = {
   lang: detectLocale(),
   current: 0,
   proxyPort: 8325,
-  proxyMode: true,
+  proxyMode: false,
   autoUpdate: true,
   fetchFullHistory: false,
   hideNovice: true
