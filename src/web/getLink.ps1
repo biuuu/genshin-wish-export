@@ -66,5 +66,5 @@ Write-Host $wishHistoryUrl
 Set-Clipboard -Value $wishHistoryUrl
 Write-Host "Link copied to clipboard, paste it back to paimon.moe" -ForegroundColor Green
 if ($reg -eq "china") {
-  Write-Host "URL已经复制到粘贴板"
+  Write-Host "URL$([char]0x5df2)$([char]0x7ecf)$([char]0x590d)$([char]0x5236)$([char]0x5230)$([char]0x7c98)$([char]0x8d34)$([char]0x677f)"
 }
