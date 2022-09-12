@@ -61,7 +61,7 @@
     "log.fetch.gachaType": "Đang nhận loại cầu nguyện, vui lòng đợi",
     "log.fetch.gachaTypeOk": "Nhận loại cầu nguyện thành công",
     "log.url.lackAuth": "Không tìm thấy mã xác thực trong URL",
-    "log.proxy.hint": "Sử dụng chế độ proxy [${ip}:${port}] để nhận URL, vui lòng mở lịch sử cầu nguyện hoặc thử làm mới",
+    "log.proxy.hint": "Sử dụng chế độ proxy [${ip}:${port}] để nhận URL, vui lòng mở lại lịch sử cầu nguyện bên trong trò chơi.",
     "log.url.notFound2": "Không thể tìm thấy URL, vui lòng đảm bảo rằng bạn đã mở lịch sử cầu nguyện bên trong trò chơi",
     "log.url.incorrect": "Không thể nhận thông số URL",
     "log.autoUpdate.success": "Tự động cập nhật thành công, vui lòng khởi động lại chương trình",

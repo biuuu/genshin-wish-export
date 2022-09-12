@@ -61,7 +61,7 @@
   "log.fetch.gachaType": "Obteniendo el tipo de deseo",
   "log.fetch.gachaTypeOk": "Tipo de deseo obtenido",
   "log.url.lackAuth": "No se encuentra la Authkey en la URL",
-  "log.proxy.hint": "Usando modo proxy [${ip}:${port}] para obtener la URL，abre el historial de deseos y refresca",
+  "log.proxy.hint": "Usando modo proxy [${ip}:${port}] para obtener la URL, Abre de nuevo el historial de deseos en el juego.",
   "log.url.notFound2": "Error al obtener la URL, asegurate de que has abierto el historial de deseos dentro del juego.",
   "log.url.incorrect": "Error al obtener los parámetros de la URL",
   "log.autoUpdate.success": "Actualizado correctamente, reinicia el programa",

@@ -154,9 +154,13 @@ const readLog = async () => {
     }
     const promises = gameNames.map(async name => {
       const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
-      const arr = logText.match(/^OnGetWebViewPageFinish:https:\/\/.+\?.+?(?:#.+)?$/mg)
-      if (arr && arr.length) {
-        return arr[arr.length - 1].replace('OnGetWebViewPageFinish:', '')
+      const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
+      if (gamePathMch) {
+        const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
+        const urlMch = cacheText.match(/https.+?game_biz=hk4e_\w+/g)
+        if (urlMch) {
+          return urlMch[urlMch.length - 1]
+        }
       }
     })
     const result = await Promise.all(promises)
@@ -310,13 +314,13 @@ const proxyServer = (port) => {
   return new Promise((rev) => {
     mitmproxy.createProxy({
       sslConnectInterceptor: (req, cltSocket, head) => {
-        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(req.url)) {
+        if (/webstatic([^\.]{2,10})?\.(mihoyo|hoyoverse)\.com/.test(req.url)) {
           return true
         }
       },
       requestInterceptor: (rOptions, req, res, ssl, next) => {
         next()
-        if (/webstatic([^\.]{2,10})?\.mihoyo\.com/.test(rOptions.hostname)) {
+        if (/webstatic([^\.]{2,10})?\.(mihoyo|hoyoverse)\.com/.test(rOptions.hostname)) {
           if (/authkey=[^&]+/.test(rOptions.path)) {
             rev(`${rOptions.protocol}//${rOptions.hostname}${rOptions.path}`)
           }
@@ -513,4 +517,3 @@ exports.getData = () => {
     current: config.current
   }
 }
-

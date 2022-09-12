@@ -3,6 +3,7 @@ const { initWindow } = require('./utils')
 const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
 require('./excel')
+require('./UIGFJson')
 const { getUpdateInfo } = require('./update/index')
 
 const isDev = !app.isPackaged
