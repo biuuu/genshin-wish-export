@@ -37,8 +37,8 @@ const start = async () => {
       export_time: formatDate(new Date()),
       export_timestamp: Date.now(),
       export_app: 'genshin-wish-export',
-      export_app_version: version,
-      uigf_version: '2.2'
+      export_app_version: `v${version}`,
+      uigf_version: 'v2.2'
     },
     list: []
   }
