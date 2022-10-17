@@ -291,15 +291,24 @@ const getGachaType = async (queryString) => {
   return orderedGachaTypes
 }
 
+const fixAuthkey = (url) => {
+  const mr = url.match(/authkey=([^&]+)/)
+  if (mr && mr[1] && mr[1].includes('=')) {
+    return url.replace(/authkey=([^&]+)/, `authkey=${encodeURIComponent(mr[1])}`)
+  }
+  return url
+}
+
 const getQuerystring = (url) => {
   const text = i18n.log
-  const { searchParams, host } = new URL(url)
+  const { searchParams, host } = new URL(fixAuthkey(url))
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
     apiDomain = 'https://hk4e-api-os.mihoyo.com'
   } else {
     apiDomain = 'https://hk4e-api.mihoyo.com'
   }
-  if (!searchParams.get('authkey')) {
+  const authkey = searchParams.get('authkey')
+  if (!authkey) {
     sendMsg(text.url.lackAuth)
     return false
   }
@@ -412,7 +421,7 @@ const fetchData = async (urlOverride) => {
     sendMsg(message)
     throw new Error(message)
   }
-  const searchParams = await getQuerystring(url)
+  const searchParams = getQuerystring(url)
   if (!searchParams) {
     const message = text.url.incorrect
     sendMsg(message)
