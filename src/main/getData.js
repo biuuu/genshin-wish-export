@@ -293,7 +293,7 @@ const getGachaType = async (queryString) => {
 
 const fixAuthkey = (url) => {
   const mr = url.match(/authkey=([^&]+)/)
-  if (mr && mr[1] && mr[1].includes('=')) {
+  if (mr && mr[1] && mr[1].includes('=') && !mr[1].includes('%')) {
     return url.replace(/authkey=([^&]+)/, `authkey=${encodeURIComponent(mr[1])}`)
   }
   return url
