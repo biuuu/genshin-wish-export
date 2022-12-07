@@ -8,6 +8,8 @@
   "ui.button.setting": "设置",
   "ui.button.option": "选项",
   "ui.button.startProxy": "代理模式",
+  "ui.button.solution": "解决办法",
+  "ui.button.cacheFolder": "打开网页缓存文件夹",
   "ui.select.newAccount": "新账号",
   "ui.hint.newAccount": "从其它账号导出数据",
   "ui.hint.init": "请先在游戏里打开任意一个抽卡记录后再点击“加载数据”按钮",
@@ -80,5 +82,6 @@
   "excel.wish2": "祈愿2",
   "excel.customFont": "微软雅黑",
   "excel.filePrefix": "原神祈愿记录",
-  "excel.fileType": "Excel文件"
+  "excel.fileType": "Excel文件",
+  "ui.extra.cacheClean": "1. 确认是否已经打开游戏内的抽卡历史记录，如果仍然出现“身份认证已过期”的错误，再尝试下面的步骤\n2. 关闭原神的游戏窗口\n3. 点击上方的“打开网页缓存文件夹”按钮，打开文件夹\n4. 删除文件夹\n5. 启动原神游戏，打开游戏内抽卡历史记录页面\n6. 关闭这个对话框，再点击“更新数据”按钮"
 }

@@ -8,6 +8,7 @@
   "ui.button.setting": "Settings",
   "ui.button.option": "Option",
   "ui.button.startProxy": "Proxy mode",
+  "ui.button.solution": "Solution",
   "ui.select.newAccount": "New account",
   "ui.hint.newAccount": "Export data from other accounts",
   "ui.hint.init": "Please open your wish history inside the game client before clicking on the 'Load data' button",

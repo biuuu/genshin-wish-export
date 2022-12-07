@@ -157,7 +157,7 @@ const readLog = async () => {
       const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
       if (gamePathMch) {
         const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
-        const urlMch = cacheText.match(/https.+?authkey=.+?game_biz=hk4e_\w+/g)
+        const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
         if (urlMch) {
           return urlMch[urlMch.length - 1]
         }
@@ -251,10 +251,12 @@ const checkResStatus = (res) => {
     let message = res.message
     if (res.message === 'authkey timeout') {
       message = text.fetch.authTimeout
+      sendMsg(true, 'AUTHKEY_TIMEOUT')
     }
     sendMsg(message)
     throw new Error(message)
   }
+  sendMsg(true, 'AUTHKEY_TIMEOUT')
   return res
 }
 
@@ -277,6 +279,7 @@ const getGachaType = async (queryString) => {
   const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
   sendMsg(text.fetch.gachaType)
   const res = await request(gachaTypeUrl)
+  console.log(gachaTypeUrl)
   checkResStatus(res)
   const gachaTypes = res.data.gacha_type_list
   const orderedGachaTypes = []
