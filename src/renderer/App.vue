@@ -2,7 +2,7 @@
   <div v-if="ui" class="relative">
     <div class="flex justify-between">
       <div>
-        <el-button type="primary" :icon="state.status === 'init' ? 'milk-tea': 'refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain   @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
+        <el-button type="primary" :icon="state.status === 'init' ? 'milk-tea': 'refresh-right'" class="focus:outline-none" :disabled="!allowClick()" plain @click="fetchData()" :loading="state.status === 'loading'">{{state.status === 'init' ? ui.button.load: ui.button.update}}</el-button>
         <el-button icon="folder-opened" @click="saveExcel" class="focus:outline-none" :disabled="!gachaData"  type="success" plain>{{ui.button.excel}}</el-button>
         <el-tooltip v-if="detail && state.status !== 'loading'" :content="ui.hint.newAccount" placement="bottom">
           <el-button @click="newUser()" plain icon="plus"  class="focus:outline-none"></el-button>
@@ -32,7 +32,7 @@
         </el-dropdown>
       </div>
     </div>
-    <p class="text-gray-400 my-2 text-xs">{{hint}}</p>
+    <p class="text-gray-400 my-2 text-xs">{{hint}}<el-button @click="(state.showCacheCleanDlg=true)" v-if="state.authkeyTimeout" style="margin-left: 8px;" size="small" plain round>{{ui.button.solution}}</el-button></p>
     <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
       <div class="mb-4" v-for="(item, i) of detail" :key="i">
         <div :class="{hidden: state.config.hideNovice && item[0] === '100'}">
@@ -52,6 +52,17 @@
           <el-button  @click="state.showUrlDlg = false" class="focus:outline-none">{{ui.common.cancel}}</el-button>
           <el-button  type="primary" @click="state.showUrlDlg = false, fetchData(state.urlInput)" class="focus:outline-none">{{ui.common.ok}}</el-button>
         </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog :title="ui.button.solution" v-model="state.showCacheCleanDlg" width="90%" custom-class="max-w-md">
+      <el-button plain icon="folder" type="primary" @click="openCacheFolder">{{ui.button.cacheFolder}}</el-button>
+      <p class="my-4 leading-2 text-gray-600 text-sm whitespace-pre-line">{{ui.extra.cacheClean}}</p>
+      <p class="my-2 text-gray-400 text-xs">{{ui.extra.findCacheFolder}}</p>
+      <template #footer>
+        <div class="dialog-footer text-center">
+          <el-button  type="primary" @click="state.showCacheCleanDlg = false" class="focus:outline-none">{{ui.common.ok}}</el-button>
+        </div>
       </template>
     </el-dialog>
 
@@ -76,7 +87,9 @@ const state = reactive({
   showSetting: false,
   i18n: null,
   showUrlDlg: false,
+  showCacheCleanDlg: false,
   urlInput: '',
+  authkeyTimeout: false,
   config: {}
 })
 
@@ -175,6 +188,10 @@ const saveExcel = async () => {
   await ipcRenderer.invoke('SAVE_EXCEL')
 }
 
+const openCacheFolder = async () => {
+  await ipcRenderer.invoke('OPEN_CACHE_FOLDER')
+}
+
 const changeCurrent = async (uid) => {
   if (uid === 0) {
     state.status = 'init'
@@ -240,6 +257,10 @@ onMounted(async () => {
   ipcRenderer.on('UPDATE_HINT', (event, message) => {
     state.log = message
     state.status = 'updated'
+  })
+
+  ipcRenderer.on('AUTHKEY_TIMEOUT', (event, message) => {
+    state.authkeyTimeout = message
   })
 
   await updateConfig()

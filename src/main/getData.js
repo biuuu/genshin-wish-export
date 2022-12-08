@@ -2,7 +2,7 @@ const fs = require('fs-extra')
 const util = require('util')
 const path = require('path')
 const { URL } = require('url')
-const { app, ipcMain } = require('electron')
+const { app, ipcMain, shell } = require('electron')
 const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
 const i18n = require('./i18n')
@@ -138,6 +138,7 @@ const detectGameLocale = async (userPath) => {
   return list
 }
 
+let cacheFolder = null
 const readLog = async () => {
   const text = i18n.log
   try {
@@ -157,8 +158,9 @@ const readLog = async () => {
       const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
       if (gamePathMch) {
         const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
-        const urlMch = cacheText.match(/https.+?authkey=.+?game_biz=hk4e_\w+/g)
+        const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
         if (urlMch) {
+          cacheFolder = path.join(gamePathMch[0], '/webCaches/Cache/')
           return urlMch[urlMch.length - 1]
         }
       }
@@ -251,10 +253,12 @@ const checkResStatus = (res) => {
     let message = res.message
     if (res.message === 'authkey timeout') {
       message = text.fetch.authTimeout
+      sendMsg(true, 'AUTHKEY_TIMEOUT')
     }
     sendMsg(message)
     throw new Error(message)
   }
+  sendMsg(false, 'AUTHKEY_TIMEOUT')
   return res
 }
 
@@ -518,6 +522,12 @@ ipcMain.handle('DISABLE_PROXY', async () => {
 
 ipcMain.handle('I18N_DATA', () => {
   return i18n.data
+})
+
+ipcMain.handle('OPEN_CACHE_FOLDER', () => {
+  if (cacheFolder) {
+    shell.openPath(cacheFolder)
+  }
 })
 
 exports.getData = () => {
