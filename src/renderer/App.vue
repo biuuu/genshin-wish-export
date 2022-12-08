@@ -57,7 +57,8 @@
 
     <el-dialog :title="ui.button.solution" v-model="state.showCacheCleanDlg" width="90%" custom-class="max-w-md">
       <el-button plain icon="folder" type="primary" @click="openCacheFolder">{{ui.button.cacheFolder}}</el-button>
-      <p class="my-4 leading-normal text-gray-600 whitespace-pre-line">{{ui.extra.cacheClean}}</p>
+      <p class="my-4 leading-2 text-gray-600 text-sm whitespace-pre-line">{{ui.extra.cacheClean}}</p>
+      <p class="my-2 text-gray-400 text-xs">{{ui.extra.findCacheFolder}}</p>
       <template #footer>
         <div class="dialog-footer text-center">
           <el-button  type="primary" @click="state.showCacheCleanDlg = false" class="focus:outline-none">{{ui.common.ok}}</el-button>

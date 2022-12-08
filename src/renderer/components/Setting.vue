@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white py-4 px-6 w-full h-full absolute inset-0">
+  <div class="bg-white pt-2 pb-4 px-6 w-full h-full absolute inset-0">
     <div class="flex content-center items-center mb-4 justify-between">
       <h3 class="text-lg">{{text.title}}</h3>
-      <el-button icon="close" @click="closeSetting" plain circle type="default" class="shadow-md focus:shadow-none focus:outline-none"></el-button>
+      <el-button icon="close" @click="closeSetting" plain circle type="default" class="w-8 h-8 relative -right-4 -top-2 shadow-md focus:shadow-none focus:outline-none"></el-button>
     </div>
     <el-form :model="settingForm" label-width="120px">
       <el-form-item :label="text.language">

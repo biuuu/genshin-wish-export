@@ -9,6 +9,7 @@
   "ui.button.option": "Option",
   "ui.button.startProxy": "Proxy mode",
   "ui.button.solution": "Solution",
+  "ui.button.cacheFolder": "Open cache folder",
   "ui.select.newAccount": "New account",
   "ui.hint.newAccount": "Export data from other accounts",
   "ui.hint.init": "Please open your wish history inside the game client before clicking on the 'Load data' button",
@@ -81,5 +82,7 @@
   "excel.wish2": "Wish 2",
   "excel.customFont": "Arial",
   "excel.filePrefix": "Genshin wish logger",
-  "excel.fileType": "Excel file"
+  "excel.fileType": "Excel file",
+  "ui.extra.cacheClean": "1. Confirm whether the wish history in the game has been opened, and if the error \"User authentication expired\" still appears, try the following steps \n2. Close the game window of Genshin Impact \n3. Click the \"Open Web Cache Folder\" button above to open the \"Cache\" folder \n4. Delete the \"Cache_ Data\" folder \n5. Start the Genshin Impact game and open the wish history page in the game \n6. Close this dialog and click the \"Update Data\" button",
+  "ui.extra.findCacheFolder": "If the \"Open cache folder\" button does not respond, you can manually find the game's web cache folder. The directory is \"Your game installation path/Genshin Impact Game/GenshinImpact_Data/webCaches/Cache/\""
 }
