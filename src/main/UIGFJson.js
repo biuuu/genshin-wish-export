@@ -5,7 +5,7 @@ const getData = require('./getData').getData
 const { version } = require('../../package.json')
 
 const getTimeString = () => {
-  return new Date().toLocaleString('zh-cn', { hour12: false }).replace(/[/\s:]/g, '').slice(0, -2)
+  return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
 }
 
 const formatDate = (date) => {
