@@ -8,6 +8,8 @@
   "ui.button.setting": "設定",
   "ui.button.option": "選項",
   "ui.button.startProxy": "Proxy 模式",
+  "ui.button.solution": "解決方案",
+  "ui.button.cacheFolder": "開啟快取資料夾",
   "ui.select.newAccount": "新帳號",
   "ui.hint.newAccount": "從其他帳號匯出資料",
   "ui.hint.init": "請先在遊戲中開啟任意一個祈願紀錄，再按下「載入資料」按鈕。",
@@ -78,8 +80,9 @@
   "excel.header.pity": "保底內",
   "excel.header.remark": "備註",
   "excel.wish2": "祈愿-2",
-  "excel.customFont": "微軟雅黑",
+  "excel.customFont": "微軟正黑體",
   "excel.filePrefix": "原神祈願紀錄",
   "excel.fileType": "Excel 檔案",
-  "ui.extra.findCacheFolder": "如果点“打开缓存文件夹”按钮没有反应，可以手动找到游戏的网页缓存文件夹，目录为“你的游戏安装路径/Genshin Impact Game/GenshinImpact_Data/webCaches/Cache/”"
+  "ui.extra.cacheClean": "1. 確認是否已經開啟遊戲內的祈願歷史紀錄，如果仍然出現「身分驗證已過期」的錯誤，再嘗試下面的步驟\n2. 關閉原神的遊戲視窗\n3. 按一下上方的「開啟快取資料夾」按鈕，開啟「Cache」資料夾\n4. 刪除「Cache_Data」資料夾\n5. 啟動原神遊戲，開啟遊戲內祈願歷史紀錄頁面\n6. 關閉這個對話方塊，再按下「更新資料」按鈕",
+  "ui.extra.findCacheFolder": "如果按下「開啟快取資料夾」按鈕沒有回應，可以手動找到遊戲的網頁快取資料夾，目錄為「您的遊戲安裝路徑/Genshin Impact Game/GenshinImpact_Data/webCaches/Cache/」"
 }
