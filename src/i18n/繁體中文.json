@@ -83,6 +83,6 @@
   "excel.customFont": "微軟雅黑",
   "excel.filePrefix": "原神祈願紀錄",
   "excel.fileType": "Excel 檔案",
-  "ui.extra.cacheClean": "1. 確認是否已經開啟遊戲內的祈願歷史紀，如果仍然出現「身分驗證已過期」的錯誤，再嘗試下面的步驟\n2. 關閉原神的遊戲視窗\n3. 按一下上方的「開啟快取資料夾」按鈕，開啟「Cache」資料夾\n4. 刪除「Cache_Data」資料夾\n5. 啟動原神遊戲，開啟遊戲內祈願歷史紀錄頁面\n6. 關閉這個對話方塊，再按下「更新資料」按鈕",
+  "ui.extra.cacheClean": "1. 確認是否已經開啟遊戲內的祈願歷史紀錄，如果仍然出現「身分驗證已過期」的錯誤，再嘗試下面的步驟\n2. 關閉原神的遊戲視窗\n3. 按一下上方的「開啟快取資料夾」按鈕，開啟「Cache」資料夾\n4. 刪除「Cache_Data」資料夾\n5. 啟動原神遊戲，開啟遊戲內祈願歷史紀錄頁面\n6. 關閉這個對話方塊，再按下「更新資料」按鈕",
   "ui.extra.findCacheFolder": "如果按下「開啟快取資料夾」按鈕沒有回應，可以手動找到遊戲的網頁快取資料夾，目錄為「您的遊戲安裝路徑/Genshin Impact Game/GenshinImpact_Data/webCaches/Cache/」"
 }
