@@ -23,6 +23,13 @@ const fakeIdFn = () => {
   }
 }
 
+const shouldBeString = (value) => {
+  if (typeof value !== 'string') {
+    return ''
+  }
+  return value
+}
+
 const start = async () => {
   const { dataMap, current } = await getData()
   const data = dataMap.get(current)
@@ -46,13 +53,13 @@ const start = async () => {
   for (let [type, arr] of data.result) {
     arr.forEach(item => {
       listTemp.push({
-        gacha_type: item[4] || type,
+        gacha_type: shouldBeString(item[4]) || type,
         time: item[0],
         timestamp: new Date(item[0]).getTime(),
         name: item[1],
         item_type: item[2],
         rank_type: `${item[3]}`,
-        id: item[5] || '',
+        id: shouldBeString(item[5]) || '',
         uigf_gacha_type: type
       })
     })
