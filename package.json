@@ -57,7 +57,14 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
     },
     "win": {
       "icon": "build/icons/icon.ico",
@@ -68,7 +75,6 @@
       "icon": "build/icons"
     }
   },
-  "dependencies": {},
   "devDependencies": {
     "@element-plus/icons-vue": "^0.2.6",
     "@rollup/plugin-alias": "^3.1.9",
