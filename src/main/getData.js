@@ -306,7 +306,7 @@ const fixAuthkey = (url) => {
 const getQuerystring = (url) => {
   const text = i18n.log
   const { searchParams, host } = new URL(fixAuthkey(url))
-  if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
+  if (host.includes('webstatic-sea') || host.includes('hkrpg-api-os')) {
     // 国际服地址参照了 https://github.com/Scighost/StarRailTool/blob/main/StarRailTool/Gacha/GachaLogClient.cs#LL22
     apiDomain = 'https://api-os-takumi.mihoyo.com'
   } else {
