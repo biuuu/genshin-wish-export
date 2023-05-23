@@ -116,7 +116,7 @@ const mergeData = (local, origin) => {
   return origin.result
 }
 
-const detectGameLocale = async (userPath) => {
+const detectGameType = async (userPath) => {
   let list = []
   const lang = app.getLocale()
   try {
@@ -130,11 +130,17 @@ const detectGameLocale = async (userPath) => {
   if (config.logType) {
     if (config.logType === 2) {
       list.reverse()
+    } else if (config.logType === 3) {
+      list = []
     }
     list = list.slice(0, 1)
   } else if (lang !== 'zh-CN') {
     list.reverse()
   }
+  try {
+    await fs.access(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), fs.constants.F_OK)
+    list.push('cloud')
+  } catch (e) {}
   return list
 }
 
@@ -148,20 +154,28 @@ const readLog = async () => {
     } else {
       userPath = path.join(process.env.WINEPREFIX, 'drive_c/users', process.env.USER)
     }
-    const gameNames = await detectGameLocale(userPath)
+    const gameNames = await detectGameType(userPath)
     if (!gameNames.length) {
       sendMsg(text.file.notFound)
       return false
     }
     const promises = gameNames.map(async name => {
-      const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
-      const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
-      if (gamePathMch) {
-        const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
+      if (name === 'cloud') {
+        const cacheText = await fs.readFile(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), 'utf8')
         const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
         if (urlMch) {
-          cacheFolder = path.join(gamePathMch[0], '/webCaches/Cache/')
           return urlMch[urlMch.length - 1]
+        }
+      } else {
+        const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
+        const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
+        if (gamePathMch) {
+          const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
+          const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
+          if (urlMch) {
+            cacheFolder = path.join(gamePathMch[0], '/webCaches/Cache/')
+            return urlMch[urlMch.length - 1]
+          }
         }
       }
     })
@@ -363,15 +377,6 @@ const useProxy = async () => {
   return url
 }
 
-const getUrlFromConfig = () => {
-  if (config.urls.size) {
-    if (config.current && config.urls.has(config.current)) {
-      const url = config.urls.get(config.current)
-      return url
-    }
-  }
-}
-
 const tryRequest = async (url, retry = false) => {
   const queryString = getQuerystring(url)
   if (!queryString) return false
@@ -393,15 +398,7 @@ const tryRequest = async (url, retry = false) => {
 }
 
 const getUrl = async () => {
-  let url = getUrlFromConfig()
-  if (!url) {
-    url = await readLog()
-  } else {
-    const result = await tryRequest(url)
-    if (!result) {
-      url = await readLog()
-    }
-  }
+  let url = await readLog()
   if (!url && config.proxyMode) {
     url = await useProxy()
   } else if (url) {
