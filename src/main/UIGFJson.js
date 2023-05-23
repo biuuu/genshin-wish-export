@@ -33,7 +33,7 @@ const shouldBeString = (value) => {
 const start = async () => {
   const { dataMap, current } = await getData()
   const data = dataMap.get(current)
-  if (!data.result.size) {
+  if (!data?.result.size) {
     throw new Error('数据为空')
   }
   const fakeId = fakeIdFn()
