@@ -24,7 +24,7 @@ https://genshin-gacha-export.danmu9.com
 
 ## 使用说明
 
-1. 下载工具后解压 - [下载地址](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip)
+1. 下载工具后解压 - 下载地址: [Github](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip) / [蓝奏云](https://wwvt.lanzoum.com/b01zxlweh) 密码：gepz
 2. 打开游戏的祈愿历史记录
 
    ![祈愿历史记录](/docs/wish-history.png)

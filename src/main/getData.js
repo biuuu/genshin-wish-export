@@ -2,7 +2,7 @@ const fs = require('fs-extra')
 const util = require('util')
 const path = require('path')
 const { URL } = require('url')
-const { app, ipcMain } = require('electron')
+const { app, ipcMain, shell } = require('electron')
 const { sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap } = require('./utils')
 const config = require('./config')
 const i18n = require('./i18n')
@@ -116,7 +116,7 @@ const mergeData = (local, origin) => {
   return origin.result
 }
 
-const detectGameLocale = async (userPath) => {
+const detectGameType = async (userPath) => {
   let list = []
   const lang = app.getLocale()
   try {
@@ -130,14 +130,21 @@ const detectGameLocale = async (userPath) => {
   if (config.logType) {
     if (config.logType === 2) {
       list.reverse()
+    } else if (config.logType === 3) {
+      list = []
     }
     list = list.slice(0, 1)
   } else if (lang !== 'zh-CN') {
     list.reverse()
   }
+  try {
+    await fs.access(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), fs.constants.F_OK)
+    list.push('cloud')
+  } catch (e) {}
   return list
 }
 
+let cacheFolder = null
 const readLog = async () => {
   const text = i18n.log
   try {
@@ -147,19 +154,28 @@ const readLog = async () => {
     } else {
       userPath = path.join(process.env.WINEPREFIX, 'drive_c/users', process.env.USER)
     }
-    const gameNames = await detectGameLocale(userPath)
+    const gameNames = await detectGameType(userPath)
     if (!gameNames.length) {
       sendMsg(text.file.notFound)
       return false
     }
     const promises = gameNames.map(async name => {
-      const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
-      const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
-      if (gamePathMch) {
-        const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
-        const urlMch = cacheText.match(/https.+?game_biz=hk4e_\w+/g)
+      if (name === 'cloud') {
+        const cacheText = await fs.readFile(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), 'utf8')
+        const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
         if (urlMch) {
           return urlMch[urlMch.length - 1]
+        }
+      } else {
+        const logText = await fs.readFile(`${userPath}/AppData/LocalLow/miHoYo/${name}/output_log.txt`, 'utf8')
+        const gamePathMch = logText.match(/\w:\/.+(GenshinImpact_Data|YuanShen_Data)/)
+        if (gamePathMch) {
+          const cacheText = await fs.readFile(path.join(gamePathMch[0], '/webCaches/Cache/Cache_Data/data_2'), 'utf8')
+          const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
+          if (urlMch) {
+            cacheFolder = path.join(gamePathMch[0], '/webCaches/Cache/')
+            return urlMch[urlMch.length - 1]
+          }
         }
       }
     })
@@ -251,10 +267,12 @@ const checkResStatus = (res) => {
     let message = res.message
     if (res.message === 'authkey timeout') {
       message = text.fetch.authTimeout
+      sendMsg(true, 'AUTHKEY_TIMEOUT')
     }
     sendMsg(message)
     throw new Error(message)
   }
+  sendMsg(false, 'AUTHKEY_TIMEOUT')
   return res
 }
 
@@ -291,15 +309,24 @@ const getGachaType = async (queryString) => {
   return orderedGachaTypes
 }
 
+const fixAuthkey = (url) => {
+  const mr = url.match(/authkey=([^&]+)/)
+  if (mr && mr[1] && mr[1].includes('=') && !mr[1].includes('%')) {
+    return url.replace(/authkey=([^&]+)/, `authkey=${encodeURIComponent(mr[1])}`)
+  }
+  return url
+}
+
 const getQuerystring = (url) => {
   const text = i18n.log
-  const { searchParams, host } = new URL(url)
+  const { searchParams, host } = new URL(fixAuthkey(url))
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
     apiDomain = 'https://hk4e-api-os.mihoyo.com'
   } else {
     apiDomain = 'https://hk4e-api.mihoyo.com'
   }
-  if (!searchParams.get('authkey')) {
+  const authkey = searchParams.get('authkey')
+  if (!authkey) {
     sendMsg(text.url.lackAuth)
     return false
   }
@@ -350,15 +377,6 @@ const useProxy = async () => {
   return url
 }
 
-const getUrlFromConfig = () => {
-  if (config.urls.size) {
-    if (config.current && config.urls.has(config.current)) {
-      const url = config.urls.get(config.current)
-      return url
-    }
-  }
-}
-
 const tryRequest = async (url, retry = false) => {
   const queryString = getQuerystring(url)
   if (!queryString) return false
@@ -380,15 +398,7 @@ const tryRequest = async (url, retry = false) => {
 }
 
 const getUrl = async () => {
-  let url = getUrlFromConfig()
-  if (!url) {
-    url = await readLog()
-  } else {
-    const result = await tryRequest(url)
-    if (!result) {
-      url = await readLog()
-    }
-  }
+  let url = await readLog()
   if (!url && config.proxyMode) {
     url = await useProxy()
   } else if (url) {
@@ -412,7 +422,7 @@ const fetchData = async (urlOverride) => {
     sendMsg(message)
     throw new Error(message)
   }
-  const searchParams = await getQuerystring(url)
+  const searchParams = getQuerystring(url)
   if (!searchParams) {
     const message = text.url.incorrect
     sendMsg(message)
@@ -509,6 +519,12 @@ ipcMain.handle('DISABLE_PROXY', async () => {
 
 ipcMain.handle('I18N_DATA', () => {
   return i18n.data
+})
+
+ipcMain.handle('OPEN_CACHE_FOLDER', () => {
+  if (cacheFolder) {
+    shell.openPath(cacheFolder)
+  }
 })
 
 exports.getData = () => {
