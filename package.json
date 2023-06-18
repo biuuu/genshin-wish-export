@@ -77,7 +77,7 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@types/node": "^20.3.1",
     "@vitejs/plugin-vue": "4.2.3",
-    "@vue/compiler-sfc": "^3.2.31",
+    "@vue/compiler-sfc": "^3.3.4",
     "adm-zip": "^0.5.10",
     "autoprefixer": "^10.4.14",
     "cfonts": "^2.10.0",
@@ -102,7 +102,7 @@
     "semver": "^7.5.2",
     "tailwindcss": "^3.3.2",
     "vite": "4.3.9",
-    "vue": "^3.2.31",
+    "vue": "^3.3.4",
     "winreg": "^1.2.4",
     "yauzl": "^2.10.0"
   },
