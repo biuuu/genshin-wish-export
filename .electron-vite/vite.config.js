@@ -11,9 +11,6 @@ const root = resolve('src/renderer')
 const config = defineConfig({
     mode: process.env.NODE_ENV,
     root,
-    define: {
-        '__VUE_OPTIONS_API__': false
-    },
     resolve: {
         alias: {
             '@renderer': root,
