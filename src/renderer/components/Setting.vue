@@ -54,6 +54,18 @@
           <a class="cursor-pointer text-blue-400" @click="openLink('https://github.com/DGP-Studio/Snap.Genshin/wiki/StandardFormat#export_app')">统一可交换祈愿记录标准</a>
         </p>
       </el-form-item>
+      <el-form-item v-if="settingForm.lang === 'zh-cn'" label="导出到Github Gists">
+        <el-input placeholder="请输入内容" v-model="settingForm.gistsToken" :disabled="gistsConfigDisabled">
+          <template #append>
+            <el-button v-show="gistsConfigDisabled" @click="configGistsToken">设置Token</el-button>
+            <el-button v-show="!gistsConfigDisabled" @click="saveGistsToken" type="success" plain class="focus:outline-none">保存Token</el-button>
+          </template>
+        </el-input>
+        <el-button @click="uploadGists" type="success" plain class="focus:outline-none">上传至Gists</el-button>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于导出数据到其它抽卡记录管理工具，仅支持简体中文模式。<br>支持的工具参考这个链接：
+          <a class="cursor-pointer text-blue-400" @click="openLink('https://github.com/DGP-Studio/Snap.Genshin/wiki/StandardFormat#export_app')">统一可交换祈愿记录标准</a>
+        </p>
+      </el-form-item>
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
@@ -63,7 +75,7 @@
 
 <script setup>
 const { ipcRenderer, shell } = require('electron')
-import { reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 
 const emit = defineEmits(['close', 'changeLang'])
 
@@ -81,14 +93,15 @@ const settingForm = reactive({
   proxyMode: true,
   autoUpdate: true,
   fetchFullHistory: false,
-  hideNovice: true
+  hideNovice: true,
+  gistsToken: ''
 })
 
 const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }
@@ -110,6 +123,22 @@ const openLink = (link) => shell.openExternal(link)
 
 const exportUIGFJSON = () => {
   ipcRenderer.invoke('EXPORT_UIGF_JSON')
+}
+
+const gistsConfigDisabled = ref(true)
+
+const configGistsToken = () => {
+  gistsConfigDisabled.value = false
+  openLink('https://github.com/settings/personal-access-tokens/new')
+}
+
+const saveGistsToken = async () => {
+  gistsConfigDisabled.value = true
+  await saveSetting()
+}
+
+const uploadGists = () => {
+  ipcRenderer.invoke('EXPORT_UIGF_JSON_GISTS')
 }
 
 onMounted(async () => {
