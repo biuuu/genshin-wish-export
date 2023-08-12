@@ -61,8 +61,9 @@
             <el-button v-show="!gistsConfigDisabled" @click="saveGistsToken" type="success" plain class="focus:outline-none">保存Token</el-button>
           </template>
         </el-input>
-        <el-button @click="uploadGists" type="success" plain class="focus:outline-none">上传至Gists</el-button>
-        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于导出数据到其它抽卡记录管理工具，仅支持简体中文模式。<br>支持的工具参考这个链接：
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于将抽卡记录同步至Github Gists，单击“设置Token”按钮，本地浏览器将会跳转至GithubTokens设置页面，新增您的个人Token，并打开Gists功能的读写权限，最后将新生成的Token存入这里，单击“保存Token”完成设置</p>
+        <el-button @click="uploadGists" type="success" plain class="focus:outline-none" :disabled="!settingForm.gistsToken" :loading="uploadGistsLoading">同步至Gists</el-button>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">目前仅支持简体中文模式。<br>支持的工具参考这个链接：
           <a class="cursor-pointer text-blue-400" @click="openLink('https://github.com/DGP-Studio/Snap.Genshin/wiki/StandardFormat#export_app')">统一可交换祈愿记录标准</a>
         </p>
       </el-form-item>
@@ -137,8 +138,10 @@ const saveGistsToken = async () => {
   await saveSetting()
 }
 
-const uploadGists = () => {
-  ipcRenderer.invoke('EXPORT_UIGF_JSON_GISTS')
+const uploadGistsLoading = ref(false)
+const uploadGists = async () => {
+  uploadGistsLoading.value = true
+  uploadGistsLoading.value = !(await ipcRenderer.invoke('EXPORT_UIGF_JSON_GISTS'))
 }
 
 onMounted(async () => {

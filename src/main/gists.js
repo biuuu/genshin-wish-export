@@ -1,10 +1,9 @@
-const {app, ipcMain, dialog} = require('electron')
-const fs = require('fs-extra')
-const path = require('path')
+const {ipcMain} = require('electron')
 const getData = require('./getData').getData
 const {version} = require('../../package.json')
 const config = require('./config')
 const {Octokit} = require('@octokit/core')
+const {sendMsg} = require("./utils");
 const fetch = require('electron-fetch').default
 const getTimeString = () => {
     return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -84,40 +83,59 @@ const start = async () => {
         auth: config.gistsToken
     })
 
+    // 更新Gist
     if (config.gistsId) {
-        await octokit.request('PATCH /gists/{gist_id}', {
-            gist_id: config.gistsId,
-            files: {
-                // 这里文件名不需要加时间戳，加入时间戳会产生多个文件
-                [`UIGF_${data.uid}.json`]: {
-                    content: JSON.stringify(result, null, 2)
+        try {
+            // 检查Gists上的文件是否被删除，如果被删除则进入新增流程
+            const response = await octokit.request('GET /gists/{gist_id}', {
+                gist_id: config.gistsId,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
                 }
-            },
-            headers: {
-                'X-GitHub-Api-Version': '2022-11-28'
+            })
+
+            if (config.gistsId === response.data.id) {
+                await octokit.request('PATCH /gists/{gist_id}', {
+                    gist_id: response.data.id,
+                    files: {
+                        // 这里文件名不需要加时间戳，加入时间戳会产生多个文件
+                        [`UIGF_${data.uid}.json`]: {
+                            content: JSON.stringify(result, null, 2)
+                        }
+                    },
+                    headers: {
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
+                })
+                return true
             }
-        })
-    } else {
-        const response = await octokit.request('POST /gists', {
-            description: 'genshin-wish-export',
-            'public': false,
-            files: {
-                [`UIGF_${data.uid}.json`]: {
-                    content: JSON.stringify(result, null, 2)
-                }
-            },
-            headers: {
-                'X-GitHub-Api-Version': '2022-11-28'
-            }
-        })
-        if (response.status === 201) {
-            config["gistsId"] = response.data.id
-            await config.save()
+        } catch (e) {
+            sendMsg(e, 'ERROR')
+            console.error(e)
         }
     }
 
+    // 新增Gist
+    const response = await octokit.request('POST /gists', {
+        description: 'genshin-wish-export',
+        'public': false,
+        files: {
+            [`UIGF_${data.uid}.json`]: {
+                content: JSON.stringify(result, null, 2)
+            }
+        },
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    })
+    if (response.status === 201) {
+        config["gistsId"] = response.data.id
+        await config.save()
+    }
+
+    return true
 }
 
 ipcMain.handle('EXPORT_UIGF_JSON_GISTS', async () => {
-    await start()
+    return await start()
 })
