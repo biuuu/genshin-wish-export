@@ -30,8 +30,8 @@ const shouldBeString = (value) => {
   return value
 }
 
-const start = async () => {
-  const { dataMap, current } = await getData()
+function uigfJson() {
+  const { dataMap, current } = getData()
   const data = dataMap.get(current)
   if (!data?.result.size) {
     throw new Error('数据为空')
@@ -42,7 +42,7 @@ const start = async () => {
       uid: data.uid,
       lang: data.lang,
       export_time: formatDate(new Date()),
-      export_timestamp: Date.now(),
+      export_timestamp: Math.round(Date.now() / 1000),
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
       uigf_version: 'v2.2'
@@ -72,8 +72,13 @@ const start = async () => {
       id: item.id || fakeId()
     })
   })
+  return result
+}
+
+const start = async () => {
+  const result = uigfJson()
   const filePath = dialog.showSaveDialogSync({
-    defaultPath: path.join(app.getPath('downloads'), `UIGF_${data.uid}_${getTimeString()}`),
+    defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
     filters: [
       { name: 'JSON文件', extensions: ['json'] }
     ]
@@ -87,3 +92,5 @@ const start = async () => {
 ipcMain.handle('EXPORT_UIGF_JSON', async () => {
   await start()
 })
+
+module.exports = { uigfJson }
