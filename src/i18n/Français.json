@@ -82,7 +82,7 @@
   "excel.wish2": "Vœux 2",
   "excel.customFont": "Arial",
   "excel.filePrefix": "GenshinImpact_historique_voeux",
-  "excel.fileType": "Classeur Excel"
+  "excel.fileType": "Classeur Excel",
   "ui.extra.cacheClean": "1. Confirmez si l'historique des vœux dans le jeu a été ouvert et si l'erreur \"Authentification utilisateur expirée\" apparaît toujours, essayez les étapes suivantes \n2. Fermez la fenêtre de jeu de Genshin Impact \n3. Cliquez sur le bouton \"Ouvrir le dossier de cache Web\" ci-dessus pour ouvrir le dossier \"Cache\" \n4. Supprimez le dossier \"Cache_Data\" \n5. Démarrez le jeu Genshin Impact et ouvrez la page d'historique des vœux dans le jeu \n6. Fermez cette boîte de dialogue et cliquez sur le bouton \"Mettre à jour les données\"",
   "ui.extra.findCacheFolder": "Si le bouton \"Ouvrir le dossier de cache\" ne répond pas, vous pouvez rechercher manuellement le dossier cache web du jeu. Le répertoire est \"Chemin d'installation de votre jeu/Genshin Impact Game/GenshinImpact_Data/webCaches/Cache/\""
 }
