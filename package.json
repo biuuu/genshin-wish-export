@@ -1,6 +1,6 @@
 {
   "name": "genshin-wish-export",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "homepage": "https://github.com/biuuu/genshin-wish-export",
@@ -72,7 +72,6 @@
   "dependencies": {},
   "devDependencies": {
     "@element-plus/icons-vue": "^0.2.6",
-    "@octokit/core": "^5.0.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-json": "^4.1.0",
