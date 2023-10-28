@@ -318,7 +318,7 @@ const fixAuthkey = (url) => {
 const getQuerystring = (url) => {
   const text = i18n.log
   const { searchParams, host } = new URL(fixAuthkey(url))
-  if (host.includes('webstatic-sea') || host.includes('hk4e-api-os')) {
+  if (host.includes('webstatic-sea') || host.includes('hk4e-api-os') || host.includes('hoyoverse.com')) {
     apiDomain = 'https://hk4e-api-os.mihoyo.com'
   } else {
     apiDomain = 'https://hk4e-api.mihoyo.com'
