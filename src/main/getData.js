@@ -136,7 +136,7 @@ const detectGameType = async (userPath) => {
     list.reverse()
   }
   try {
-    await fs.access(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), fs.constants.F_OK)
+    await fs.access(path.join(userPath, '/AppData/Local/', 'miHoYo/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), fs.constants.F_OK)
     list.push('cloud')
   } catch (e) {}
   return list
@@ -159,7 +159,7 @@ const readLog = async () => {
     }
     const promises = gameNames.map(async name => {
       if (name === 'cloud') {
-        const cacheText = await fs.readFile(path.join(userPath, '/AppData/Local/', 'GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), 'utf8')
+        const cacheText = await fs.readFile(path.join(userPath, '/AppData/Local/', 'miHoYo/GenshinImpactCloudGame/config/logs/MiHoYoSDK.log'), 'utf8')
         const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
         if (urlMch) {
           return urlMch[urlMch.length - 1]
