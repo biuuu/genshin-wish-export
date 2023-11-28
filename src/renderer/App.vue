@@ -211,7 +211,8 @@ const relaunch = async () => {
 }
 
 const maskUid = (uid) => {
-  return `${uid}`.replace(/(.{3})(.+)(.{3})$/, '$1***$3')
+  // return `${uid}`.replace(/(.{3})(.+)(.{3})$/, '$1***$3')
+  return uid
 }
 
 const showSetting = (show) => {
