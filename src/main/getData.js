@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const { URL } = require('url')
-const { app, ipcMain, shell } = require('electron')
+const { app, ipcMain, shell, clipboard } = require('electron')
 const { readdir, sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap, getCacheText } = require('./utils')
 const config = require('./config')
 const i18n = require('./i18n')
@@ -523,6 +523,15 @@ ipcMain.handle('OPEN_CACHE_FOLDER', () => {
   if (cacheFolder) {
     shell.openPath(cacheFolder)
   }
+})
+
+ipcMain.handle('COPY_URL', async () => {
+  const url = await getUrl()
+  if (url) {
+    clipboard.writeText(url)
+    return true
+  }
+  return false
 })
 
 exports.getData = () => {
