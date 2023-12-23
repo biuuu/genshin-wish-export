@@ -89,8 +89,26 @@ const start = async () => {
   }
 }
 
+const start_but_readable = async () => {
+  const result = uigfJson()
+  const filePath = dialog.showSaveDialogSync({
+    defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
+    filters: [
+      { name: 'JSON文件', extensions: ['json'] }
+    ]
+  })
+  if (filePath) {
+    await fs.ensureFile(filePath)
+    await fs.writeFile(filePath, JSON.stringify(result, null, "\t"))
+  }
+}
+
 ipcMain.handle('EXPORT_UIGF_JSON', async () => {
   await start()
+})
+
+ipcMain.handle('EXPORT_READABLE_UIGF_JSON', async () => {
+  await start_but_readable()
 })
 
 module.exports = { uigfJson }
