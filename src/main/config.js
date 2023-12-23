@@ -11,7 +11,8 @@ const config = {
   fetchFullHistory: false,
   hideNovice: true,
   gistsToken: '',
-  gistsId: ''
+  gistsId: '',
+  readableJSON: false
 }
 
 const getLocalConfig = async () => {

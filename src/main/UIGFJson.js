@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const getData = require('./getData').getData
 const { version } = require('../../package.json')
+const config = require('./config')
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -85,30 +86,12 @@ const start = async () => {
   })
   if (filePath) {
     await fs.ensureFile(filePath)
-    await fs.writeFile(filePath, JSON.stringify(result))
-  }
-}
-
-const start_but_readable = async () => {
-  const result = uigfJson()
-  const filePath = dialog.showSaveDialogSync({
-    defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
-    filters: [
-      { name: 'JSON文件', extensions: ['json'] }
-    ]
-  })
-  if (filePath) {
-    await fs.ensureFile(filePath)
-    await fs.writeFile(filePath, JSON.stringify(result, null, "\t"))
+    await fs.writeFile(filePath, JSON.stringify(result, null, config.readableJSON ? "\t" : null))
   }
 }
 
 ipcMain.handle('EXPORT_UIGF_JSON', async () => {
   await start()
-})
-
-ipcMain.handle('EXPORT_READABLE_UIGF_JSON', async () => {
-  await start_but_readable()
 })
 
 module.exports = { uigfJson }

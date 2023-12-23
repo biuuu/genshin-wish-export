@@ -123,7 +123,7 @@ const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-wi
 const openLink = (link) => shell.openExternal(link)
 
 const exportUIGFJSON = () => {
-  ipcRenderer.invoke(settingForm.readableJSON ? "EXPORT_READABLE_UIGF_JSON" : 'EXPORT_UIGF_JSON')
+  ipcRenderer.invoke('EXPORT_UIGF_JSON')
 }
 
 const gistsConfigDisabled = ref(true)
