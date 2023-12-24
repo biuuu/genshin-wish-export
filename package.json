@@ -1,6 +1,6 @@
 {
   "name": "genshin-wish-export",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "main": "./dist/electron/main/main.js",
   "author": "biuuu <https://github.com/biuuu>",
   "homepage": "https://github.com/biuuu/genshin-wish-export",
