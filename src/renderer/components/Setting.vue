@@ -49,7 +49,10 @@
         <p class="text-gray-400 text-xs m-1.5">{{text.closeProxyHint}}</p>
       </el-form-item>
       <el-form-item v-if="settingForm.lang === 'zh-cn'" label="导出到其它工具">
-        <el-button @click="exportUIGFJSON" type="success" plain class="focus:outline-none">导出JSON</el-button>
+        <div class="flex space-x-2">
+          <el-button @click="exportUIGFJSON" type="success" plain class="focus:outline-none">导出JSON</el-button>
+          <el-checkbox @change="saveSetting" v-model="settingForm.readableJSON">可读</el-checkbox>
+        </div>
         <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于导出数据到其它抽卡记录管理工具，仅支持简体中文模式。<br>支持的工具参考这个链接：
           <a class="cursor-pointer text-blue-400" @click="openLink('https://uigf.org/standards/UIGF.html')">统一可交换祈愿记录标准</a>
         </p>
@@ -93,14 +96,15 @@ const settingForm = reactive({
   autoUpdate: true,
   fetchFullHistory: false,
   hideNovice: true,
-  gistsToken: ''
+  gistsToken: '',
+  readableJSON: false
 })
 
 const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken', 'readableJSON']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }

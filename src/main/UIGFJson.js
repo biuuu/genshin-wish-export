@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const getData = require('./getData').getData
 const { version } = require('../../package.json')
+const config = require('./config')
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -85,7 +86,7 @@ const start = async () => {
   })
   if (filePath) {
     await fs.ensureFile(filePath)
-    await fs.writeFile(filePath, JSON.stringify(result))
+    await fs.writeFile(filePath, JSON.stringify(result, null, config.readableJSON ? "\t" : null))
   }
 }
 
