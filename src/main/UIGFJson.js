@@ -4,6 +4,7 @@ const path = require('path')
 const getData = require('./getData').getData
 const { version } = require('../../package.json')
 const config = require('./config')
+const moment = require('moment')
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -46,7 +47,8 @@ function uigfJson() {
       export_timestamp: Math.round(Date.now() / 1000),
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
-      uigf_version: 'v2.2'
+      uigf_version: 'v2.4',
+      region_time_zone: 8
     },
     list: []
   }
@@ -73,6 +75,8 @@ function uigfJson() {
       id: item.id || fakeId()
     })
   })
+  // obtain region_time_zone according to the latest time obtained (new in uigf 2.4)
+  result.info.region_time_zone = moment(result.list[0].time).utcOffset() / 60
   return result
 }
 
