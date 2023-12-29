@@ -42,7 +42,7 @@ const getItemId = async(name) => {
   if (!itemIdLookupTable.has(name)){
     const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
     const responseJson = await response.json()
-    itemIdLookupTable.set(name, responseJson.item_id)
+    itemIdLookupTable.set(name, responseJson.item_id.toString())
   }
   return itemIdLookupTable.get(name)
 }
