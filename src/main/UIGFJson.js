@@ -5,7 +5,7 @@ const getData = require('./getData').getData
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default;
-const moment = require('moment')
+const { readJSON, saveJSON } = require('./utils')
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -34,7 +34,20 @@ const shouldBeString = (value) => {
 }
 
 // a lookup table for storing item ids
-const itemIdLookupTable = new Map()
+var itemIdLookupTable = null;
+
+// initialize lookup table
+const initLookupTable = async() => {
+  if (!itemIdLookupTable) {
+    const data = await readJSON("item-id-table.json")
+    itemIdLookupTable = data ? new Map(data) : new Map()
+  }
+}
+
+// save lookup table
+const saveLookupTable = async() => {
+  await saveJSON("item-id-table.json", itemIdLookupTable)
+}
 
 // get item id
 const getItemId = async(name) => {
@@ -95,7 +108,9 @@ const uigfJson = async() => {
 }
 
 const start = async () => {
+  await initLookupTable()
   const result = await uigfJson()
+  await saveLookupTable()
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
     filters: [
