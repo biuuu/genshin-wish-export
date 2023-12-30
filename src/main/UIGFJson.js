@@ -4,7 +4,7 @@ const path = require('path')
 const getData = require('./getData').getData
 const { version } = require('../../package.json')
 const config = require('./config')
-const fetch = require('electron-fetch').default;
+const fetch = require('electron-fetch').default
 const { readJSON, saveJSON } = require('./utils')
 
 const getTimeString = () => {
@@ -39,14 +39,14 @@ var itemIdLookupTable = null;
 // initialize lookup table
 const initLookupTable = async() => {
   if (!itemIdLookupTable) {
-    const data = await readJSON("item-id-table.json")
+    const data = await readJSON('item-id-table.json')
     itemIdLookupTable = data ? new Map(data) : new Map()
   }
 }
 
 // save lookup table
 const saveLookupTable = async() => {
-  await saveJSON("item-id-table.json", itemIdLookupTable)
+  await saveJSON('item-id-table.json', itemIdLookupTable)
 }
 
 // get item id
@@ -55,6 +55,9 @@ const getItemId = async(name) => {
   if (!itemIdLookupTable.has(name)){
     const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
     const responseJson = await response.json()
+    if (!responseJson.item_id) {
+      throw new Error(`Couldn't find the item_id for the ${name}.`)
+    }
     itemIdLookupTable.set(name, responseJson.item_id.toString())
   }
   return itemIdLookupTable.get(name)
@@ -76,7 +79,7 @@ const uigfJson = async() => {
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
       uigf_version: 'v2.4',
-      region_time_zone: data.uid.startsWith("6") ? -5 : data.uid.startsWith("7") ? 1 : 8
+      region_time_zone: data.uid.startsWith('6') ? -5 : data.uid.startsWith('7') ? 1 : 8
     },
     list: []
   }
@@ -119,7 +122,7 @@ const start = async () => {
   })
   if (filePath) {
     await fs.ensureFile(filePath)
-    await fs.writeFile(filePath, JSON.stringify(result, null, config.readableJSON ? "\t" : null))
+    await fs.writeFile(filePath, JSON.stringify(result, null, config.readableJSON ? '\t' : null))
   }
 }
 

@@ -20,6 +20,15 @@
         </el-radio-group>
         <p class="text-gray-400 text-xs m-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
+      <el-form-item :label="text.UIGFLable">
+        <div class="flex space-x-2">
+          <el-button :loading="data.loadingOfUIGFJSON" @click="exportUIGFJSON" type="success" plain class="focus:outline-none">{{text.UIGFButton}}</el-button>
+          <el-checkbox @change="saveSetting" v-model="settingForm.readableJSON">{{text.UIGFReadable}}</el-checkbox>
+        </div>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{text.UIGFHint}}
+          <a class="cursor-pointer text-blue-400" @click="openLink('https://uigf.org/standards/UIGF.html')">{{text.UIGFLink}}</a>
+        </p>
+      </el-form-item>
       <el-form-item :label="text.autoUpdate">
         <el-switch
           @change="saveSetting"
@@ -47,15 +56,6 @@
         <p class="text-gray-400 text-xs m-1.5">{{text.proxyModeHint}}</p>
         <el-button class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
         <p class="text-gray-400 text-xs m-1.5">{{text.closeProxyHint}}</p>
-      </el-form-item>
-      <el-form-item v-if="settingForm.lang === 'zh-cn'" label="导出到其它工具">
-        <div class="flex space-x-2">
-          <el-button @click="exportUIGFJSON" type="success" plain class="focus:outline-none">导出JSON</el-button>
-          <el-checkbox @change="saveSetting" v-model="settingForm.readableJSON">可读</el-checkbox>
-        </div>
-        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于导出数据到其它抽卡记录管理工具，仅支持简体中文模式。<br>支持的工具参考这个链接：
-          <a class="cursor-pointer text-blue-400" @click="openLink('https://uigf.org/standards/UIGF.html')">统一可交换祈愿记录标准</a>
-        </p>
       </el-form-item>
       <!-- <el-form-item label="导出到Github Gists">
         <el-input placeholder="请输入内容" v-model="settingForm.gistsToken" :disabled="gistsConfigDisabled" style="max-width: 500px;">
@@ -86,7 +86,8 @@ const props = defineProps({
 })
 
 const data = reactive({
-  langMap: new Map()
+  langMap: new Map(),
+  loadingOfUIGFJSON: false
 })
 
 const settingForm = reactive({
@@ -124,8 +125,18 @@ const disableProxy = async () => {
 const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-wish-export')
 const openLink = (link) => shell.openExternal(link)
 
-const exportUIGFJSON = () => {
-  ipcRenderer.invoke('EXPORT_UIGF_JSON')
+const exportUIGFJSON = async () => {
+  data.loadingOfUIGFJSON = true
+  try {
+    await ipcRenderer.invoke('EXPORT_UIGF_JSON')
+  } catch (e) {
+    ElMessage({
+      message: e.message || e,
+      type: 'error'
+    })
+  } finally {
+    data.loadingOfUIGFJSON = false
+  }
 }
 
 const gistsConfigDisabled = ref(true)
