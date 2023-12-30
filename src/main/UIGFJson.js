@@ -63,7 +63,7 @@ const uigfJson = async() => {
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
       uigf_version: 'v2.4',
-      region_time_zone: 8
+      region_time_zone: data.uid.startsWith("6") ? -5 : data.uid.startsWith("7") ? 1 : 8
     },
     list: []
   }
@@ -91,8 +91,6 @@ const uigfJson = async() => {
       id: item.id || fakeId()
     })
   })
-  // obtain region_time_zone according to the latest time obtained (new in uigf 2.4)
-  result.info.region_time_zone = moment(result.list[0].time).utcOffset() / 60
   return result
 }
 
