@@ -4,6 +4,8 @@ const path = require('path')
 const getData = require('./getData').getData
 const { version } = require('../../package.json')
 const config = require('./config')
+const fetch = require('electron-fetch').default;
+const { readJSON, saveJSON } = require('./utils')
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -31,7 +33,34 @@ const shouldBeString = (value) => {
   return value
 }
 
-function uigfJson() {
+// a lookup table for storing item ids
+var itemIdLookupTable = null;
+
+// initialize lookup table
+const initLookupTable = async() => {
+  if (!itemIdLookupTable) {
+    const data = await readJSON("item-id-table.json")
+    itemIdLookupTable = data ? new Map(data) : new Map()
+  }
+}
+
+// save lookup table
+const saveLookupTable = async() => {
+  await saveJSON("item-id-table.json", itemIdLookupTable)
+}
+
+// get item id
+const getItemId = async(name) => {
+  // fetch item id from api.uigf.org if cannot find it from lookup table
+  if (!itemIdLookupTable.has(name)){
+    const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
+    const responseJson = await response.json()
+    itemIdLookupTable.set(name, responseJson.item_id.toString())
+  }
+  return itemIdLookupTable.get(name)
+}
+
+const uigfJson = async() => {
   const { dataMap, current } = getData()
   const data = dataMap.get(current)
   if (!data?.result.size) {
@@ -46,24 +75,26 @@ function uigfJson() {
       export_timestamp: Math.round(Date.now() / 1000),
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
-      uigf_version: 'v2.2'
+      uigf_version: 'v2.4',
+      region_time_zone: data.uid.startsWith("6") ? -5 : data.uid.startsWith("7") ? 1 : 8
     },
     list: []
   }
   const listTemp = []
   for (let [type, arr] of data.result) {
-    arr.forEach(item => {
+    for (let item of arr) {
       listTemp.push({
         gacha_type: shouldBeString(item[4]) || type,
         time: item[0],
         timestamp: new Date(item[0]).getTime(),
         name: item[1],
         item_type: item[2],
+        item_id: await getItemId(item[1]),
         rank_type: `${item[3]}`,
         id: shouldBeString(item[5]) || '',
         uigf_gacha_type: type
       })
-    })
+    }
   }
   listTemp.sort((a, b) => a.timestamp - b.timestamp)
   listTemp.forEach(item => {
@@ -77,7 +108,9 @@ function uigfJson() {
 }
 
 const start = async () => {
-  const result = uigfJson()
+  await initLookupTable()
+  const result = await uigfJson()
+  await saveLookupTable()
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
     filters: [
