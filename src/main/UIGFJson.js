@@ -5,7 +5,23 @@ const getData = require('./getData').getData
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
-const { readJSON, saveJSON } = require('./utils')
+const { readJSON, saveJSON, existsFile } = require('./utils')
+
+const uigfLangMap = new Map([
+  ['zh-cn', 'chs'],
+  ['zh-tw', 'cht'],
+  ['de-de', 'de'],
+  ['en-us', 'en'],
+  ['es-es', 'es'],
+  ['fr-fr', 'fr'],
+  ['id-id', 'id'],
+  ['ja-jp', 'ja'],
+  ['ko-kr', 'kr'],
+  ['pt-pt', 'pt'],
+  ['ru-ru', 'ru'],
+  ['th-th', 'th'],
+  ['vi-vn', 'vi']
+])
 
 const getTimeString = () => {
   return new Date().toLocaleString('sv').replace(/[- :]/g, '').slice(0, -2)
@@ -39,14 +55,23 @@ var itemIdLookupTable = null;
 // initialize lookup table
 const initLookupTable = async() => {
   if (!itemIdLookupTable) {
-    const data = await readJSON('item-id-table.json')
-    itemIdLookupTable = data ? new Map(data) : new Map()
+    const currentLangShort = uigfLangMap.get(config.lang)
+    const jsonFileName = `item-id-table-${currentLangShort}.json`
+    // if json file exists
+    if (existsFile(jsonFileName)){
+      const data = await readJSON(jsonFileName)
+      itemIdLookupTable = data ? new Map(data) : new Map()
+    } else {
+      const response = await fetch(`https://api.uigf.org/dict/genshin/${currentLangShort}.json`)
+      const responseJson = await response.json()
+      itemIdLookupTable = new Map(Object.entries(responseJson))
+    }
   }
 }
 
 // save lookup table
 const saveLookupTable = async() => {
-  await saveJSON('item-id-table.json', itemIdLookupTable)
+  await saveJSON(`item-id-table-${uigfLangMap.get(config.lang)}.json`, itemIdLookupTable)
 }
 
 // get item id
