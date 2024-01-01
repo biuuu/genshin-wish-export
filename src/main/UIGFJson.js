@@ -49,46 +49,55 @@ const shouldBeString = (value) => {
   return value
 }
 
-// a lookup table for storing item ids
-var itemIdLookupTable = null;
+// a dictionary for looking up item ids
+let itemIdDictionary = null;
+// the file name for saving item id dictionary
+const itemIdDictionaryFileName = 'item-id-dict.json'
 
-// initialize lookup table
-const initLookupTable = async() => {
-  if (!itemIdLookupTable) {
-    const currentLangShort = uigfLangMap.get(config.lang)
-    const jsonFileName = `item-id-table-${currentLangShort}.json`
-    // if json file exists
-    if (existsFile(jsonFileName)){
-      const data = await readJSON(jsonFileName)
-      itemIdLookupTable = data ? new Map(data) : new Map()
-    } else {
-      const response = await fetch(`https://api.uigf.org/dict/genshin/${currentLangShort}.json`)
+// initialize item id dictionary
+const initLookupTable = async () => {
+  if (!itemIdDictionary) {
+    itemIdDictionary = new Map()
+    // if a locally cached dictionary exists
+    if (existsFile(itemIdDictionaryFileName)) {
+      const data = await readJSON(itemIdDictionaryFileName)
+      if (data) data.forEach(([lang, table]) => itemIdDictionary.set(lang, new Map(table)))
+    }
+    // if a local cache is not found
+    else {
+      // acquire dictionary
+      const response = await fetch('https://api.uigf.org/dict/genshin/all.json')
       const responseJson = await response.json()
-      itemIdLookupTable = new Map(Object.entries(responseJson))
+      Object.entries(responseJson).forEach(
+        ([lang, table]) => itemIdDictionary.set(
+          // assign item id table based on language, and convert all id from number to string
+          lang, new Map(Object.entries(table).map(([name, id]) => [name, String(id)]))
+        )
+      )
     }
   }
 }
 
-// save lookup table
-const saveLookupTable = async() => {
-  await saveJSON(`item-id-table-${uigfLangMap.get(config.lang)}.json`, itemIdLookupTable)
+// save item id dictionary
+const saveLookupTable = async () => {
+  await saveJSON(itemIdDictionaryFileName, itemIdDictionary)
 }
 
 // get item id
-const getItemId = async(name) => {
-  // fetch item id from api.uigf.org if cannot find it from lookup table
-  if (!itemIdLookupTable.has(name)){
+const getItemId = async (lang, name) => {
+  // fetch item id from api.uigf.org if cannot find it from existing item id dictionary
+  if (!itemIdDictionary.get(lang).has(name)) {
     const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
     const responseJson = await response.json()
     if (!responseJson.item_id) {
       throw new Error(`Couldn't find the item_id for the ${name}.`)
     }
-    itemIdLookupTable.set(name, responseJson.item_id.toString())
+    itemIdDictionary.get(lang).set(name, responseJson.item_id.toString())
   }
-  return itemIdLookupTable.get(name)
+  return itemIdDictionary.get(lang).get(name)
 }
 
-const uigfJson = async() => {
+const uigfJson = async () => {
   const { dataMap, current } = getData()
   const data = dataMap.get(current)
   if (!data?.result.size) {
@@ -117,7 +126,7 @@ const uigfJson = async() => {
         timestamp: new Date(item[0]).getTime(),
         name: item[1],
         item_type: item[2],
-        item_id: await getItemId(item[1]),
+        item_id: await getItemId(uigfLangMap.get(data.lang), item[1]),
         rank_type: `${item[3]}`,
         id: shouldBeString(item[5]) || '',
         uigf_gacha_type: type
