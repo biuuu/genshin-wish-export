@@ -153,6 +153,7 @@ const uigfJson = async () => {
     list: []
   }
   const listTemp = []
+  const uigfLang = uigfLangMap.get(data.lang)
   for (let [type, arr] of data.result) {
     for (let item of arr) {
       listTemp.push({
@@ -161,7 +162,7 @@ const uigfJson = async () => {
         timestamp: new Date(item[0]).getTime(),
         name: item[1],
         item_type: item[2],
-        item_id: await getItemId(uigfLangMap.get(data.lang), item[1]),
+        item_id: await getItemId(uigfLang, item[1]),
         rank_type: `${item[3]}`,
         id: shouldBeString(item[5]) || '',
         uigf_gacha_type: type
