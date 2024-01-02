@@ -82,21 +82,32 @@ const initLookupTable = async () => {
   if (itemIdDictMd5) {
     return
   }
-  // obtain dict md5
-  itemIdDictMd5 = await fetchItemIdDictMd5()
+
+  // try obtain dict md5
+  try {
+    itemIdDictMd5 = await fetchItemIdDictMd5()
+  } catch (e) {
+    console.log(`Unable to fetch latest item id dictionary md5 due to: ${e}`)
+  }
+
   // if a locally cached dictionary does not exists
   if (!existsFile(itemIdDictFileName)) {
     await fetchItemIdDict();
     return;
   }
+
   // if a locally cached dictionary is found
   const data = await readJSON(itemIdDictFileName)
+  // if itemIdDictMd5 is not successfully fetched previously
+  if (!itemIdDictMd5 && data) itemIdDictMd5 = data.md5
+
   // if the data is null or the md5 does not match
   if (!data || data.md5 !== itemIdDictMd5) {
     // console.log("md5 check failed! Re-fetching...")
     await fetchItemIdDict()
     return;
   }
+  
   // if the data is valid and the md5 matches
   // console.log("md5 check success!")
   data.lang.forEach(([lang, table]) => itemIdDict.set(lang, new Map(table)))
