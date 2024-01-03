@@ -145,6 +145,10 @@ const detectLocale = () => {
   return result
 }
 
+function existsFile(name) {
+  return fs.existsSync(path.join(userDataPath, name))
+}
+
 const saveJSON = async (name, data) => {
   try {
     await fs.outputJSON(path.join(userDataPath, name), data, {
@@ -220,6 +224,6 @@ async function getCacheText(gamePath) {
 
 module.exports = {
   readdir, sleep, request, hash, cipherAes, decipherAes, saveLog,
-  sendMsg, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
+  sendMsg, existsFile, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
   getCacheText, appRoot, userDataPath
 }
