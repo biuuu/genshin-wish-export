@@ -57,7 +57,7 @@ let itemIdDictMd5 = null
 const itemIdDictFileName = 'item-id-dict.json'
 
 // acquire dictionary based on give language
-const fetchItemIdDict = async (lang = "all") => {
+const fetchItemIdDict = async (lang = 'all') => {
   // fetch item id dict from api.uigf.org
   const response = await fetch(`https://api.uigf.org/dict/genshin/${lang}.json`)
   // update local dict
@@ -70,7 +70,7 @@ const fetchItemIdDict = async (lang = "all") => {
 }
 
 // acquire dictionary based on give language
-const fetchItemIdDictMd5 = async (lang = "all") => {
+const fetchItemIdDictMd5 = async (lang = 'all') => {
   const response = await fetch('https://api.uigf.org/md5/genshin')
   const responseJson = await response.json()
   return responseJson[lang]
@@ -103,13 +103,13 @@ const initLookupTable = async () => {
 
   // if the data is null or the md5 does not match
   if (!data || data.md5 !== itemIdDictMd5) {
-    // console.log("md5 check failed! Re-fetching...")
+    // console.log('md5 check failed! Re-fetching...')
     await fetchItemIdDict()
     return;
   }
-  
+
   // if the data is valid and the md5 matches
-  // console.log("md5 check success!")
+  // console.log('md5 check success!')
   data.lang.forEach(([lang, table]) => itemIdDict.set(lang, new Map(table)))
 }
 
