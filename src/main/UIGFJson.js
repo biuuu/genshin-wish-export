@@ -2,6 +2,7 @@ const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
 const getData = require('./getData').getData
+const getDefaultTypeMap = require('./getData').getDefaultTypeMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
@@ -196,8 +197,40 @@ const start = async () => {
   }
 }
 
+const importJson = async () => {
+  const filePath = dialog.showOpenDialogSync({
+    defaultPath: app.getPath('downloads'),
+    filters: [
+      {name: 'JSON文件', extensions: ['json']}
+    ]
+  })[0]
+  if (filePath) {
+    await fs.ensureFile(filePath)
+    const importData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const gachaData = {
+      result: new Map(),
+      time: Date.now(),
+      typeMap: [...getDefaultTypeMap()],
+      uid: importData.info.uid,
+      lang: importData.info.lang
+    }
+    for (const k of getDefaultTypeMap().keys()) {
+      gachaData.result.set(k, [])
+    }
+    for (const item of importData.list) {
+      gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
+    }
+    gachaData.result = [...gachaData.result]
+    await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
+  }
+}
+
 ipcMain.handle('EXPORT_UIGF_JSON', async () => {
   await start()
+})
+
+ipcMain.handle('IMPORT_UIGF_JSON', async () => {
+  await importJson()
 })
 
 module.exports = { uigfJson }

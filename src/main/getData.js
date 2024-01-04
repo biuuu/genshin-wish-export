@@ -540,3 +540,5 @@ exports.getData = () => {
     current: config.current
   }
 }
+
+exports.getDefaultTypeMap = () => defaultTypeMap

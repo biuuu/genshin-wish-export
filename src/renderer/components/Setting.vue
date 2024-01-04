@@ -20,6 +20,15 @@
         </el-radio-group>
         <p class="text-gray-400 text-xs m-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
+      <el-form-item :label="'Import'">
+        <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success"
+                   @click="importUIGFJSON">Import
+        </el-button>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFHint }}
+          <a class="cursor-pointer text-blue-400"
+             @click="openLink('https://uigf.org/standards/UIGF.html')">{{ text.UIGFLink }}</a>
+        </p>
+      </el-form-item>
       <el-form-item :label="text.UIGFLable">
         <div class="flex space-x-2">
           <el-button :loading="data.loadingOfUIGFJSON" @click="exportUIGFJSON" type="success" plain class="focus:outline-none">{{text.UIGFButton}}</el-button>
@@ -129,6 +138,20 @@ const exportUIGFJSON = async () => {
   data.loadingOfUIGFJSON = true
   try {
     await ipcRenderer.invoke('EXPORT_UIGF_JSON')
+  } catch (e) {
+    ElMessage({
+      message: e.message || e,
+      type: 'error'
+    })
+  } finally {
+    data.loadingOfUIGFJSON = false
+  }
+}
+
+const importUIGFJSON = async () => {
+  data.loadingOfUIGFJSON = true
+  try {
+    await ipcRenderer.invoke('IMPORT_UIGF_JSON')
   } catch (e) {
     ElMessage({
       message: e.message || e,
