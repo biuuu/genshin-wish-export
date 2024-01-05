@@ -7,6 +7,10 @@ const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
 const { readJSON, saveJSON, existsFile } = require('./utils')
+const Ajv = require("ajv")
+const ajv = new Ajv()
+
+let uigfJsonSchemaValidate = null;
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -197,30 +201,39 @@ const start = async () => {
   }
 }
 
+const readUigfJson = async (path) => {
+  fs.ensureFileSync(path)
+  const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+  if (!uigfJsonSchemaValidate) {
+    const uigfSchemaResponse = await fetch('https://uigf.org/schema/uigf.json')
+    uigfJsonSchemaValidate = ajv.compile(await uigfSchemaResponse.json())
+  }
+  if (!uigfJsonSchemaValidate(data)) {
+    throw new Error(`UIGF Json Schema Validation Failed!`)
+  }
+  return data
+}
+
 const importJson = async () => {
   const filePath = dialog.showOpenDialogSync({
     defaultPath: app.getPath('downloads'),
     filters: [
-      {name: 'JSON文件', extensions: ['json']}
+      { name: 'JSON文件', extensions: ['json'] }
     ]
   })[0]
   if (filePath) {
-    await fs.ensureFile(filePath)
-    const importData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const importData = await readUigfJson(filePath);
     const gachaData = {
       result: new Map(),
       time: Date.now(),
-      typeMap: [...getDefaultTypeMap()],
+      typeMap: getDefaultTypeMap(),
       uid: importData.info.uid,
       lang: importData.info.lang
     }
-    for (const k of getDefaultTypeMap().keys()) {
-      gachaData.result.set(k, [])
-    }
+    getDefaultTypeMap().forEach((_, k) => gachaData.result.set(k, []))
     for (const item of importData.list) {
       gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
     }
-    gachaData.result = [...gachaData.result]
     await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
   }
 }
