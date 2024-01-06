@@ -11,6 +11,7 @@ const Ajv = require("ajv")
 
 // acquire uigf schema
 const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'));
+const gachaListFileNamePattern = /^gacha-list-.*\.json$/;
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -211,26 +212,36 @@ const readUigfJson = async (path) => {
 }
 
 const importJson = async () => {
-  const filePath = dialog.showOpenDialogSync({
+  const filePathArr = dialog.showOpenDialogSync({
     defaultPath: app.getPath('downloads'),
     filters: [
       { name: 'JSON文件', extensions: ['json'] }
     ]
   })
-  if (filePath) {
-    const importData = await readUigfJson(filePath[0]);
-    const gachaData = {
-      result: new Map(),
-      time: Date.now(),
-      typeMap: getDefaultTypeMap(),
-      uid: importData.info.uid,
-      lang: importData.info.lang
+  if (filePathArr) {
+    const filePath = filePathArr[0]
+    const fileBaseName = path.basename(filePath)
+    // if the imported json file is gacha-list-*.json file
+    if (gachaListFileNamePattern.test(fileBaseName)){
+      fs.ensureFileSync(filePath)
+      await saveJSON(fileBaseName, JSON.parse(fs.readFileSync(filePath, 'utf8')))
     }
-    getDefaultTypeMap().forEach((_, k) => gachaData.result.set(k, []))
-    for (const item of importData.list) {
-      gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
+    // else just assume the file is UIGF standard complaint
+    else {
+      const importData = await readUigfJson(filePath);
+      const gachaData = {
+        result: new Map(),
+        time: Date.now(),
+        typeMap: getDefaultTypeMap(),
+        uid: importData.info.uid,
+        lang: importData.info.lang
+      }
+      getDefaultTypeMap().forEach((_, k) => gachaData.result.set(k, []))
+      for (const item of importData.list) {
+        gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
+      }
+      await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
     }
-    await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
   }
 }
 
