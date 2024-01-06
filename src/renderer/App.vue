@@ -116,10 +116,7 @@ const uidSelectText = computed(() => {
 const allowClick = () => {
   const data = state.dataMap.get(state.current)
   if (!data) return true
-  if (Date.now() - data.time < 1000 * 60) {
-    return false
-  }
-  return true
+  return Date.now() - data.time >= 1000 * 60;
 }
 
 const hint = computed(() => {
