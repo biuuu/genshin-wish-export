@@ -8,9 +8,9 @@ const config = require('./config')
 const fetch = require('electron-fetch').default
 const { readJSON, saveJSON, existsFile } = require('./utils')
 const Ajv = require("ajv")
-const ajv = new Ajv()
 
-let uigfJsonSchemaValidate = null;
+// acquire uigf schema
+const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'));
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -204,11 +204,7 @@ const start = async () => {
 const readUigfJson = async (path) => {
   fs.ensureFileSync(path)
   const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-  if (!uigfJsonSchemaValidate) {
-    const uigfSchemaResponse = await fetch('https://uigf.org/schema/uigf.json')
-    uigfJsonSchemaValidate = ajv.compile(await uigfSchemaResponse.json())
-  }
-  if (!uigfJsonSchemaValidate(data)) {
+  if (!validateUigfJson(data)) {
     throw new Error(`UIGF Json Schema Validation Failed!`)
   }
   return data
@@ -220,9 +216,9 @@ const importJson = async () => {
     filters: [
       { name: 'JSON文件', extensions: ['json'] }
     ]
-  })[0]
+  })
   if (filePath) {
-    const importData = await readUigfJson(filePath);
+    const importData = await readUigfJson(filePath[0]);
     const gachaData = {
       result: new Map(),
       time: Date.now(),
