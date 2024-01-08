@@ -43,8 +43,8 @@
         </div>
       </div>
     </div>
-    <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"></Setting>
-
+    <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"
+             @dataUpdated="readData(true)"></Setting>
     <el-dialog :title="ui.urlDialog.title" v-model="state.showUrlDlg" width="90%" custom-class="max-w-md">
       <p class="mb-4 text-gray-500">{{ui.urlDialog.hint}}</p>
       <el-input  type="textarea" :autosize="{minRows: 4, maxRows: 6}" :placeholder="ui.urlDialog.placeholder" v-model="state.urlInput" spellcheck="false"></el-input>
@@ -164,8 +164,8 @@ const fetchData = async (url) => {
   }
 }
 
-const readData = async () => {
-  const data = await ipcRenderer.invoke('READ_DATA')
+const readData = async (force = false) => {
+  const data = await ipcRenderer.invoke(force ? 'READ_DATA_FORCE' : 'READ_DATA')
   if (data) {
     state.dataMap = data.dataMap
     state.current = data.current

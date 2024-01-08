@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-const { ipcRenderer, shell } = require('electron')
+const { ipcRenderer, shell, dataUpdated } = require('electron')
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
@@ -155,6 +155,7 @@ const importUIGFJSON = async () => {
   data.loadingOfUIGFJSON = true
   try {
     await ipcRenderer.invoke('IMPORT_UIGF_JSON')
+    emit('dataUpdated')
   } catch (e) {
     ElMessage({
       message: e.message || e,
