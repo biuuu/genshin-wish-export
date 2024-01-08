@@ -87,11 +87,11 @@
 </template>
 
 <script setup>
-const { ipcRenderer, shell, dataUpdated } = require('electron')
+const { ipcRenderer, shell } = require('electron')
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
-const emit = defineEmits(['close', 'changeLang'])
+const emit = defineEmits(['close', 'changeLang', 'dataUpdated'])
 
 const props = defineProps({
   i18n: Object
