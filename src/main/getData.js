@@ -29,8 +29,8 @@ const defaultTypeMap = new Map([
 ])
 
 let localDataReaded = false
-const readData = async () => {
-  if (localDataReaded) return
+const readData = async (force = false) => {
+  if (localDataReaded && !force) return
   localDataReaded = true
   await fs.ensureDir(userDataPath)
   const files = await readdir(userDataPath)
@@ -488,6 +488,14 @@ ipcMain.handle('FETCH_DATA', async (event, param) => {
 
 ipcMain.handle('READ_DATA', async () => {
   await readData()
+  return {
+    dataMap,
+    current: config.current
+  }
+})
+
+ipcMain.handle('FORCE_READ_DATA', async () => {
+  await readData(true)
   return {
     dataMap,
     current: config.current

@@ -20,13 +20,25 @@
         </el-radio-group>
         <p class="text-gray-400 text-xs m-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
+      <el-form-item :label=" text.UIGFImportLable ">
+        <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success"
+                   @click="importUIGFJSON">{{ text.UIGFImportButton }}
+        </el-button>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFImportHint }}
+          <a class="cursor-pointer text-blue-400"
+             @click="openLink('https://uigf.org/standards/UIGF.html')">{{ text.UIGFLink }}</a>
+        </p>
+      </el-form-item>
       <el-form-item :label="text.UIGFLable">
         <div class="flex space-x-2">
-          <el-button :loading="data.loadingOfUIGFJSON" @click="exportUIGFJSON" type="success" plain class="focus:outline-none">{{text.UIGFButton}}</el-button>
-          <el-checkbox @change="saveSetting" v-model="settingForm.readableJSON">{{text.UIGFReadable}}</el-checkbox>
+          <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success"
+                     @click="exportUIGFJSON">{{ text.UIGFButton }}
+          </el-button>
+          <el-checkbox v-model="settingForm.readableJSON" @change="saveSetting">{{ text.UIGFReadable }}</el-checkbox>
         </div>
-        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{text.UIGFHint}}
-          <a class="cursor-pointer text-blue-400" @click="openLink('https://uigf.org/standards/UIGF.html')">{{text.UIGFLink}}</a>
+        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFHint }}
+          <a class="cursor-pointer text-blue-400"
+             @click="openLink('https://uigf.org/standards/UIGF.html')">{{ text.UIGFLink }}</a>
         </p>
       </el-form-item>
       <el-form-item :label="text.autoUpdate">
@@ -76,10 +88,10 @@
 
 <script setup>
 const { ipcRenderer, shell } = require('electron')
-import { ref, reactive, onMounted, computed } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
-const emit = defineEmits(['close', 'changeLang'])
+const emit = defineEmits(['close', 'changeLang', 'dataUpdated'])
 
 const props = defineProps({
   i18n: Object
@@ -129,6 +141,21 @@ const exportUIGFJSON = async () => {
   data.loadingOfUIGFJSON = true
   try {
     await ipcRenderer.invoke('EXPORT_UIGF_JSON')
+  } catch (e) {
+    ElMessage({
+      message: e.message || e,
+      type: 'error'
+    })
+  } finally {
+    data.loadingOfUIGFJSON = false
+  }
+}
+
+const importUIGFJSON = async () => {
+  data.loadingOfUIGFJSON = true
+  try {
+    await ipcRenderer.invoke('IMPORT_UIGF_JSON')
+    emit('dataUpdated')
   } catch (e) {
     ElMessage({
       message: e.message || e,

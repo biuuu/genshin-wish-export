@@ -2,10 +2,16 @@ const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
 const getData = require('./getData').getData
+const getItemTypeMap = require('./itemTypeMap').getItemTypeMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
 const { readJSON, saveJSON, existsFile } = require('./utils')
+const Ajv = require("ajv")
+
+// acquire uigf schema
+const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'));
+const gachaListFileNamePattern = /^gacha-list-.*\.json$/;
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -187,7 +193,7 @@ const start = async () => {
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
     filters: [
-      { name: 'JSON文件', extensions: ['json'] }
+      { name: 'JSON', extensions: ['json'] }
     ]
   })
   if (filePath) {
@@ -196,8 +202,55 @@ const start = async () => {
   }
 }
 
+const readUigfJson = async (path) => {
+  fs.ensureFileSync(path)
+  const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+  if (!validateUigfJson(data)) {
+    throw new Error(`UIGF Json Schema Validation Failed!`)
+  }
+  return data
+}
+
+const importJson = async () => {
+  const filePathArr = dialog.showOpenDialogSync({
+    defaultPath: app.getPath('downloads'),
+    filters: [
+      { name: 'JSON', extensions: ['json'] }
+    ]
+  })
+  if (filePathArr) {
+    const filePath = filePathArr[0]
+    const fileBaseName = path.basename(filePath)
+    // if the imported json file is gacha-list-*.json file
+    if (gachaListFileNamePattern.test(fileBaseName)){
+      fs.ensureFileSync(filePath)
+      await saveJSON(fileBaseName, JSON.parse(fs.readFileSync(filePath, 'utf8')))
+    }
+    // else just assume the file is UIGF standard complaint
+    else {
+      const importData = await readUigfJson(filePath);
+      const gachaData = {
+        result: new Map(),
+        time: Date.now(),
+        typeMap: getItemTypeMap(importData.info.lang),
+        uid: importData.info.uid,
+        lang: importData.info.lang
+      }
+      gachaData.typeMap.forEach((_, k) => gachaData.result.set(k, []))
+      for (const item of importData.list) {
+        gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
+      }
+      await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
+    }
+  }
+}
+
 ipcMain.handle('EXPORT_UIGF_JSON', async () => {
   await start()
+})
+
+ipcMain.handle('IMPORT_UIGF_JSON', async () => {
+  await importJson()
 })
 
 module.exports = { uigfJson }
