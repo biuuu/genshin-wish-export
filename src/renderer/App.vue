@@ -78,6 +78,7 @@ import GachaDetail from './components/GachaDetail.vue'
 import Setting from './components/Setting.vue'
 import gachaDetail from './gachaDetail'
 import { version } from '../../package.json'
+import gachaType from '../gachaType.json'
 import { ElMessage } from 'element-plus'
 
 const state = reactive({
@@ -148,8 +149,14 @@ const detail = computed(() => {
 })
 
 const typeMap = computed(() => {
-  const data = state.dataMap.get(state.current)
-  return data.typeMap
+  const type = gachaType[state.config.lang]
+  const result = new Map()
+  if (type) {
+    for (let { key, name } of type) {
+      result.set(key, name)
+    }
+  }
+  return result
 })
 
 const fetchData = async (url) => {

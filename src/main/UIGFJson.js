@@ -1,13 +1,13 @@
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
-const getData = require('./getData').getData
-const getItemTypeMap = require('./itemTypeMap').getItemTypeMap
+const { getData, order } = require('./getData')
+const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
 const { readJSON, saveJSON, existsFile } = require('./utils')
-const Ajv = require("ajv")
+const Ajv = require('ajv')
 
 // acquire uigf schema
 const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'));
@@ -232,7 +232,7 @@ const importJson = async () => {
       const gachaData = {
         result: new Map(),
         time: Date.now(),
-        typeMap: getItemTypeMap(importData.info.lang),
+        typeMap: getItemTypeNameMap(importData.info.lang),
         uid: importData.info.uid,
         lang: importData.info.lang
       }

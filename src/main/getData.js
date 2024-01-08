@@ -548,3 +548,5 @@ exports.getData = () => {
     current: config.current
   }
 }
+
+exports.order = order
