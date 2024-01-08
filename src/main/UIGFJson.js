@@ -193,7 +193,7 @@ const start = async () => {
   const filePath = dialog.showSaveDialogSync({
     defaultPath: path.join(app.getPath('downloads'), `UIGF_${result.info.uid}_${getTimeString()}`),
     filters: [
-      { name: 'JSON文件', extensions: ['json'] }
+      { name: 'JSON', extensions: ['json'] }
     ]
   })
   if (filePath) {
@@ -215,7 +215,7 @@ const importJson = async () => {
   const filePathArr = dialog.showOpenDialogSync({
     defaultPath: app.getPath('downloads'),
     filters: [
-      { name: 'JSON文件', extensions: ['json'] }
+      { name: 'JSON', extensions: ['json'] }
     ]
   })
   if (filePathArr) {
