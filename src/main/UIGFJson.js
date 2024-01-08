@@ -2,7 +2,7 @@ const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
 const getData = require('./getData').getData
-const getDefaultTypeMap = require('./getData').getDefaultTypeMap
+const getItemTypeMap = require('./itemTypeMap').getItemTypeMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
@@ -232,11 +232,11 @@ const importJson = async () => {
       const gachaData = {
         result: new Map(),
         time: Date.now(),
-        typeMap: getDefaultTypeMap(),
+        typeMap: getItemTypeMap(importData.info.lang),
         uid: importData.info.uid,
         lang: importData.info.lang
       }
-      getDefaultTypeMap().forEach((_, k) => gachaData.result.set(k, []))
+      gachaData.typeMap.forEach((_, k) => gachaData.result.set(k, []))
       for (const item of importData.list) {
         gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
       }
