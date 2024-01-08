@@ -165,7 +165,7 @@ const fetchData = async (url) => {
 }
 
 const readData = async (force = false) => {
-  const data = await ipcRenderer.invoke(force ? 'READ_DATA_FORCE' : 'READ_DATA')
+  const data = await ipcRenderer.invoke(force ? 'FORCE_READ_DATA' : 'READ_DATA')
   if (data) {
     state.dataMap = data.dataMap
     state.current = data.current

@@ -494,7 +494,7 @@ ipcMain.handle('READ_DATA', async () => {
   }
 })
 
-ipcMain.handle('READ_DATA_FORCE', async () => {
+ipcMain.handle('FORCE_READ_DATA', async () => {
   await readData(true)
   return {
     dataMap,
