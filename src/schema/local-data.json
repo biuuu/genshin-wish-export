@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "time": {
+      "type": "number",
+      "title": "更新时间"
+    },
+    "uid": {
+      "type": "string",
+      "title": "角色UID"
+    },
+    "lang": {
+      "type": "string",
+      "title": "语言"
+    },
+    "typeMap": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minItems": 2
+        }
+      },
+      "minItems": 4
+    },
+    "result": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": [
+          { "type": "string" },
+          {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": [
+                { "type": "string" },
+                { "type": "string" },
+                { "type": "string" },
+                { "type": "integer" }
+              ],
+              "additionalItems": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "additionalItems": false
+      }
+    }
+  },
+  "required": ["uid", "lang", "typeMap", "result"]
+}

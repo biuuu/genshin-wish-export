@@ -20,20 +20,10 @@
         </el-radio-group>
         <p class="text-gray-400 text-xs m-1.5">{{text.logTypeHint}}</p>
       </el-form-item>
-      <el-form-item :label=" text.UIGFImportLable ">
-        <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success"
-                   @click="importUIGFJSON">{{ text.UIGFImportButton }}
-        </el-button>
-        <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFImportHint }}
-          <a class="cursor-pointer text-blue-400"
-             @click="openLink('https://uigf.org/standards/UIGF.html')">{{ text.UIGFLink }}</a>
-        </p>
-      </el-form-item>
       <el-form-item :label="text.UIGFLable">
         <div class="flex space-x-2">
-          <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success"
-                     @click="exportUIGFJSON">{{ text.UIGFButton }}
-          </el-button>
+          <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="primary" @click="importUIGFJSON">{{ text.UIGFImportButton }}</el-button>
+          <el-button :loading="data.loadingOfUIGFJSON" class="focus:outline-none" plain type="success" @click="exportUIGFJSON">{{ text.UIGFButton }}</el-button>
           <el-checkbox v-model="settingForm.readableJSON" @change="saveSetting">{{ text.UIGFReadable }}</el-checkbox>
         </div>
         <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFHint }}
@@ -156,6 +146,11 @@ const importUIGFJSON = async () => {
   try {
     await ipcRenderer.invoke('IMPORT_UIGF_JSON')
     emit('dataUpdated')
+    closeSetting()
+    ElMessage({
+      message: text.value.UIGFImportSuccessed,
+      type: 'success'
+    })
   } catch (e) {
     ElMessage({
       message: e.message || e,

@@ -80,6 +80,7 @@
     "@vitejs/plugin-vue": "2.1.0",
     "@vue/compiler-sfc": "^3.2.29",
     "adm-zip": "^0.5.9",
+    "ajv": "6",
     "autoprefixer": "^10.4.2",
     "cfonts": "^2.10.0",
     "chalk": "^4.1.0",

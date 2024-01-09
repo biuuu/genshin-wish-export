@@ -1,17 +1,18 @@
 const { app, ipcMain, dialog } = require('electron')
 const fs = require('fs-extra')
 const path = require('path')
-const { getData, order } = require('./getData')
+const { getData, saveData, changeCurrent } = require('./getData')
 const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
-const { readJSON, saveJSON, existsFile } = require('./utils')
+const { readJSON, saveJSON, existsFile, userDataPath } = require('./utils')
 const Ajv = require('ajv')
 
 // acquire uigf schema
-const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'));
-const gachaListFileNamePattern = /^gacha-list-.*\.json$/;
+const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'))
+const validateLocalJson = new Ajv().compile(require('../schema/local-data.json'))
+const gachaListFileNamePattern = /^gacha-list-.*\.json$/
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -202,13 +203,14 @@ const start = async () => {
   }
 }
 
-const readUigfJson = async (path) => {
-  fs.ensureFileSync(path)
-  const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-  if (!validateUigfJson(data)) {
-    throw new Error(`UIGF Json Schema Validation Failed!`)
+const saveAndBackup = async (data) => {
+  if (existsFile(`gacha-list-${data.uid}.json`)) {
+    const backupDir = path.join(userDataPath, 'backup', data.uid)
+    await fs.ensureDir(backupDir)
+    await fs.copyFile(path.join(userDataPath, `gacha-list-${data.uid}.json`), path.join(backupDir, `gacha-list-${data.uid}-${getTimeString()}.json`))
   }
-  return data
+  await saveData(data)
+  await changeCurrent(data.uid)
 }
 
 const importJson = async () => {
@@ -220,15 +222,11 @@ const importJson = async () => {
   })
   if (filePathArr) {
     const filePath = filePathArr[0]
-    const fileBaseName = path.basename(filePath)
-    // if the imported json file is gacha-list-*.json file
-    if (gachaListFileNamePattern.test(fileBaseName)){
-      fs.ensureFileSync(filePath)
-      await saveJSON(fileBaseName, JSON.parse(fs.readFileSync(filePath, 'utf8')))
-    }
-    // else just assume the file is UIGF standard complaint
-    else {
-      const importData = await readUigfJson(filePath);
+    const jsonStr = await fs.readFile(filePath, 'utf8')
+    const importData = JSON.parse(jsonStr)
+    if (validateLocalJson(importData)) {
+      await saveAndBackup(importData)
+    } else if (validateUigfJson(importData)) {
       const gachaData = {
         result: new Map(),
         time: Date.now(),
@@ -237,10 +235,13 @@ const importJson = async () => {
         lang: importData.info.lang
       }
       gachaData.typeMap.forEach((_, k) => gachaData.result.set(k, []))
+      importData.list.sort((a, b) => parseInt(BigInt(a.id) - BigInt(b.id)))
       for (const item of importData.list) {
-        gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, Number(item.rank_type), item.gacha_type, item.id])
+        gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id])
       }
-      await saveJSON(`gacha-list-${importData.info.uid}.json`, gachaData)
+      await saveAndBackup(gachaData)
+    } else {
+      throw new Error(`JSON format error`)
     }
   }
 }
