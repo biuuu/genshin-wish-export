@@ -28,7 +28,7 @@
         </div>
         <p class="text-gray-400 text-xs m-1.5 leading-normal">{{ text.UIGFHint }}
           <a class="cursor-pointer text-blue-400"
-             @click="openLink('https://uigf.org/standards/UIGF.html')">{{ text.UIGFLink }}</a>
+             @click="openLink(`https://uigf.org/${settingForm.lang.startsWith('zh-') ? 'zh/': 'en/'}`)">{{ text.UIGFLink }}</a>
         </p>
       </el-form-item>
       <el-form-item :label="text.autoUpdate">
@@ -144,7 +144,10 @@ const exportUIGFJSON = async () => {
 const importUIGFJSON = async () => {
   data.loadingOfUIGFJSON = true
   try {
-    await ipcRenderer.invoke('IMPORT_UIGF_JSON')
+    const result = await ipcRenderer.invoke('IMPORT_UIGF_JSON')
+    if (result === 'canceled') {
+      return
+    }
     emit('dataUpdated')
     closeSetting()
     ElMessage({

@@ -243,6 +243,8 @@ const importJson = async () => {
     } else {
       throw new Error(`JSON format error`)
     }
+  } else {
+    return 'canceled'
   }
 }
 
@@ -251,7 +253,7 @@ ipcMain.handle('EXPORT_UIGF_JSON', async () => {
 })
 
 ipcMain.handle('IMPORT_UIGF_JSON', async () => {
-  await importJson()
+  return await importJson()
 })
 
 module.exports = { uigfJson }
