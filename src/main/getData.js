@@ -16,8 +16,10 @@ const saveData = async (data, url) => {
   const obj = Object.assign({}, data)
   obj.result = [...obj.result]
   obj.typeMap = [...obj.typeMap]
-  config.urls.set(data.uid, url)
-  await config.save()
+  if (url) {
+    config.urls.set(data.uid, url)
+    await config.save()
+  }
   await saveJSON(`gacha-list-${data.uid}.json`, obj)
 }
 
@@ -548,3 +550,9 @@ exports.getData = () => {
     current: config.current
   }
 }
+
+exports.order = order
+
+exports.saveData = saveData
+
+exports.changeCurrent = changeCurrent
