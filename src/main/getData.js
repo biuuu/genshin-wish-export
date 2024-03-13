@@ -10,7 +10,7 @@ const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
 
 const dataMap = new Map()
-let apiDomain = 'https://hk4e-api.mihoyo.com'
+let apiDomain = 'https://public-operation-hk4e.mihoyo.com'
 
 const saveData = async (data, url) => {
   const obj = Object.assign({}, data)
@@ -219,7 +219,7 @@ const getGachaLogs = async ([key, name], queryString) => {
   let res = []
   let uid = 0
   let endId = 0
-  const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
+  const url = `${apiDomain}/gacha_info/api/getGachaLog?${queryString}`
   do {
     if (page % 10 === 0) {
       sendMsg(i18n.parse(text.fetch.interval, { name, page }))
@@ -278,7 +278,7 @@ const checkResStatus = (res) => {
 }
 
 const tryGetUid = async (queryString) => {
-  const url = `${apiDomain}/event/gacha_info/api/getGachaLog?${queryString}`
+  const url = `${apiDomain}/gacha_info/api/getGachaLog?${queryString}`
   try {
     for (let [key] of defaultTypeMap) {
       const res = await request(`${url}&gacha_type=${key}&page=1&size=6`)
@@ -303,9 +303,9 @@ const getQuerystring = (url) => {
   const text = i18n.log
   const { searchParams, host } = new URL(fixAuthkey(url))
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os') || host.includes('hoyoverse.com')) {
-    apiDomain = 'https://hk4e-api-os.mihoyo.com'
+    apiDomain = 'https://hk4e-api-os.hoyoverse.com'
   } else {
-    apiDomain = 'https://hk4e-api.mihoyo.com'
+    apiDomain = 'https://public-operation-hk4e.mihoyo.com'
   }
   const authkey = searchParams.get('authkey')
   if (!authkey) {
@@ -362,33 +362,14 @@ const useProxy = async () => {
 const tryRequest = async (url, retry = false) => {
   const queryString = getQuerystring(url)
   if (!queryString) return false
-  const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
-  try {
-    const res = await request(gachaTypeUrl)
-    if (res.retcode !== 0) {
-      return false
-    }
-    return true
-  } catch (e) {
-    if (e.code === 'ERR_PROXY_CONNECTION_FAILED' && !retry) {
-      await disableProxy()
-      return await tryRequest(url, true)
-    }
-    sendMsg(e.message.replace(url, '***'), 'ERROR')
-    throw e
-  }
+  const gachaTypeUrl = `${apiDomain}/gacha_info/api/getConfigList?${queryString}`
+  const res = await request(gachaTypeUrl)
+  checkResStatus(res)
 }
 
 const getUrl = async () => {
   let url = await readLog()
-  if (!url && config.proxyMode) {
-    url = await useProxy()
-  } else if (url) {
-    const result = await tryRequest(url)
-    if (!result && config.proxyMode) {
-      url = await useProxy()
-    }
-  }
+  await tryRequest(url)
   return url
 }
 
@@ -412,15 +393,19 @@ const fetchData = async (urlOverride) => {
   }
   let queryString = searchParams.toString()
   const vUid = await tryGetUid(queryString)
-  const localLang = dataMap.has(vUid) ? dataMap.get(vUid).lang : ''
+  let localLang = dataMap.has(vUid) ? dataMap.get(vUid).lang : ''
   if (localLang) {
+    if (!localLang.startsWith('zh-')) {
+      localLang = localLang.replace(/-\w+$/, '')
+    }
     searchParams.set('lang', localLang)
   }
   queryString = searchParams.toString()
-  const gachaType = getItemTypeNameMap(localLang)
   const result = new Map()
   const typeMap = new Map()
   const lang = searchParams.get('lang')
+  console.log(lang)
+  const gachaType = getItemTypeNameMap(lang)
   let originUid = 0
   for (const type of gachaType) {
     const { list, uid } = await getGachaLogs(type, queryString)

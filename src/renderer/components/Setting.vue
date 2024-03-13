@@ -50,25 +50,6 @@
         </el-switch>
         <p class="text-gray-400 text-xs m-1.5">{{text.fetchFullHistoryHint}}</p>
       </el-form-item>
-      <el-form-item :label="text.proxyMode">
-        <el-switch
-          @change="saveSetting"
-          v-model="settingForm.proxyMode">
-        </el-switch>
-        <p class="text-gray-400 text-xs m-1.5">{{text.proxyModeHint}}</p>
-        <el-button class="focus:outline-none" @click="disableProxy">{{text.closeProxy}}</el-button>
-        <p class="text-gray-400 text-xs m-1.5">{{text.closeProxyHint}}</p>
-      </el-form-item>
-      <!-- <el-form-item label="导出到Github Gists">
-        <el-input placeholder="请输入内容" v-model="settingForm.gistsToken" :disabled="gistsConfigDisabled" style="max-width: 500px;">
-          <template #append>
-            <el-button v-show="gistsConfigDisabled" @click="configGistsToken">设置Token</el-button>
-            <el-button v-show="!gistsConfigDisabled" @click="saveGistsToken" class="focus:outline-none">保存Token</el-button>
-          </template>
-        </el-input>
-        <p class="text-gray-400 text-xs m-1.5 leading-normal">该功能用于将抽卡记录导出为UIGF JSON格式并同步至Github Gists，单击“设置Token”按钮，本地浏览器将会跳转至GithubTokens设置页面，新增您的个人Token，并打开Gists功能的读写权限，最后将新生成的Token存入这里，单击“保存Token”完成设置</p>
-        <el-button @click="uploadGists" type="success" plain class="focus:outline-none" :disabled="!settingForm.gistsToken" :loading="uploadGistsLoading">同步至Gists</el-button>
-      </el-form-item> -->
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
