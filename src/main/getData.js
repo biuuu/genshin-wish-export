@@ -417,10 +417,10 @@ const fetchData = async (urlOverride) => {
     searchParams.set('lang', localLang)
   }
   queryString = searchParams.toString()
-  const gachaType = getItemTypeNameMap(localLang)
   const result = new Map()
   const typeMap = new Map()
-  const lang = searchParams.get('lang')
+  const lang = searchParams.get('lang') || 'zh-cn'
+  const gachaType = getItemTypeNameMap(lang)
   let originUid = 0
   for (const type of gachaType) {
     const { list, uid } = await getGachaLogs(type, queryString)
