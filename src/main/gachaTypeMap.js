@@ -13,6 +13,9 @@ function convertItemTypeMap(mapObject) {
   return convertedItemTypeMap
 }
 
-exports.getItemTypeNameMap = function(lang) {
+exports.getItemTypeNameMap = function(language) {
+  const lang = language.startsWith('zh-')
+    ? language
+    : Object.keys(itemTypeNameMap).find(key => key.startsWith(language + '-'))
   return convertItemTypeMap(itemTypeNameMap[lang])
 }
