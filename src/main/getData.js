@@ -4,12 +4,12 @@ const { URL } = require('url')
 const { app, ipcMain, shell, clipboard } = require('electron')
 const { readdir, sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap, getCacheText } = require('./utils')
 const config = require('./config')
+const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const i18n = require('./i18n')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
 
 const dataMap = new Map()
-const order = ['301', '302', '200', '100']
 let apiDomain = 'https://hk4e-api.mihoyo.com'
 
 const saveData = async (data, url) => {
@@ -26,6 +26,7 @@ const saveData = async (data, url) => {
 const defaultTypeMap = new Map([
   ['301', '角色活动祈愿'],
   ['302', '武器活动祈愿'],
+  ['500', '集录祈愿'],
   ['200', '常驻祈愿'],
   ['100', '新手祈愿']
 ])
@@ -211,7 +212,7 @@ const getGachaLog = async ({ key, page, name, retryCount, url, endId }) => {
   }
 }
 
-const getGachaLogs = async ({ name, key }, queryString) => {
+const getGachaLogs = async ([key, name], queryString) => {
   const text = i18n.log
   let page = 1
   let list = []
@@ -288,25 +289,6 @@ const tryGetUid = async (queryString) => {
     }
   } catch (e) {}
   return config.current
-}
-
-const getGachaType = async (queryString) => {
-  const text = i18n.log
-  const gachaTypeUrl = `${apiDomain}/event/gacha_info/api/getConfigList?${queryString}`
-  sendMsg(text.fetch.gachaType)
-  const res = await request(gachaTypeUrl)
-  checkResStatus(res)
-  const gachaTypes = res.data.gacha_type_list
-  const orderedGachaTypes = []
-  order.forEach(key => {
-    const index = gachaTypes.findIndex(item => item.key === key)
-    if (index !== -1)  {
-      orderedGachaTypes.push(gachaTypes.splice(index, 1)[0])
-    }
-  })
-  orderedGachaTypes.push(...gachaTypes)
-  sendMsg(text.fetch.gachaTypeOk)
-  return orderedGachaTypes
 }
 
 const fixAuthkey = (url) => {
@@ -435,8 +417,7 @@ const fetchData = async (urlOverride) => {
     searchParams.set('lang', localLang)
   }
   queryString = searchParams.toString()
-  const gachaType = await getGachaType(queryString)
-
+  const gachaType = getItemTypeNameMap(localLang)
   const result = new Map()
   const typeMap = new Map()
   const lang = searchParams.get('lang')
@@ -447,8 +428,8 @@ const fetchData = async (urlOverride) => {
       return [item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id]
     })
     logs.reverse()
-    typeMap.set(type.key, type.name)
-    result.set(type.key, logs)
+    typeMap.set(type[0], type[1])
+    result.set(type[0], logs)
     if (!originUid) {
       originUid = uid
     }
@@ -550,8 +531,6 @@ exports.getData = () => {
     current: config.current
   }
 }
-
-exports.order = order
 
 exports.saveData = saveData
 
