@@ -6,7 +6,7 @@ const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const fetch = require('electron-fetch').default
-const { readJSON, saveJSON, existsFile, userDataPath } = require('./utils')
+const { readJSON, saveJSON, existsFile, userDataPath, fixLocalMap } = require('./utils')
 const Ajv = require('ajv')
 
 // acquire uigf schema
@@ -128,7 +128,7 @@ const saveLookupTable = async () => {
 // get item id
 const getItemId = async (lang, name) => {
   // fetch item id from api.uigf.org if cannot find it from existing item id dictionary
-  if (!itemIdDict.get(lang).has(name)) {
+  if (!itemIdDict.has(lang) || !itemIdDict.get(lang).has(name)) {
     const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
     const responseJson = await response.json()
     if (!responseJson.item_id) {
@@ -160,7 +160,7 @@ const uigfJson = async () => {
     list: []
   }
   const listTemp = []
-  const uigfLang = uigfLangMap.get(data.lang)
+  const uigfLang = uigfLangMap.get(data.lang) || uigfLangMap.get(fixLocalMap.get(data.lang))
   for (let [type, arr] of data.result) {
     for (let item of arr) {
       listTemp.push({

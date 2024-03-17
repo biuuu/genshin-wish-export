@@ -133,6 +133,24 @@ const localeMap = new Map([
   ['vi-vn', ['vi']]
 ])
 
+const fixLocalMap = new Map([
+  ['en', 'en-us'],
+  ['fr', 'fr-fr'],
+  ['de', 'de-de'],
+  ['es', 'es-es'],
+  ['pt', 'pt-pt'],
+  ['ru', 'ru-ru'],
+  ['ja', 'ja-jp'],
+  ['ko', 'ko-kr'],
+  ['th', 'th-th'],
+  ['vi', 'vi-vn'],
+  ['id', 'id-id'],
+  ['zh-cn', 'zh-cn'],
+  ['zh-tw', 'zh-tw'],
+  ['tr', 'tr-tr'],
+  ['it', 'it-it']
+])
+
 const detectLocale = () => {
   const locale = app.getLocale()
   let result = 'zh-cn'
@@ -224,6 +242,6 @@ async function getCacheText(gamePath) {
 
 module.exports = {
   readdir, sleep, request, hash, cipherAes, decipherAes, saveLog,
-  sendMsg, existsFile, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap,
+  sendMsg, existsFile, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap, fixLocalMap,
   getCacheText, appRoot, userDataPath
 }
