@@ -154,7 +154,7 @@ const uigfJson = async () => {
       export_timestamp: Math.round(Date.now() / 1000),
       export_app: 'genshin-wish-export',
       export_app_version: `v${version}`,
-      uigf_version: 'v2.4',
+      uigf_version: 'v3.0',
       region_time_zone: data.uid.startsWith('6') ? -5 : data.uid.startsWith('7') ? 1 : 8
     },
     list: []
