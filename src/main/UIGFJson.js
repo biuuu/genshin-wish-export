@@ -139,16 +139,13 @@ const getItemId = async (lang, name) => {
 }
 
 // get item id
-const fixUigfJson = async (importData) => {
-  await initLookupTable()
-  const uigfLang = uigfLangMap.get(importData.info.lang) || uigfLangMap.get(fixLocalMap.get(importData.info.lang))
-  // if item_id is missing, add item_id to importData according to name
-  for (const e of importData.list) {
+const fixUigfJson = (importData) => {
+  // if item_id is missing, add placeholder item_id to importData
+  importData.list.forEach(e => {
     if (!e.item_id) {
-      e.item_id = await getItemId(uigfLang, e.name)
+      e.item_id = ""
     }
-  }
-  await saveLookupTable()
+  })
   return importData
 }
 
@@ -236,7 +233,7 @@ const importJson = async () => {
   if (filePathArr) {
     const filePath = filePathArr[0]
     const jsonStr = await fs.readFile(filePath, 'utf8')
-    const importData = await fixUigfJson(JSON.parse(jsonStr))
+    const importData = fixUigfJson(JSON.parse(jsonStr))
     if (validateLocalJson(importData)) {
       await saveAndBackup(importData)
     } else if (validateUigfJson(importData)) {
