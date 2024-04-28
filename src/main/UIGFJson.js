@@ -12,7 +12,6 @@ const Ajv = require('ajv')
 // acquire uigf schema
 const validateUigfJson = new Ajv().compile(require('../schema/uigf.json'))
 const validateLocalJson = new Ajv().compile(require('../schema/local-data.json'))
-const gachaListFileNamePattern = /^gacha-list-.*\.json$/
 
 const uigfLangMap = new Map([
   ['zh-cn', 'chs'],
@@ -90,14 +89,14 @@ const initLookupTable = async () => {
     return
   }
 
-  // try obtain dict md5
+  // try to obtain dict md5
   try {
     itemIdDictMd5 = await fetchItemIdDictMd5()
   } catch (e) {
     console.log(`Unable to fetch latest item id dictionary md5 due to: ${e}`)
   }
 
-  // if a locally cached dictionary does not exists
+  // if a locally cached dictionary does not exist
   if (!existsFile(itemIdDictFileName)) {
     await fetchItemIdDict();
     return;
@@ -137,6 +136,17 @@ const getItemId = async (lang, name) => {
     itemIdDict.get(lang).set(name, responseJson.item_id.toString())
   }
   return itemIdDict.get(lang).get(name)
+}
+
+// get item id
+const fixUigfJson = (importData) => {
+  // if item_id is missing, add placeholder item_id to importData
+  importData.list.forEach(e => {
+    if (!e.item_id) {
+      e.item_id = ""
+    }
+  })
+  return importData
 }
 
 const uigfJson = async () => {
@@ -223,7 +233,7 @@ const importJson = async () => {
   if (filePathArr) {
     const filePath = filePathArr[0]
     const jsonStr = await fs.readFile(filePath, 'utf8')
-    const importData = JSON.parse(jsonStr)
+    const importData = fixUigfJson(JSON.parse(jsonStr))
     if (validateLocalJson(importData)) {
       await saveAndBackup(importData)
     } else if (validateUigfJson(importData)) {
