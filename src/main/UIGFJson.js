@@ -241,7 +241,7 @@ const importJson = async () => {
     else {
       // try to fix imported data when possible
       fixUigfJson(importData)
-      // then valid imported data using schema
+      // then validate imported data using schema
       if (validateUigfJson(importData)) {
         const gachaData = {
           result: new Map(),
