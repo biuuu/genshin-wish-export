@@ -146,7 +146,6 @@ const fixUigfJson = (importData) => {
       e.item_id = ""
     }
   })
-  return importData
 }
 
 const uigfJson = async () => {
@@ -233,25 +232,33 @@ const importJson = async () => {
   if (filePathArr) {
     const filePath = filePathArr[0]
     const jsonStr = await fs.readFile(filePath, 'utf8')
-    const importData = fixUigfJson(JSON.parse(jsonStr))
+    const importData = JSON.parse(jsonStr)
+    // if the importData is gacha-list file
     if (validateLocalJson(importData)) {
       await saveAndBackup(importData)
-    } else if (validateUigfJson(importData)) {
-      const gachaData = {
-        result: new Map(),
-        time: Date.now(),
-        typeMap: getItemTypeNameMap(importData.info.lang),
-        uid: importData.info.uid,
-        lang: importData.info.lang
+    }
+    // else, assume importData is uigf format file
+    else {
+      // try to fix imported data when possible
+      fixUigfJson(importData)
+      // then valid imported data using schema
+      if (validateUigfJson(importData)) {
+        const gachaData = {
+          result: new Map(),
+          time: Date.now(),
+          typeMap: getItemTypeNameMap(importData.info.lang),
+          uid: importData.info.uid,
+          lang: importData.info.lang
+        }
+        gachaData.typeMap.forEach((_, k) => gachaData.result.set(k, []))
+        importData.list.sort((a, b) => parseInt(BigInt(a.id) - BigInt(b.id)))
+        for (const item of importData.list) {
+          gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id])
+        }
+        await saveAndBackup(gachaData)
+      } else {
+        throw new Error(`JSON format error`)
       }
-      gachaData.typeMap.forEach((_, k) => gachaData.result.set(k, []))
-      importData.list.sort((a, b) => parseInt(BigInt(a.id) - BigInt(b.id)))
-      for (const item of importData.list) {
-        gachaData.result.get(item.uigf_gacha_type).push([item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id])
-      }
-      await saveAndBackup(gachaData)
-    } else {
-      throw new Error(`JSON format error`)
     }
   } else {
     return 'canceled'
