@@ -303,7 +303,7 @@ const getQuerystring = (url) => {
   const text = i18n.log
   const { searchParams, host } = new URL(fixAuthkey(url))
   if (host.includes('webstatic-sea') || host.includes('hk4e-api-os') || host.includes('hoyoverse.com')) {
-    apiDomain = 'https://hk4e-api-os.hoyoverse.com'
+    apiDomain = 'https://public-operation-hk4e-sg.hoyoverse.com'
   } else {
     apiDomain = 'https://public-operation-hk4e.mihoyo.com'
   }
