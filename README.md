@@ -1,6 +1,6 @@
 # 原神祈愿记录导出工具
 
-中文 | [English](https://github.com/biuuu/genshin-wish-export/blob/main/docs/README_EN.md)
+中文 | [English](https://github.com/Trrrrw/genshin-wish-export/blob/main/docs/README_EN.md)
 
 一个使用 Electron 制作的小工具，需要在 Windows 64位操作系统上运行。
 
@@ -24,7 +24,7 @@ https://genshin-gacha-export.danmu9.com
 
 ## 使用说明
 
-1. 下载工具后解压 - 下载地址: [Github](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip) / [蓝奏云](https://wwvt.lanzoum.com/b01zxlweh) 密码：gepz
+1. 下载工具后解压 - 下载地址: [Github](https://github.com/Trrrrw/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip) / [蓝奏云](https://trrrrw.lanzoum.com/b00eg7p2ef) 密码：e7qb
 2. 打开游戏的祈愿历史记录
 
    ![祈愿历史记录](/docs/wish-history.png)
@@ -60,4 +60,4 @@ yarn build
 
 ## License
 
-[MIT](https://github.com/biuuu/genshin-wish-export/blob/main/LICENSE)
+[MIT](https://github.com/Trrrrw/genshin-wish-export/blob/main/LICENSE)
