@@ -23,6 +23,10 @@
       <span class="min-w-10 inline-block">{{text.star3}}{{colon}}{{detail.count3}}</span>
       [{{percent(detail.count3, detail.total)}}]
     </span>
+    <br><span v-if="type == '1000'" class="text-blue-500 whitespace-pre">
+      <span class="min-w-10 inline-block">{{text.star2}}{{colon}}{{detail.count2}}</span>
+      [{{percent(detail.count2, detail.total)}}]
+    </span>
   </p>
 
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">

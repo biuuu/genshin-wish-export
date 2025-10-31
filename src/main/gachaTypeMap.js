@@ -1,6 +1,6 @@
 const itemTypeNameMap = require('../gachaType.json')
 
-const order = ['301', '302', '200', '500', '100']
+const order = ['301', '302', '200', '500', '100', '1000', '2000']
 
 function convertItemTypeMap(mapObject) {
   const convertedItemTypeMap = new Map()

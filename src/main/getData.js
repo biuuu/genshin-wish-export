@@ -28,7 +28,9 @@ const defaultTypeMap = new Map([
   ['302', '武器活动祈愿'],
   ['500', '集录祈愿'],
   ['200', '常驻祈愿'],
-  ['100', '新手祈愿']
+  ['100', '新手祈愿'],
+  ['1000', '千星奇域·常驻颂愿'],
+  ['2000', '千星奇域·活动颂愿']
 ])
 
 let localDataReaded = false
@@ -219,7 +221,12 @@ const getGachaLogs = async ([key, name], queryString) => {
   let res = []
   let uid = 0
   let endId = 0
-  const url = `${apiDomain}/gacha_info/api/getGachaLog?${queryString}`
+  let url = ''
+  if (key === '1000' || key === '2000') {
+    url = `${apiDomain}/gacha_info/api/getBeyondGachaLog?${queryString}`
+  } else {
+    url = `${apiDomain}/gacha_info/api/getGachaLog?${queryString}`
+  }
   do {
     if (page % 10 === 0) {
       sendMsg(i18n.parse(text.fetch.interval, { name, page }))
@@ -410,7 +417,7 @@ const fetchData = async (urlOverride) => {
   for (const type of gachaType) {
     const { list, uid } = await getGachaLogs(type, queryString)
     const logs = list.map((item) => {
-      return [item.time, item.name, item.item_type, parseInt(item.rank_type), item.gacha_type, item.id]
+      return [item.time, item.name??item.item_name, item.item_type, parseInt(item.rank_type), item.gacha_type??item.op_gacha_type, item.id]
     })
     logs.reverse()
     typeMap.set(type[0], type[1])
