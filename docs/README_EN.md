@@ -1,6 +1,6 @@
 # Genshin Impact Wish History Exporter
 
-[中文](https://github.com/biuuu/genshin-wish-export/blob/main/README.md) | English
+[中文](https://github.com/Trrrrw/genshin-wish-export/blob/main/README.md) | English
 
 A tool made from Electron that runs on the Windows 64 bit operating system.
 
@@ -25,7 +25,7 @@ When using web pages, be sure to fill in the correct UID and select the correct 
 
 ## Usage
 
-1. Unzip after downloading the tool - [Download](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip)
+1. Unzip after downloading the tool - [Download](https://github.com/Trrrrw/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip)
 2. Open the wish history of the game
 
     ![wish history](/docs/wish-history-en.png)
@@ -61,5 +61,5 @@ yarn build
 
 ## License
 
-[MIT](https://github.com/biuuu/genshin-wish-export/blob/main/LICENSE)
+[MIT](https://github.com/Trrrrw/genshin-wish-export/blob/main/LICENSE)
 

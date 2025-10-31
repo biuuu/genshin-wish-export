@@ -1,119 +1,119 @@
 {
-  "name": "genshin-wish-export",
-  "version": "0.11.9",
-  "main": "./dist/electron/main/main.js",
-  "author": "biuuu <https://github.com/biuuu>",
-  "homepage": "https://github.com/biuuu/genshin-wish-export",
-  "license": "MIT",
-  "scripts": {
-    "dev": "node .electron-vite/dev-runner.js",
-    "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder",
-    "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --win  --ia32",
-    "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --win  --x64",
-    "build:linux": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && electron-builder --linux",
-    "build:mac": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --mac",
-    "build:dir": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --dir",
-    "build:clean": "cross-env BUILD_TARGET=onlyClean node .electron-vite/build.js",
-    "build:web": "cross-env BUILD_TARGET=web node .electron-vite/build.js",
-    "dev:web": "cross-env TARGET=web node .electron-vite/dev-runner.js",
-    "start": "electron ./src/main/main.js",
-    "build-update": "node .electron-vite/update.js",
-    "dep:upgrade": "yarn upgrade-interactive --latest",
-    "postinstall": "electron-builder install-app-deps"
-  },
-  "build": {
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+    "name": "genshin-wish-export",
+    "version": "0.12.1",
+    "main": "./dist/electron/main/main.js",
+    "author": "Trrrrw <https://github.com/Trrrrw>",
+    "homepage": "https://github.com/Trrrrw/genshin-wish-export",
+    "license": "MIT",
+    "scripts": {
+        "dev": "node .electron-vite/dev-runner.js",
+        "build": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder",
+        "build:win32": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --win  --ia32",
+        "build:win64": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --win  --x64",
+        "build:linux": "cross-env BUILD_TARGET=clean node .electron-vite/build.js && electron-builder --linux",
+        "build:mac": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --mac",
+        "build:dir": "cross-env BUILD_TARGET=clean node .electron-vite/build.js  && electron-builder --dir",
+        "build:clean": "cross-env BUILD_TARGET=onlyClean node .electron-vite/build.js",
+        "build:web": "cross-env BUILD_TARGET=web node .electron-vite/build.js",
+        "dev:web": "cross-env TARGET=web node .electron-vite/dev-runner.js",
+        "start": "electron ./src/main/main.js",
+        "build-update": "node .electron-vite/update.js",
+        "dep:upgrade": "yarn upgrade-interactive --latest",
+        "postinstall": "electron-builder install-app-deps"
     },
-    "asar": false,
-    "extraFiles": [],
-    "publish": [
-      {
-        "provider": "generic",
-        "url": "http://127.0.0.1"
-      }
-    ],
-    "productName": "Genshin Wish Export",
-    "appId": "org.biuuu.genshin-wish-export",
-    "directories": {
-      "output": "build"
-    },
-    "files": [
-      "dist/electron/**/*"
-    ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
+    "build": {
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
         },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
+        "asar": false,
+        "extraFiles": [],
+        "publish": [
+            {
+                "provider": "generic",
+                "url": "http://127.0.0.1"
+            }
+        ],
+        "productName": "Genshin Wish Export",
+        "appId": "org.biuuu.genshin-wish-export",
+        "directories": {
+            "output": "build"
+        },
+        "files": [
+            "dist/electron/**/*"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "x": 410,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 130,
+                    "y": 150,
+                    "type": "file"
+                }
+            ]
+        },
+        "mac": {
+            "icon": "build/icons/icon.icns"
+        },
+        "win": {
+            "icon": "build/icons/icon.ico",
+            "target": "zip"
+        },
+        "linux": {
+            "target": "deb",
+            "icon": "build/icons"
         }
-      ]
     },
-    "mac": {
-      "icon": "build/icons/icon.icns"
+    "dependencies": {},
+    "devDependencies": {
+        "@element-plus/icons-vue": "^0.2.6",
+        "@rollup/plugin-alias": "^3.1.9",
+        "@rollup/plugin-commonjs": "^21.0.1",
+        "@rollup/plugin-json": "^4.1.0",
+        "@rollup/plugin-node-resolve": "^13.1.3",
+        "@types/node": "^17.0.10",
+        "@vitejs/plugin-vue": "2.1.0",
+        "@vue/compiler-sfc": "^3.2.29",
+        "adm-zip": "^0.5.9",
+        "ajv": "6",
+        "autoprefixer": "^10.4.2",
+        "cfonts": "^2.10.0",
+        "chalk": "^4.1.0",
+        "cross-env": "^7.0.3",
+        "del": "^6.0.0",
+        "echarts": "^5.2.2",
+        "electron": "^16.0.7",
+        "electron-builder": "^23.0.2",
+        "electron-fetch": "^1.7.4",
+        "electron-unhandled": "^3.0.2",
+        "electron-window-state": "^5.0.3",
+        "element-plus": "^1.3.0-beta.7",
+        "fs-extra": "^10.0.0",
+        "get-stream": "^6.0.1",
+        "glob": "^10.3.1",
+        "lodash-es": "^4.17.21",
+        "moment": "^2.29.1",
+        "multispinner": "^0.2.1",
+        "ora": "^5.3.0",
+        "portfinder": "^1.0.28",
+        "postcss": "^8.4.5",
+        "rollup-plugin-esbuild": "^4.8.2",
+        "semver": "^7.3.5",
+        "tailwindcss": "^3.0.16",
+        "vite": "2.7.13",
+        "vue": "^3.2.29",
+        "winreg": "^1.2.4",
+        "yauzl": "^2.10.0"
     },
-    "win": {
-      "icon": "build/icons/icon.ico",
-      "target": "zip"
-    },
-    "linux": {
-      "target": "deb",
-      "icon": "build/icons"
-    }
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@element-plus/icons-vue": "^0.2.6",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.1.3",
-    "@types/node": "^17.0.10",
-    "@vitejs/plugin-vue": "2.1.0",
-    "@vue/compiler-sfc": "^3.2.29",
-    "adm-zip": "^0.5.9",
-    "ajv": "6",
-    "autoprefixer": "^10.4.2",
-    "cfonts": "^2.10.0",
-    "chalk": "^4.1.0",
-    "cross-env": "^7.0.3",
-    "del": "^6.0.0",
-    "echarts": "^5.2.2",
-    "electron": "^16.0.7",
-    "electron-builder": "^23.0.2",
-    "electron-fetch": "^1.7.4",
-    "electron-unhandled": "^3.0.2",
-    "electron-window-state": "^5.0.3",
-    "element-plus": "^1.3.0-beta.7",
-    "fs-extra": "^10.0.0",
-    "get-stream": "^6.0.1",
-    "glob": "^10.3.1",
-    "lodash-es": "^4.17.21",
-    "moment": "^2.29.1",
-    "multispinner": "^0.2.1",
-    "ora": "^5.3.0",
-    "portfinder": "^1.0.28",
-    "postcss": "^8.4.5",
-    "rollup-plugin-esbuild": "^4.8.2",
-    "semver": "^7.3.5",
-    "tailwindcss": "^3.0.16",
-    "vite": "2.7.13",
-    "vue": "^3.2.29",
-    "winreg": "^1.2.4",
-    "yauzl": "^2.10.0"
-  },
-  "keywords": [
-    "vite",
-    "electron",
-    "vue3",
-    "rollup"
-  ]
+    "keywords": [
+        "vite",
+        "electron",
+        "vue3",
+        "rollup"
+    ]
 }

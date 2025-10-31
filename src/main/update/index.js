@@ -28,7 +28,7 @@ const updatePath = isDev ? path.resolve(__dirname, '../../', 'update-dev/downloa
 const update = async () => {
   if (isDev) return
   try {
-    const url = 'https://genshin-gacha-export.danmu9.com/update'
+    const url = 'https://genshin-gacha-export.trrw.tech/update'
     const res = await fetch(`${url}/manifest.json?t=${Math.floor(Date.now() / (1000 * 60 * 10))}`)
     const data = await res.json()
     if (!data.active) return

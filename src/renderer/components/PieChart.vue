@@ -32,7 +32,10 @@ const props = defineProps({
 
 const chart = ref(null);
 
-const colors = ["#fac858", "#ee6666", "#5470c6", "#91cc75", "#73c0de"];
+const colors = [
+    "#fac858", "#ee6666", "#5470c6", "#91cc75", "#73c0de", "#7153c6", "#73decc", "#c7bace", "#ff8b52",
+    "#7153c6", "#73decc", "#77dfdf", "#77df99"
+];
 
 const parseData = (detail, type) => {
   const text = props.i18n.ui.data;
@@ -42,11 +45,21 @@ const parseData = (detail, type) => {
     [text.chara4, "count4c"],
     [text.weapon4, "count4w"],
     [text.weapon3, "count3w"],
+    [text.cosmetics4, "count4co"],
+    [text.cosmetics3, "count3co"],
+    [text.cosmetics2, "count2co"],
+    [text.cosmeticSet5, "count5cos"],
+    [text.cosmeticSet4, "count4cos"],
+    [text.cosmeticPart3, "count3cop"],
+    [text.emoji3, "count3e"],
+    [text.action3, "count3a"],
   ];
   const result = [];
   const color = [];
   const selected = {
     [text.weapon3]: false,
+    [text.cosmetics2]: false,
+    [text.cosmeticPart3]: false,
   };
   keys.forEach((key, index) => {
     if (!detail[key[1]]) return;
