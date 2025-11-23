@@ -78,14 +78,27 @@ const parseData = (detail, type) => {
   return [result, color, selected];
 };
 
+const getLegendHeight = (pieChart) => {
+  let legendHeight = 50
+  if (pieChart._componentsViews) {
+    const legendView = pieChart._componentsViews.find((entry) => entry.type === "legend.plain")
+    if (legendView) {
+      legendHeight = Math.max(legendView._backgroundEl.shape.height || legendHeight, 50)
+    }
+  }
+  return legendHeight
+}
+
 let pieChart = null;
-const updateChart = throttle(() => {
+const updateChart = () => {
   if (!pieChart) {
     pieChart = init(chart.value);
   }
 
   const colon = props.i18n.symbol.colon;
   const result = parseData(props.data[1], props.data[0]);
+
+  const legendHeight = getLegendHeight(pieChart)
 
   const option = {
     tooltip: {
@@ -107,7 +120,7 @@ const updateChart = throttle(() => {
       {
         name: props.typeMap.get(props.data[0]),
         type: "pie",
-        top: 50,
+        top: legendHeight,
         startAngle: 70,
         radius: ["0%", "90%"],
         // avoidLabelOverlap: false,
@@ -125,14 +138,19 @@ const updateChart = throttle(() => {
 
   pieChart.setOption(option);
   pieChart.resize();
-}, 1000);
+  if (legendHeight !== getLegendHeight(pieChart)) {
+    updateChart()
+  }
+}
+
+const updateChartThrottled = throttle(updateChart, 1000);
 
 onUpdated(() => {
-  updateChart();
+  updateChartThrottled();
 });
 
 onMounted(() => {
-  updateChart();
-  window.addEventListener("resize", updateChart);
+  updateChartThrottled();
+  window.addEventListener("resize", updateChartThrottled);
 });
 </script>
