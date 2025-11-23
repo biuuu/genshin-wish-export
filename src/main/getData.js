@@ -223,6 +223,7 @@ const getGachaLogs = async ([key, name], queryString) => {
   let endId = 0
   let url = ''
   if (key === '1000' || key === '2000') {
+    queryString = queryString.replace("&lang=en&", "&lang=en-us&") // The old endpoint works in en, but miliastra requires en-us
     url = `${apiDomain}/gacha_info/api/getBeyondGachaLog?${queryString}`
   } else {
     url = `${apiDomain}/gacha_info/api/getGachaLog?${queryString}`
