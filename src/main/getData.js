@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const { URL } = require('url')
-const { app, ipcMain, shell, clipboard } = require('electron')
+const { app, ipcMain, shell, clipboard, dialog } = require('electron')
 const { readdir, sleep, request, sendMsg, readJSON, saveJSON, userDataPath, userPath, localIp, langMap, getCacheText } = require('./utils')
 const config = require('./config')
 const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
@@ -149,6 +149,15 @@ let cacheFolder = null
 const readLog = async () => {
   const text = i18n.log
   try {
+    if (config.gameDetection === 1 && config.gameLocation) {
+      const [cacheText, cacheFile] = await getCacheText(config.gameLocation)
+      const urlMch = cacheText.match(/https.+?auth_appid=webview_gacha.+?authkey=.+?game_biz=hk4e_\w+/g)
+      if (urlMch) {
+        return urlMch[urlMch.length - 1]
+      } else {
+        throw "url not found"
+      }
+    }
     let userPath
     if (!process.env.WINEPREFIX) {
       userPath = app.getPath('home')
@@ -508,6 +517,40 @@ ipcMain.handle('COPY_URL', async () => {
     return true
   }
   return false
+})
+
+function findFolder(dir, match, depth=3) {
+  // check current dir
+  const dirParsed = path.parse(dir)
+  if (dirParsed.name.match(match)) {
+    return dir
+  }
+
+  if (depth <= 0) return //recursive base case
+
+  // loop through all folders in current dir and recurse them
+  let files = fs.readdirSync(dir);
+  for (let i = 0; i < files.length; i++) {
+    const filePath = path.join(dir, files[i]);
+    if (fs.statSync(filePath).isDirectory()) {
+        let subMatch = findFolder(filePath, match, depth-1)
+        if (subMatch) return subMatch
+    }
+  }
+}
+
+ipcMain.handle('SELECT_GAME_DIR', async (event, operation) => {
+  const properties = operation === 'export' ? ['openDirectory', 'createDirectory'] : ['openDirectory'];
+  const result = await dialog.showOpenDialog({
+      title: "Genshin Impact Folder",
+      properties: properties
+  });
+  if (result.canceled) {
+      return null;
+  } else {
+      const gameFolder = findFolder(result.filePaths[0], /(GenshinImpact_Data|YuanShen_Data)/)
+      return gameFolder || null
+  }
 })
 
 exports.getData = () => {
