@@ -144,6 +144,10 @@ const detail = computed(() => {
   if (data) {
     let details = gachaDetail(data.result)
     if (state.config.hideNovice) details.delete("100")
+    if (state.config.hideMiliastra) {
+      details.delete("1000")
+      details.delete("2000")
+    }
     return details
   }
 })

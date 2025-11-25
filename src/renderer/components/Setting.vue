@@ -43,6 +43,12 @@
           v-model="settingForm.hideNovice">
         </el-switch>
       </el-form-item>
+      <el-form-item :label="text.hideMiliastra">
+        <el-switch
+          @change="saveSetting"
+          v-model="settingForm.hideMiliastra">
+        </el-switch>
+      </el-form-item>
       <el-form-item :label="text.fetchFullHistory">
         <el-switch
           @change="saveSetting"
@@ -80,6 +86,7 @@ const settingForm = reactive({
   autoUpdate: true,
   fetchFullHistory: false,
   hideNovice: true,
+  hideMiliastra: false,
   gistsToken: '',
   readableJSON: false
 })
@@ -88,7 +95,7 @@ const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken', 'readableJSON']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'hideMiliastra', 'gistsToken', 'readableJSON']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }

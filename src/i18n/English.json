@@ -61,6 +61,7 @@
   "ui.setting.logTypeHint": "Choose which server generated logs to be used first when acquiring URL from game logs",
   "ui.setting.autoUpdate": "Auto update",
   "ui.setting.hideNovice": "Hide novice wishes",
+  "ui.setting.hideMiliastra": "Hide miliastra wonderland",
   "ui.setting.proxyMode": "Proxy mode",
   "ui.setting.proxyModeHint": "When we fail to get the URL from system logs, use the system proxy",
   "ui.setting.fetchFullHistory": "Get complete data",
