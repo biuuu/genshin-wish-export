@@ -171,6 +171,7 @@ const uigfJson = async () => {
   const listTemp = []
   const uigfLang = uigfLangMap.get(data.lang) || uigfLangMap.get(fixLocalMap.get(data.lang))
   for (let [type, arr] of data.result) {
+    if (type == '1000' || type == '2000') continue
     for (let item of arr) {
       listTemp.push({
         gacha_type: shouldBeString(item[4]) || type,
