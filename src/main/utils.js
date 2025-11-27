@@ -192,6 +192,10 @@ const hash = (data, type = 'sha256') => {
   return hmac.digest('hex')
 }
 
+const md5 = (data) => {
+  return crypto.createHash('md5').update(data).digest('hex')
+}
+
 const scryptKey = crypto.scryptSync(userPath, 'hk4e', 24)
 const cipherAes = (data) => {
   const algorithm = 'aes-192-cbc'
@@ -240,8 +244,18 @@ async function getCacheText(gamePath) {
   return [cacheText, timeSortedFiles[0]]
 }
 
+const mapToObject = (map) => {
+  let newObject = Object.fromEntries(map)
+  for (const key of Object.keys(newObject)) {
+    if (newObject[key] instanceof Map) {
+      newObject[key] = mapToObject(newObject[key])
+    }
+  }
+  return newObject
+}
+
 module.exports = {
-  readdir, sleep, request, hash, cipherAes, decipherAes, saveLog,
+  readdir, sleep, request, hash, md5, cipherAes, decipherAes, saveLog,
   sendMsg, existsFile, readJSON, saveJSON, initWindow, getWin, localIp, userPath, detectLocale, langMap, fixLocalMap,
-  getCacheText, appRoot, userDataPath
+  getCacheText, appRoot, userDataPath, mapToObject
 }
