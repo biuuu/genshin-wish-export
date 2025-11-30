@@ -56,6 +56,7 @@
   "ui.setting.UIGFLink": "统一可交换抽卡记录标准",
   "ui.setting.UIGFLable": "导入/导出",
   "ui.setting.UIGFButton": "导出数据",
+  "ui.setting.UIGFAllAccounts": "导出全部账号",
   "ui.setting.UIGFReadable": "可读",
   "ui.about.title": "关于",
   "ui.about.license": "本工具为开源软件，源代码使用 MIT 协议授权",

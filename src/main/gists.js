@@ -2,10 +2,10 @@ const {ipcMain} = require('electron')
 const config = require('./config')
 const {Octokit} = require('@octokit/core')
 const fetch = require('electron-fetch').default
-const { uigfJson } = require('./UIGFJson')
+const { generateUigf30Json } = require('./UIGFJson')
 
 const start = async () => {
-  const result = uigfJson()
+  const result = generateUigf30Json()
 
   if (!config.gistsToken) {
     throw new Error('未设置gistsToken')
