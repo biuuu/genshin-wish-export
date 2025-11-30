@@ -10,6 +10,7 @@ const itemCount = (map, name) => {
 
 const gachaDetail = (data) => {
   const detailMap = new Map()
+  console.log(data)
   for (let [key, value] of data) {
     let detail = {
       count3: 0, count4: 0, count5: 0,
