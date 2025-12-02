@@ -34,7 +34,7 @@
     </span>
   </p>
   <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
-  <p v-if="type === '301'" :title="capturingRadianceHelpText" class="text-gray-600 text-xs cursor-help">Capturing radiance counter{{colon}}<span :class="capturingRadianceHelpMap.get(capturingRadianceCounter)[1]">{{capturingRadianceCounter}}</span></p>
+  <p v-if="type === '301'" :title="capturingRadianceHelpText" class="text-gray-600 text-xs cursor-help">{{text.radianceCounter}}{{colon}}<span :class="capturingRadianceHelpMap.get(capturingRadianceCounter)[1]">{{capturingRadianceCounter}}</span></p>
 </template>
 
 <script setup>
@@ -48,27 +48,37 @@ const props = defineProps({
 
 const type = computed(() => props.data[0])
 const detail = computed(() => props.data[1])
-const text = computed(() => props.i18n.ui.data)
-const colon = computed(() => props.i18n.symbol.colon)
+const text = computed(() => props.i18n?.ui?.data ?? {})
+const colon = computed(() => props.i18n?.symbol?.colon ?? ':')
 
 const stndBannerChars = new Map([ // todo fetch from back-end with name translations
-      ["Jean", new Date("2020-09-28T10:00+08:00")], // Version 1.0
-      ["Diluc", new Date("2020-09-28T10:00+08:00")], // Version 1.0
-      ["Qiqi", new Date("2020-09-28T10:00+08:00")], // Version 1.0
-      ["Mona", new Date("2020-09-28T10:00+08:00")], // Version 1.0
-      ["Keqing", new Date("2020-09-28T10:00+08:00")], // Version 1.0
-      ["Tighnari", new Date("2022-09-28T07:00+08:00")], // Version 3.1
-      ["Dehya", new Date("2023-04-12T07:00+08:00")], // Version 3.6
-      ["Yumemizuki Mizuki", new Date("2025-03-26T07:00+08:00")] // Version 5.5
+      ['Jean', new Date('2020-09-28T10:00+08:00')], // Version 1.0
+      ['Diluc', new Date('2020-09-28T10:00+08:00')], // Version 1.0
+      ['Qiqi', new Date('2020-09-28T10:00+08:00')], // Version 1.0
+      ['Mona', new Date('2020-09-28T10:00+08:00')], // Version 1.0
+      ['Keqing', new Date('2020-09-28T10:00+08:00')], // Version 1.0
+      ['Tighnari', new Date('2022-09-28T07:00+08:00')], // Version 3.1
+      ['Dehya', new Date('2023-04-12T07:00+08:00')], // Version 3.6
+      ['Yumemizuki Mizuki', new Date('2025-03-26T07:00+08:00')] // Version 5.5
 ])
 const capturingRadianceStartDate = new Date("2024-08-28T11:00+08:00")
-const capturingRadianceHelpMap = new Map([
-  ["0", ["No bonus", "text-black-600"]],
-  ["1", ["No bonus", "text-black-600"]],
-  ["2", ["Small chance", "text-green-600"]],
-  ["3", ["Guaranteed", "text-amber-300"]],
-])
-const capturingRadianceHelpText = Array.from(capturingRadianceHelpMap.keys()).reduce((acc, level) => acc = (!acc ? '' : `${acc}\n`) + `${level}: ${capturingRadianceHelpMap.get(level)[0]}`, "")
+const capturingRadianceHelpMap = computed(() => 
+  new Map([
+    ["0", [text.value.radianceNoChance, "text-black-600"]],
+    ["1", [text.value.radianceSmallChance, "text-black-600"]],
+    ["2", [text.value.radianceDecentChance, "text-green-600"]],
+    ["3", [text.value.radianceGuaranteed, "text-amber-300"]],
+  ])
+)
+const capturingRadianceHelpText = computed(() => {
+  const map = capturingRadianceHelpMap.value
+  return (
+    Array.from(map.keys())
+    .map((level) => `${level}: ${map.get(level)[0]}`)
+    .join('\n') +
+    `\n${text.value.radianceWarning}`
+  )
+})
 
 const capturingRadiance = () => {
   console.log("--Starting Capturing Radiance--")
@@ -104,7 +114,6 @@ const capturingRadiance = () => {
 }
 
 const capturingRadianceCounter = computed(() => capturingRadiance().toString())
-console.log(capturingRadianceCounter)
 
 const avg5 = (list) => {
   let n = 0
