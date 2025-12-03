@@ -273,4 +273,4 @@ ipcMain.handle('IMPORT_UIGF_JSON', async () => {
   return await importJson()
 })
 
-module.exports = { uigfJson }
+module.exports = { initLookupTable, getItemId, uigfJson }

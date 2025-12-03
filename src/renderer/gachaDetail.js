@@ -8,9 +8,8 @@ const itemCount = (map, name) => {
   }
 }
 
-const gachaDetail = (data) => {
+const gachaDetail = (data, capturingRadiance) => {
   const detailMap = new Map()
-  console.log(data)
   for (let [key, value] of data) {
     let detail = {
       count3: 0, count4: 0, count5: 0,
@@ -18,7 +17,8 @@ const gachaDetail = (data) => {
       weapon3: new Map(), weapon4: new Map(), weapon5: new Map(),
       char4: new Map(), char5: new Map(),
       date: [],
-      ssrPos: [], countMio: 0, total: value.length
+      ssrPos: [], countMio: 0, total: value.length,
+      capturingRadiance: capturingRadiance
     }
     let lastSSR = 0
     let dateMin = 0

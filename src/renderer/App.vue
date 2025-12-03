@@ -144,7 +144,7 @@ const hint = computed(() => {
 const detail = computed(() => {
   const data = state.dataMap.get(state.current)
   if (data) {
-    return gachaDetail(data.result)
+    return gachaDetail(data.result, data.capturingRadiance)
   }
 })
 
@@ -262,6 +262,7 @@ const updateConfig = async () => {
 
 onMounted(async () => {
   await readData()
+  console.log(state.dataMap)
   await getI18nData()
 
   ipcRenderer.on('LOAD_DATA_STATUS', (event, message) => {

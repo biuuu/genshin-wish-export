@@ -34,7 +34,7 @@
     </span>
   </p>
   <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
-  <p v-if="type === '301'" :title="capturingRadianceHelpText" class="text-gray-600 text-xs cursor-help">{{text.radianceCounter}}{{colon}}<span :class="capturingRadianceHelpMap.get(capturingRadianceCounter)[1]">{{capturingRadianceCounter}}</span></p>
+  <p v-if="type === '301'" :title="capturingRadianceHelpText" class="text-gray-600 text-xs cursor-help">{{text.radianceCounter}}{{colon}}<span :class="capturingRadianceHelpMap.get(detail.capturingRadiance)[1]">{{detail.capturingRadiance}}</span></p>
 </template>
 
 <script setup>
@@ -51,25 +51,15 @@ const detail = computed(() => props.data[1])
 const text = computed(() => props.i18n?.ui?.data ?? {})
 const colon = computed(() => props.i18n?.symbol?.colon ?? ':')
 
-const stndBannerChars = new Map([ // todo fetch from back-end with name translations
-      ['Jean', new Date('2020-09-28T10:00+08:00')], // Version 1.0
-      ['Diluc', new Date('2020-09-28T10:00+08:00')], // Version 1.0
-      ['Qiqi', new Date('2020-09-28T10:00+08:00')], // Version 1.0
-      ['Mona', new Date('2020-09-28T10:00+08:00')], // Version 1.0
-      ['Keqing', new Date('2020-09-28T10:00+08:00')], // Version 1.0
-      ['Tighnari', new Date('2022-09-28T07:00+08:00')], // Version 3.1
-      ['Dehya', new Date('2023-04-12T07:00+08:00')], // Version 3.6
-      ['Yumemizuki Mizuki', new Date('2025-03-26T07:00+08:00')] // Version 5.5
-])
-const capturingRadianceStartDate = new Date("2024-08-28T11:00+08:00")
 const capturingRadianceHelpMap = computed(() => 
   new Map([
-    ["0", [text.value.radianceNoChance, "text-black-600"]],
-    ["1", [text.value.radianceSmallChance, "text-black-600"]],
-    ["2", [text.value.radianceDecentChance, "text-green-600"]],
-    ["3", [text.value.radianceGuaranteed, "text-amber-300"]],
+    [0, [text.value.radianceNoChance, "text-black-600"]],
+    [1, [text.value.radianceSmallChance, "text-black-600"]],
+    [2, [text.value.radianceDecentChance, "text-green-600"]],
+    [3, [text.value.radianceGuaranteed, "text-amber-300"]],
   ])
 )
+
 const capturingRadianceHelpText = computed(() => {
   const map = capturingRadianceHelpMap.value
   return (
@@ -79,41 +69,6 @@ const capturingRadianceHelpText = computed(() => {
     `\n${text.value.radianceWarning}`
   )
 })
-
-const capturingRadiance = () => {
-  console.log("--Starting Capturing Radiance--")
-  let counter = 1
-  let guarantee = 0
-  const ssrPos = detail.value.ssrPos
-  if (!ssrPos) return counter
-  ssrPos.forEach(item => {
-    const itemDate = new Date(item[2])
-    if (stndBannerChars.get(item[0]) && stndBannerChars.get(item[0]) < itemDate) {
-      console.log(`Lost to ${item[0]}`)
-      guarantee = 1
-      if (itemDate > capturingRadianceStartDate) {
-        counter = counter + 1
-      }
-    } else {
-      if (guarantee) {
-        console.log(`Guaranteed ${item[0]}`)
-      } else {
-        console.log(`Won ${item[0]}`)
-        if (itemDate > capturingRadianceStartDate) {
-          if (counter > 1) {
-            counter = 1
-          } else {
-            counter = 0
-          }
-        }
-      }
-      guarantee = 0
-    }
-  })
-  return counter
-}
-
-const capturingRadianceCounter = computed(() => capturingRadiance().toString())
 
 const avg5 = (list) => {
   let n = 0
