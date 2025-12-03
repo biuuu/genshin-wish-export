@@ -68,12 +68,25 @@ const itemIdDictFileName = 'item-id-dict.json'
 // acquire dictionary based on give language
 const fetchItemIdDict = async () => {
   // fetch item id dicts from api.uigf.org
-  for (const [_, lang] of uigfLangMap) {
-    const response = await fetch(`https://api.uigf.org/dict/genshin/${lang}.json`)
-    const responseText = await response.text().catch((e) => console.error(e))
-    const responseJson = JSON.parse(responseText)
-    itemIdDict.set(lang, new Map(Object.entries(responseJson).map(([name, id]) => [name, String(id)])))
-    itemIdDictMd5.set(lang, md5(responseText))
+  let response = await fetch(`https://api.uigf.org/dict/genshin/all.json`)
+  let responseJson = await response.json()
+  if (response.status === 200) { // successfully fetched all.json
+    Object.entries(responseJson).forEach(([lang, dict]) => {
+      itemIdDict.set(lang, new Map(Object.entries(dict).map(([name, id]) => [name, String(id)])))
+    })
+  } else { // all.json failed, attempting to fetch individual languages
+    console.error(`All dict fetch failed: HTTP ${response.status}: ` + (responseJson.detail || 'unknown error'))
+    for (const [_, lang] of uigfLangMap) {
+      response = await fetch(`https://api.uigf.org/dict/genshin/${lang}.json`)
+      const responseText = await response.text().catch((e) => console.error(e))
+      responseJson = JSON.parse(responseText)
+      if (response.status !== 200) {
+        console.error(`${lang} dict fetch failed: HTTP ${response.status}: ` + (responseJson.detail || 'unknown error'))
+        continue
+      }
+      itemIdDict.set(lang, new Map(Object.entries(responseJson).map(([name, id]) => [name, String(id)])))
+      itemIdDictMd5.set(lang, md5(responseText))
+    }
   }
 }
 
@@ -81,7 +94,8 @@ const fetchItemIdDict = async () => {
 const fetchItemIdDictMd5 = async (lang = 'all') => {
   const response = await fetch('https://api.uigf.org/md5/genshin')
   const responseJson = await response.json()
-  return responseJson
+  if (response.status !== 200) throw new Error(`MD5 fetch failed: HTTP ${response.status}: ` + (responseJson.detail || 'unknown error'))
+  Object.entries(responseJson).forEach(([lang, hash]) => itemIdDictMd5.set(lang, hash))
 }
 
 // initialize item id dictionary
@@ -91,39 +105,36 @@ const initLookupTable = async () => {
     return
   }
 
+  // fetch the remote MD5 hashes
+  await fetchItemIdDictMd5().catch((e) => console.error(e))
+
   // if a locally cached dictionary does not exist, fetch a new copy
   if (!existsFile(itemIdDictFileName)) {
     await fetchItemIdDict();
     return;
   }
 
-  // fetch md5 of upstream dicts
-  let remoteItemIdDictMd5 = {}
-  try {
-    remoteItemIdDictMd5 = await fetchItemIdDictMd5()
-  } catch (e) {
-    console.error(`Unable to fetch latest item id dictionary md5 due to: ${e}`)
-  }
-
-
-  // if a locally cached dictionary is found
+  // load the locally cached dictionary
   const localItemIdDict = await readJSON(itemIdDictFileName)
-  // if localItemIdDict is empty or old version
+
+  // if localItemIdDict is empty or old version, refetch
   if (!localItemIdDict || typeof localItemIdDict.md5 === "string") {
     await fetchItemIdDict()
     return
   }
-  // ensure all lang md5 matches
-  for (const lang in remoteItemIdDictMd5) {
-    if (remoteItemIdDictMd5[lang] !== localItemIdDict.md5[lang]) {
+
+  // ensure all remote md5 matches local hashes
+  for (const [lang, hash] of itemIdDictMd5.entries()) {
+    const localHash = localItemIdDict.md5[lang] || ''
+    if (localHash !== hash) {
       await fetchItemIdDict()
       return
     }
   }
 
-  for (const lang in localItemIdDict.lang) {
-    itemIdDict.set(lang, new Map(Object.entries(localItemIdDict.lang[lang]).map(([name, id]) => [name, String(id)])))
-    itemIdDictMd5.set(lang, localItemIdDict.md5[lang])
+  // insert locally cached dicts into memory
+  for (const [lang, dict] of Object.entries(localItemIdDict.lang)) {
+    itemIdDict.set(lang, new Map(Object.entries(dict).map(([name, id]) => [name, String(id)])))
   }
 }
 
@@ -299,7 +310,6 @@ const saveAndBackup = async (data) => {
 }
 
 const importUgif30Json = async (importData) => {
-  console.log(importData)
     const gachaData = {
       result: new Map(),
       time: Date.now(),
