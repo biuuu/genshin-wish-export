@@ -6,9 +6,10 @@ const { readdir, sleep, request, sendMsg, readJSON, saveJSON, userDataPath, user
 const config = require('./config')
 const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const i18n = require('./i18n')
-const { initLookupTable, getItemId } = require('./UIGFJson.js')
+const { initLookupTable, getItemId } = require('./UIGFApi.js')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
+const { saveLookupTable } = require('./UIGFApi.js')
 
 const dataMap = new Map()
 let apiDomain = 'https://public-operation-hk4e.mihoyo.com'
@@ -105,6 +106,7 @@ const calculateCapturingRadiance = async (gachaLog, lang) => {
     }
   }
   // console.log(log)
+  saveLookupTable()
   return counter
 }
 
