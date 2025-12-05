@@ -6,18 +6,21 @@ const { readdir, sleep, request, sendMsg, readJSON, saveJSON, userDataPath, user
 const config = require('./config')
 const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const i18n = require('./i18n')
-const { initLookupTable, getItemId } = require('./UIGFApi.js')
 const { enableProxy, disableProxy } = require('./module/system-proxy')
 const mitmproxy = require('./module/node-mitmproxy')
-const { saveLookupTable } = require('./UIGFApi.js')
+const { gachaStats } = require('./gachaStats.js')
 
 const dataMap = new Map()
 let apiDomain = 'https://public-operation-hk4e.mihoyo.com'
 
 const saveData = async (data, url) => {
-  const obj = Object.assign({}, data)
-  obj.result = [...obj.result]
-  obj.typeMap = [...obj.typeMap]
+  const obj = {
+    result: [...data.result],
+    time: data.time,
+    typeMap: [...data.typeMap],
+    uid: data.uid,
+    lang: data.lang
+  }
   if (url) {
     config.urls.set(data.uid, url)
     await config.save()
@@ -45,7 +48,7 @@ const readData = async (force = false) => {
         const data = await readJSON(name)
         data.typeMap = new Map(data.typeMap) || defaultTypeMap
         data.result = new Map(data.result)
-        if (!data.capturingRadiance) data.capturingRadiance = await calculateCapturingRadiance(data.result.get('301'), data.lang)
+        data.stats = await gachaStats(data.result, data.lang)
         if (data.uid) {
           dataMap.set(data.uid, data)
         }
@@ -58,56 +61,6 @@ const readData = async (force = false) => {
   if ((!config.current && dataMap.size) || (config.current && dataMap.size && !dataMap.has(config.current))) {
     await changeCurrent(dataMap.keys().next().value)
   }
-}
-
-const calculateCapturingRadiance = async (gachaLog, lang) => {
-  await initLookupTable()
-  const stndBannerChars = new Map([
-        ['10000003', new Date('2020-09-28T10:00+08:00')], // Version 1.0, Jean
-        ['10000016', new Date('2020-09-28T10:00+08:00')], // Version 1.0, Diluc
-        ['10000035', new Date('2020-09-28T10:00+08:00')], // Version 1.0, Qiqi
-        ['10000041', new Date('2020-09-28T10:00+08:00')], // Version 1.0, Mona
-        ['10000042', new Date('2020-09-28T10:00+08:00')], // Version 1.0, Keqing
-        ['10000069', new Date('2022-09-28T07:00+08:00')], // Version 3.1, Tighnari
-        ['10000079', new Date('2023-04-12T07:00+08:00')], // Version 3.6, Dehya
-        ['10000109', new Date('2025-03-26T07:00+08:00')] // Version 5.5, Yumemizuki Mizuki
-  ])
-  const capturingRadianceStartDate = new Date("2024-08-28T11:00+08:00")
-  let counter = 1
-  let guarantee = 0
-  let log = ""
-  for (const gachaItem of gachaLog) {
-    if (gachaItem[3] !== 5) continue  // skip non 5-stars
-    const itemDate = new Date(gachaItem[0])
-    const itemId = await getItemId(lang, gachaItem[1])
-    const isStandardCharacter = stndBannerChars.get(itemId) < itemDate
-    if (isStandardCharacter) { // Standard banner char
-      log += `\nLost to ${gachaItem[1]}` + ` (${itemId})`
-      guarantee = 1
-      if (itemDate > capturingRadianceStartDate) {
-        counter = Math.min(3, counter + 1)
-        log += `\t${counter}`
-      }
-    } else { // Limited char
-      if (guarantee) {
-        log += `\nGuaranteed ${gachaItem[1]}` + ` (${itemId})`
-      } else {
-        log += `\nWon ${gachaItem[1]}` + ` (${itemId})`
-        if (itemDate > capturingRadianceStartDate) {
-          if (counter > 1) {
-            counter = 1
-          } else {
-            counter = 0
-          }
-          log += `\t${counter}`
-        }
-      }
-      guarantee = 0
-    }
-  }
-  // console.log(log)
-  saveLookupTable()
-  return counter
 }
 
 const changeCurrent = async (uid) => {
@@ -477,7 +430,7 @@ const fetchData = async (urlOverride) => {
   const localData = dataMap.get(originUid)
   const mergedResult = mergeData(localData, data)
   data.result = mergedResult
-  data.capturingRadiance = calculateCapturingRadiance(data.result.get('301'))
+  data.stats = gachaStats(data.result, data.lang)
   dataMap.set(originUid, data)
   await changeCurrent(originUid)
   await saveData(data, url)

@@ -76,7 +76,6 @@ import { reactive, computed, watch, onMounted } from 'vue'
 import PieChart from './components/PieChart.vue'
 import GachaDetail from './components/GachaDetail.vue'
 import Setting from './components/Setting.vue'
-import gachaDetail from './gachaDetail'
 import { version } from '../../package.json'
 import gachaType from '../gachaType.json'
 import { ElMessage } from 'element-plus'
@@ -144,7 +143,8 @@ const hint = computed(() => {
 const detail = computed(() => {
   const data = state.dataMap.get(state.current)
   if (data) {
-    return gachaDetail(data.result, data.capturingRadiance)
+    return data.stats
+    // return gachaDetail(data.result, data.capturingRadiance)
   }
 })
 
@@ -262,7 +262,6 @@ const updateConfig = async () => {
 
 onMounted(async () => {
   await readData()
-  console.log(state.dataMap)
   await getI18nData()
 
   ipcRenderer.on('LOAD_DATA_STATUS', (event, message) => {
