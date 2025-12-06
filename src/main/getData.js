@@ -480,8 +480,8 @@ ipcMain.handle('FORCE_READ_DATA', async () => {
   }
 })
 
-ipcMain.handle('CHANGE_UID', (event, uid) => {
-  config.current = uid
+ipcMain.handle('CHANGE_UID', async (event, uid) => {
+  await changeCurrent(uid)
 })
 
 ipcMain.handle('GET_CONFIG', () => {
