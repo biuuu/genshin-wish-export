@@ -1,5 +1,4 @@
 {
-  "_version": "2.4",
   "type": "object",
   "properties": {
     "info": {
@@ -7,41 +6,41 @@
       "properties": {
         "uid": {
           "type": "string",
-          "title": "导出记录的 UID"
+          "title": "UID of the export record"
         },
         "lang": {
           "type": "string",
-          "title": "语言 languagecode2-country/regioncode2"
+          "title": "language in the format of languagecode2-country/regioncode2"
         },
         "export_timestamp": {
           "type": "number",
-          "title": "导出 UNIX 时间戳（秒）"
+          "title": "Export UNIX timestamp (accurate to the second)"
         },
         "export_time": {
           "type": "string",
-          "title": "导出时间",
+          "title": "Export time",
           "description": "yyyy-MM-dd HH:mm:ss"
         },
         "export_app": {
           "type": "string",
-          "title": "导出 App 名称"
+          "title": "Name of the export application"
         },
         "export_app_version": {
           "type": "string",
-          "title": "导出 App 版本"
+          "title": "Version of the export application"
         },
         "uigf_version": {
           "type": "string",
-          "title": "UIGF 版本号",
+          "title": "UIGF version; follow the regular expression pattern",
           "pattern": "v\\d+\\.\\d+"
         },
         "region_time_zone": {
           "type": "number",
-          "title": "区域时区偏移"
+          "title": "Region timezone offset"
         }
       },
       "required": ["uid", "uigf_version"],
-      "title": "UIGF 导出信息"
+      "title": "UIGF Export Information"
     },
     "list": {
       "type": "array",
@@ -50,48 +49,48 @@
         "properties": {
           "uigf_gacha_type": {
             "type": "string",
-            "title": "UIGF 卡池类型",
-            "description": "用于区分卡池类型不同，但卡池保底计算相同的物品"
+            "title": "UIGF gacha type",
+            "description": "Used to differentiate different gacha types with the same pity calculation for items"
           },
           "gacha_type": {
             "type": "string",
-            "title": "卡池类型"
+            "title": "Gacha type"
           },
           "item_id": {
             "type": "string",
-            "title": "物品的内部 ID"
+            "title": "Internal ID of the item"
           },
           "count": {
             "type": "string",
-            "title": "个数，一般为1"
+            "title": "Count, usually 1"
           },
           "time": {
             "type": "string",
-            "title": "获取物品的时间"
+            "title": "Time when the item was obtained. This MUST BE THE String typed value captured intact from the gacha record webpage WITHOUT ANY CONVERTION TO ANY DATE TYPES. Any conversion of such can cause potential timezone mistakes if the device time zone differs from the server time zone, unless special treatments are applied by individual app devs."
           },
           "name": {
             "type": "string",
-            "title": "物品名称"
+            "title": "Item name"
           },
           "item_type": {
             "type": "string",
-            "title": "物品类型"
+            "title": "Item type"
           },
           "rank_type": {
             "type": "string",
-            "title": "物品等级"
+            "title": "Item rank"
           },
           "id": {
             "type": "string",
-            "title": "记录内部 ID"
+            "title": "Internal ID of the record"
           }
         },
         "required": ["uigf_gacha_type", "gacha_type", "id", "item_id", "time"],
-        "title": "UIGF 物品"
+        "title": "UIGF Item"
       },
-      "title": "物品列表"
+      "title": "Item List"
     }
   },
   "required": ["info", "list"],
-  "title": "UIGF 根对象"
+  "title": "UIGF Root Object"
 }
