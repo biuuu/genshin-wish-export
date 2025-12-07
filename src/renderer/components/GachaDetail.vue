@@ -34,7 +34,7 @@
     </span>
   </p>
   <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
-  <p v-if="type === '301'" :title="capturingRadianceHelpText" class="text-gray-600 text-xs cursor-help">{{text.radianceCounter}}{{colon}}<span :class="capturingRadianceHelpMap.get(detail.capturingRadiance)[1]">{{detail.capturingRadiance}}</span></p>
+  <p v-if="type === '301'" :title="text.radianceWarning" class="text-gray-600 text-xs cursor-help">{{text.radianceCounter}}{{colon}}<span :class="capturingRadianceHelpMap.get(detail.capturingRadiance)[1]">{{capturingRadianceHelpMap.get(detail.capturingRadiance)[0]}}</span></p>
 </template>
 
 <script setup>

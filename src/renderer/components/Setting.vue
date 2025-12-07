@@ -59,6 +59,13 @@
         </el-switch>
         <p class="text-gray-400 text-xs m-1.5">{{text.fetchFullHistoryHint}}</p>
       </el-form-item>
+      <el-form-item :label="text.capturingRadiance">
+        <p class="text-gray-400 text-xs m-1.5">{{text.capturingRadianceHint}}
+          <a class="cursor-pointer text-blue-400"
+            @click="openLink(`https://www.reddit.com/r/Genshin_Impact/comments/1hd1sqa/understanding_genshin_impacts_capturing_radiance/`)">{{ text.capturingRadianceLink }}</a>
+
+        </p>
+      </el-form-item>
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
