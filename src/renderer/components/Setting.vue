@@ -11,17 +11,6 @@
         </el-select>
         <p class="text-gray-400 text-xs m-1.5">{{text.languageHint}}</p>
       </el-form-item>
-      <el-form-item :label="text.gameDetection">
-        <div class="flex space-x-2">
-        <el-radio-group @change="saveGameDetection" v-model.number="settingForm.gameDetection">
-          <el-radio-button :label="0">{{text.auto}}</el-radio-button>
-          <el-radio-button :label="1">{{text.manual}}</el-radio-button>
-        </el-radio-group>
-        <el-button class="focus:outline-none" plain type="primary" @click="selectGameLocation" v-if="settingForm.gameDetection === 1">Select Game Folder</el-button>
-        </div>
-        <p class="text-gray-400 text-xs m-1.5" v-if="settingForm.gameDetection === 1 && settingForm.gameLocation">{{settingForm.gameLocation}}</p>
-        <p class="text-gray-400 text-xs m-1.5">{{text.gameDetectionHint}}</p>
-      </el-form-item>
       <el-form-item :label="text.logType">
         <el-radio-group @change="saveSetting" v-model.number="settingForm.logType">
           <el-radio-button :label="0">{{text.auto}}</el-radio-button>
@@ -95,8 +84,6 @@ const data = reactive({
 
 const settingForm = reactive({
   lang: 'zh-cn',
-  gameDetection: 0,
-  gameLocation: null,
   logType: 1,
   proxyMode: true,
   autoUpdate: true,
@@ -117,7 +104,7 @@ const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'gameDetection', 'gameLocation', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken', 'readableJSON']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken', 'readableJSON']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }
@@ -126,22 +113,6 @@ const saveSetting = async () => {
 const saveLang = async () => {
   await saveSetting()
   emit('changeLang')
-}
-
-const selectGameLocation = async () => {
-  settingForm['gameLocation'] = await ipcRenderer.invoke('SELECT_GAME_DIR')
-  if (settingForm['gameLocation'] === null) {
-    settingForm['gameDetection'] = 0
-  }
-  await saveSetting()
-}
-
-const saveGameDetection = async () => {
-  if (settingForm['gameDetection'] === 1 && !settingForm['gameLocation']) {
-    await selectGameLocation()
-  } else {
-    await saveSetting()
-  }
 }
 
 const closeSetting = () => emit('close')

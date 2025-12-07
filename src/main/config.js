@@ -12,9 +12,7 @@ const config = {
   hideNovice: true,
   gistsToken: '',
   gistsId: '',
-  readableJSON: false,
-  gameDetection: 0,
-  gameLocation: null
+  readableJSON: false
 }
 
 const getLocalConfig = async () => {
