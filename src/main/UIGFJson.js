@@ -6,7 +6,7 @@ const getItemTypeNameMap = require('./gachaTypeMap').getItemTypeNameMap
 const { version } = require('../../package.json')
 const config = require('./config')
 const { existsFile, userDataPath, fixLocalMap } = require('./utils')
-const { initLookupTable, getItemId, uigfLangMap } = require('./UIGFApi.js')
+const { initLookupTable, saveLookupTable, getItemId, uigfLangMap, uigfRevLangMap } = require('./UIGFApi.js')
 const Ajv = require('ajv')
 const Ajv2020 = require('ajv/dist/2020')
 

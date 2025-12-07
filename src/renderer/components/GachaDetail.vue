@@ -54,9 +54,9 @@ const colon = computed(() => props.i18n?.symbol?.colon ?? ':')
 const capturingRadianceHelpMap = computed(() => 
   new Map([
     [0, [text.value.radianceNoChance, "text-black-600"]],
-    [1, [text.value.radianceSmallChance, "text-black-600"]],
+    [1, [text.value.radianceSmallChance, "text-blue-600"]],
     [2, [text.value.radianceDecentChance, "text-green-600"]],
-    [3, [text.value.radianceGuaranteed, "text-amber-300"]],
+    [3, [text.value.radianceGuaranteed, "text-amber-600"]],
   ])
 )
 

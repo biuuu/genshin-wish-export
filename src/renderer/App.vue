@@ -12,7 +12,7 @@
         </el-tooltip>
       </div>
       <div class="flex gap-2">
-        <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-44"   @change="changeCurrent" v-model="uidSelectText">
+        <el-select v-if="state.status !== 'loading' && state.dataMap && (state.dataMap.size > 1 || (state.dataMap.size === 1 && state.current === 0))" class="w-44" v-model="uidSelectText">
           <el-option
             v-for="item of state.dataMap"
             :key="item[0]"
@@ -105,11 +105,16 @@ const gachaData = computed(() => {
   return state.dataMap.get(state.current)
 })
 
-const uidSelectText = computed(() => {
-  if (state.current === 0) {
-    return state.i18n.ui.select.newAccount
-  } else {
-    return state.current
+const uidSelectText = computed({
+  get() {
+    if (state.current === 0) {
+      return state.i18n.ui.select.newAccount
+    } else {
+      return state.current
+    }
+  },
+  set(newUid) {
+    changeCurrent(newUid)
   }
 })
 

@@ -17,6 +17,8 @@ const uigfLangMap = new Map([
   ['vi-vn', 'vi']
 ])
 
+const uigfRevLangMap = new Map(Array.from(uigfLangMap, ([key, value]) => [value, key]))
+
 // a dictionary for looking up item ids
 const itemIdDict = new Map()
 // the md5 value for the dictionary
@@ -105,6 +107,7 @@ const saveLookupTable = async () => {
 // get item id
 const getItemId = async (lang, name) => {
   // fetch item id from api.uigf.org if cannot find it from existing item id dictionary
+  lang = uigfLangMap.get(lang) || lang
   if (!itemIdDict.has(lang) || !itemIdDict.get(lang).has(name)) {
     const response = await fetch(`https://api.uigf.org/identify/genshin/${name}`)
     const responseJson = await response.json()
@@ -116,4 +119,4 @@ const getItemId = async (lang, name) => {
   return itemIdDict.get(lang).get(name)
 }
 
-module.exports = { initLookupTable, saveLookupTable, getItemId, uigfLangMap }
+module.exports = { initLookupTable, saveLookupTable, getItemId, uigfLangMap, uigfRevLangMap }
