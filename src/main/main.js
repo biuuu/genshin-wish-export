@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, session } = require('electron')
 const { initWindow } = require('./utils')
 const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
@@ -31,7 +31,16 @@ if (!isFirstInstance) {
     }
   })
 
-  app.whenReady().then(createWindow)
+  app.whenReady().then(createWindow).then(() => {
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ['default-src \'self\'; script-src \'self\'; img-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\'']
+        }
+      })
+    })
+  })
 
   ipcMain.handle('RELAUNCH', async () => {
     app.relaunch()
