@@ -21,12 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.2] - 2025-12-23
 
+### Fixed
+- Resolved a layout issue on the homepage where pie charts would occasionally leave empty gaps instead of following a continuous sequence.
+
 ### Changed
 
 - Updated the display of URL links on the settings page for better clarity.
-
-### Fixed
-- Resolved a layout issue on the homepage where pie charts would occasionally leave empty gaps instead of following a continuous sequence.
 
 ## [0.12.1] - 2025-10-31
 
