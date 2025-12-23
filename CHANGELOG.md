@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [0.12.3] - 2025-12-23
+
+### Fixed
+- Fixed up some UI bugs by @TheraNinjaCat in #1
+
+### Added
+
+- Added translations for the new Miliastra Wonderland additions by @TheraNinjaCat in #1
+
 ## [0.12.2] - 2025-12-23
 
 ### Fixed
@@ -45,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added adaptation for Simplified Chinese Miliastra Wonderland ([biuuu/genshin-wish-export#292](https://github.com/biuuu/genshin-wish-export/issues/292)).
 
 
-[unreleased]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.1...HEAD
+[unreleased]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.3...HEAD
+[0.12.3]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.2...v0.12.3
+[0.12.2]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/Trrrrw/genshin-wish-export/releases/tag/v0.12.0
