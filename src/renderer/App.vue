@@ -35,13 +35,13 @@
     </div>
     <p class="text-gray-400 my-2 text-xs">{{hint}}<el-button @click="(state.showCacheCleanDlg=true)" v-if="state.authkeyTimeout" style="margin-left: 8px;" size="small" plain round>{{ui.button.solution}}</el-button></p>
     <div v-if="detail" class="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
-      <div class="mb-4" v-for="(item, i) of detail" :key="i">
-        <div :class="{hidden: state.config.hideNovice && item[0] === '100'}">
-          <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
-          <pie-chart :data="item" :i18n="state.i18n" :typeMap="typeMap"></pie-chart>
-          <gacha-detail :i18n="state.i18n" :data="item" :typeMap="typeMap"></gacha-detail>
+      <template v-for="(item, i) of detail" :key="i">
+        <div class="mb-4" v-if="!state.config.hideNovice || item[0] !== '100'">
+            <p class="text-center text-gray-600 my-2">{{typeMap.get(item[0])}}</p>
+            <pie-chart :data="item" :i18n="state.i18n" :typeMap="typeMap"></pie-chart>
+            <gacha-detail :i18n="state.i18n" :data="item" :typeMap="typeMap"></gacha-detail>
         </div>
-      </div>
+      </template>
     </div>
     <Setting v-show="state.showSetting" :i18n="state.i18n" @changeLang="getI18nData()" @close="showSetting(false)"
              @dataUpdated="readData(true)"></Setting>
