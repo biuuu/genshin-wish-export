@@ -8,23 +8,23 @@ const characterTypeNames = new Set([
 ])
 
 const cosmeticsNames = new Set([
-  '装扮形录'
+  '装扮形录', 'Cosmetic Catalog'
 ])
 
 const cosmeticsSetNames = new Set([
-  '装扮套装'
+  '装扮套装', 'Cosmetic Set'
 ])
 
 const cosmeticsPartNames = new Set([
-  '装扮部件'
+  '装扮部件', 'Cosmetic Component'
 ])
 
 const emojiNames = new Set([
-  '互动表情'
+  '互动表情', 'Interactive Expressions'
 ])
 
 const actionNames = new Set([
-  '互动动作'
+  '互动动作', 'Interactive Actions'
 ])
 
 const isCharacter = (name) => characterTypeNames.has(name)

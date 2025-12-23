@@ -20,7 +20,7 @@ const userPath = app.getPath('userData')
 let win = null
 const initWindow = () => {
   let mainWindowState = windowStateKeeper({
-    defaultWidth: 888,
+    defaultWidth: 910,
     defaultHeight: 550
   })
   win = new BrowserWindow({
