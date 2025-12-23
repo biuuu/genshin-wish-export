@@ -11,7 +11,7 @@
 需要更详细的数据分析，可以在导出 Excel 文件后使用这个项目的网页：[链接](https://github.com/voderl/genshin-gacha-analyzer)
 
 ## 从 Excel 恢复数据
-https://genshin-gacha-export.danmu9.com
+https://genshin-gacha-export.trrw.tech
 
 可以通过这个网页从 Excel 文件导出 JSON 数据，也可以在网页上选择截止时间来去除重复数据。
 
