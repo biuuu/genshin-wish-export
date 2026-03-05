@@ -257,7 +257,7 @@ const generateUigf41Json = async (uigfAllAccounts=true) => {
       for (const gacha of gachaList){
         const gachaItem = {
           uigf_gacha_type: gachaType,
-          gacha_type: gachaType,
+          gacha_type: shouldBeString(gacha[4]) || gachaType,
           item_id: await getItemId(uigfLang, gacha[1]),
           // count: null, // optional and not included in stored data
           time: gacha[0],
