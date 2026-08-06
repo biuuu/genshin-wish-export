@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [0.12.8] - 2026-08-06
+
+### Changed
+
+- Changed the update service domain to `genshin-gacha-export.trrw.cn`.
+
 ## [0.12.7] - 2026-05-29
 <p color="red">⚠️本次更新软件后建议重新获取完整数据⚠️</p>
 
@@ -89,7 +95,8 @@ Wonderland gacha types (1000/2000) when enabled.
 - Added adaptation for Simplified Chinese Miliastra Wonderland ([biuuu/genshin-wish-export#292](https://github.com/biuuu/genshin-wish-export/issues/292)).
 
 
-[unreleased]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.7...HEAD
+[unreleased]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.8...HEAD
+[0.12.8]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.7...v0.12.8
 [0.12.7]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.6...v0.12.7
 [0.12.6]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.5...v0.12.6
 [0.12.5]: https://github.com/Trrrrw/genshin-wish-export/compare/v0.12.4...v0.12.5
