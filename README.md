@@ -1,6 +1,6 @@
 # 原神祈愿记录导出工具
 
-中文 | [English](https://github.com/biuuu/genshin-wish-export/blob/main/docs/README_EN.md)
+中文 | [English](https://github.com/Trrrrw/genshin-wish-export/blob/main/docs/README_EN.md)
 
 一个使用 Electron 制作的小工具，需要在 Windows 64位操作系统上运行。
 
@@ -11,7 +11,7 @@
 需要更详细的数据分析，可以在导出 Excel 文件后使用这个项目的网页：[链接](https://github.com/voderl/genshin-gacha-analyzer)
 
 ## 从 Excel 恢复数据
-https://genshin-gacha-export.danmu9.com
+https://genshin-gacha-export.trrw.cn
 
 可以通过这个网页从 Excel 文件导出 JSON 数据，也可以在网页上选择截止时间来去除重复数据。
 
@@ -24,7 +24,7 @@ https://genshin-gacha-export.danmu9.com
 
 ## 使用说明
 
-1. 下载工具后解压 - 下载地址: [Github](https://github.com/biuuu/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip) / [蓝奏云](https://wwvt.lanzoum.com/b01zxlweh) 密码：gepz
+1. 下载工具后解压 - 下载地址: [Github](https://github.com/Trrrrw/genshin-wish-export/releases/latest/download/Genshin-Wish-Export.zip) / [蓝奏云](https://trrrrw.lanzoum.com/b00eg7p2ef) 密码：e7qb
 2. 打开游戏的祈愿历史记录
 
    ![祈愿历史记录](/docs/wish-history.png)
@@ -60,4 +60,4 @@ yarn build
 
 ## License
 
-[MIT](https://github.com/biuuu/genshin-wish-export/blob/main/LICENSE)
+[MIT](https://github.com/Trrrrw/genshin-wish-export/blob/main/LICENSE)

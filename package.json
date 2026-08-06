@@ -1,9 +1,9 @@
 {
   "name": "genshin-wish-export",
-  "version": "0.12.1",
+  "version": "0.12.8",
   "main": "./dist/electron/main/main.js",
-  "author": "biuuu <https://github.com/biuuu>",
-  "homepage": "https://github.com/biuuu/genshin-wish-export",
+  "author": "Trrrrw <https://github.com/Trrrrw>",
+  "homepage": "https://github.com/Trrrrw/genshin-wish-export",
   "license": "MIT",
   "scripts": {
     "dev": "node .electron-vite/dev-runner.js",

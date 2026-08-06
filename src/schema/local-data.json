@@ -38,8 +38,11 @@
                 { "type": "string" },
                 { "type": "string" },
                 { "type": "string" },
-                { "type": "integer" }
+                { "type": "integer" },
+                { "type": "string" },
+                { "type": "string" }
               ],
+              "minItems": 4,
               "additionalItems": {
                 "type": "string"
               }

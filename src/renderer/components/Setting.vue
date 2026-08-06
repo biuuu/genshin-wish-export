@@ -52,6 +52,12 @@
           v-model="settingForm.hideNovice">
         </el-switch>
       </el-form-item>
+      <el-form-item :label="text.hideMiliastra">
+        <el-switch
+          @change="saveSetting"
+          v-model="settingForm.hideMiliastra">
+        </el-switch>
+      </el-form-item>
       <el-form-item :label="text.fetchFullHistory">
         <el-switch
           @change="saveSetting"
@@ -62,7 +68,7 @@
     </el-form>
     <h3 class="text-lg my-4">{{about.title}}</h3>
     <p class="text-gray-600 text-xs mt-1">{{about.license}}</p>
-    <p class="text-gray-600 text-xs mt-1 pb-6">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/biuuu/genshin-wish-export</a></p>
+    <p class="text-gray-600 text-xs mt-1 pb-6">Github: <a @click="openGithub" class="cursor-pointer text-blue-400">https://github.com/Trrrrw/genshin-wish-export</a></p>
   </div>
 </template>
 
@@ -89,13 +95,15 @@ const settingForm = reactive({
   autoUpdate: true,
   fetchFullHistory: false,
   hideNovice: true,
+  hideMiliastra: false,
   gistsToken: '',
-  uigfVersion: "4.1",
+  uigfVersion: "4.2",
   uigfAllAccounts: true,
   readableJSON: false
 })
 
 const uigfSupportedVersions = [
+  "4.2",
   "4.1",
   "3.0"
 ]
@@ -104,7 +112,7 @@ const text = computed(() => props.i18n.ui.setting)
 const about = computed(() => props.i18n.ui.about)
 
 const saveSetting = async () => {
-  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'gistsToken', 'readableJSON']
+  const keys = ['lang', 'logType', 'proxyMode', 'autoUpdate', 'fetchFullHistory', 'hideNovice', 'hideMiliastra', 'gistsToken', 'readableJSON']
   for (let key of keys) {
     await ipcRenderer.invoke('SAVE_CONFIG', [key, settingForm[key]])
   }
@@ -121,7 +129,7 @@ const disableProxy = async () => {
   await ipcRenderer.invoke('DISABLE_PROXY')
 }
 
-const openGithub = () => shell.openExternal('https://github.com/biuuu/genshin-wish-export')
+const openGithub = () => shell.openExternal('https://github.com/Trrrrw/genshin-wish-export')
 const openLink = (link) => shell.openExternal(link)
 
 const exportUIGFJSON = async () => {

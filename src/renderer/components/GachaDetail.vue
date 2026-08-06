@@ -8,14 +8,14 @@
     <span class="mr-1">{{text.total}}
       <span class="text-blue-600">{{detail.total}}</span> {{text.times}}
     </span>
-    <span v-if="type !== '100'">{{text.sum}}<span class="mx-1 text-green-600">{{detail.countMio}}</span>{{text.no5star}}</span>
+    <span v-if="type !== '100'">{{text.sum}}<span class="mx-1 text-green-600">{{detail.countMio}}</span>{{type=='1000'?text.no4star:text.no5star}}</span>
   </p>
   <p class="text-gray-600 text-xs mb-1">
-    <span :title="`${text.character}${colon}${detail.count5c}\n${text.weapon}${colon}${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
+    <span v-if="type != 1000" :title="`${text.character}${colon}${detail.count5c}\n${text.weapon}${colon}${detail.count5w}`" class="mr-3 whitespace-pre cursor-help text-yellow-500">
       <span class="min-w-10 inline-block">{{text.star5}}{{colon}}{{detail.count5}}</span>
       [{{percent(detail.count5, detail.total)}}]
     </span>
-    <br><span :title="`${text.character}${colon}${detail.count4c}\n${text.weapon}${colon}${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
+    <br v-if="type != 1000"><span :title="`${text.character}${colon}${detail.count4c}\n${text.weapon}${colon}${detail.count4w}`" class="mr-3 whitespace-pre cursor-help text-purple-600">
       <span class="min-w-10 inline-block">{{text.star4}}{{colon}}{{detail.count4}}</span>
       [{{percent(detail.count4, detail.total)}}]
     </span>
@@ -23,17 +23,21 @@
       <span class="min-w-10 inline-block">{{text.star3}}{{colon}}{{detail.count3}}</span>
       [{{percent(detail.count3, detail.total)}}]
     </span>
+    <br><span v-if="type == '1000'" class="text-blue-500 whitespace-pre">
+      <span class="min-w-10 inline-block">{{text.star2}}{{colon}}{{detail.count2}}</span>
+      [{{percent(detail.count2, detail.total)}}]
+    </span>
   </p>
 
   <p class="text-gray-600 text-xs mb-1" v-if="detail.ssrPos.length">
-    {{text.history}}{{colon}}
+    {{type=='1000'?text.history4:text.history}}{{colon}}
     <span :title="`${item[2]}${item[3] === '400' ? '\n' + props.i18n.excel.wish2 : ''}`" :class="{wish2: item[3] === '400'}" class="cursor-help mr-1" :style="`color:${colorList[index]}`"
       v-for="(item, index) of detail.ssrPos" :key="item"
     >
       {{item[0]}}[{{item[1]}}]
     </span>
   </p>
-  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
+  <p v-if="detail.ssrPos.length" class="text-gray-600 text-xs">{{type=='1000'?text.average4:text.average}}{{colon}}<span class="text-green-600">{{avg5(detail.ssrPos)}}</span></p>
 </template>
 
 <script setup>

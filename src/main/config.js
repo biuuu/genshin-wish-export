@@ -10,9 +10,11 @@ const config = {
   autoUpdate: true,
   fetchFullHistory: false,
   hideNovice: true,
+  hideMiliastra: false,
   gistsToken: '',
   gistsId: '',
-  readableJSON: false
+  readableJSON: false,
+  ugc_rewrited: false,
 }
 
 const getLocalConfig = async () => {
